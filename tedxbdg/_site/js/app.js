@@ -5,14 +5,10 @@ myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, 
     var myRegistrants = new Firebase('https://tedxbdgbimo.firebaseio.com/signed');
     
     var confirmed = new Firebase('https://tedxbdgbimo.firebaseio.com/confirmed');
-    myRegistrants.push({
-        
-    });
+
     $scope.registrants = $firebaseArray(myRegistrants);
     $scope.confirms = $firebaseArray(confirmed);
     //$scope.registrants = myRegistrants;
-    
-    
     
     function clearForm() {
         $scope.uid = '';
@@ -20,7 +16,8 @@ myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, 
         $scope.phone = '';
         $scope.email = '';
     }
-    
+
+
     $scope.showForm = function () {
         $scope.addFormShow = true;
 //        $scope.editFormShow = false;
@@ -54,10 +51,10 @@ myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, 
 
     $scope.confirmAttend = function (product) {
         $scope.confirms.$add({
-            uid: $scope.uid,
-            name: $scope.name,
-            email: $scope.email,
-            phone: $scope.phone
+            uid: product.uid,
+            name: product.name,
+            email: product.email,
+            phone: product.phone
         });
     };
 }]);
