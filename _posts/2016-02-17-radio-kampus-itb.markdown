@@ -9,6 +9,3 @@ I do maintain the website of Radio Kampus ITB and adding new feature.
 ![My RK screenshot]({{ site.url }}/assets/rkschedule.PNG)
 Visit the Radio Kampus ITB Website : [Radio Kampus ITB](http://www.radiokampusitb.com)
 
-[jekyll-docs]: http://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
