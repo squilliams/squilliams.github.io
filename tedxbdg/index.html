@@ -39,10 +39,6 @@
                         <tr>
                             <td>Unique ID</td>
                             <td>Name</td>
-            <!--
-                            <td>E-mail</td>
-                            <td>Phone Number</td>
-            -->
                             <td>Confirm</td>
                         </tr>
                         </thead>
@@ -50,10 +46,6 @@
                         <tr ng-repeat="registrant in registrants | filter:filter">
                             <td>{{ registrant.uid}}</td>
                             <td>{{ registrant.name }}</td>
-            <!--
-                            <td>{{ registrant.email }}</td>
-                            <td>{{ registrant.phone }}</td>
-            -->
                             <td>
                                 <button class="btn btn-danger" ng-click="confirmAttend(registrant)" >Confirm</button>
                             </td>
