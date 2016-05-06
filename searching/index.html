@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <title>Instant Search Tutorial</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <!-- IE < 10 support -->
+  <!--[if lte IE 9]>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/instantsearch.js/1/instantsearch.min.css">
+  <link rel="stylesheet" type="text/css" href="style/style.css">
+</head>
+<body>
+    <input type="text" id="search-input" />
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script src="//cdn.jsdelivr.net/autocomplete.js/0/autocomplete.min.js"></script>
+    <script>
+      var client = algoliasearch("NJWL3M9801", "d15c5363b0021b637de39ec8c61dc439")
+      var index = client.initIndex('tedx_registrant');
+      autocomplete('#search-input', {hint: false}, [
+        {
+          source: autocomplete.sources.hits(index, {hitsPerPage: 5}),
+          displayKey: 'my_attribute',
+          templates: {
+            suggestion: function(suggestion) {
+              return suggestion._highlightResult.my_attribute.value;
+            }
+          }
+        }
+      ]).on('autocomplete:selected', function(event, suggestion, dataset) {
+        console.log(suggestion, dataset);
+      });
+    </script>
+</body>
+</html>
