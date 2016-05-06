@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Bimo&#39;s Static Page</title>
+    <description>I do write some of the things that I&#39;ve done here. 
+</description>
+    <link>http://squilliams.github.io/</link>
+    <atom:link href="http://squilliams.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 17 Feb 2016 23:48:09 +0700</pubDate>
+    <lastBuildDate>Wed, 17 Feb 2016 23:48:09 +0700</lastBuildDate>
+    <generator>Jekyll v3.1.1</generator>
+    
+      <item>
+        <title>Bandung Open 2016 Website!</title>
+        <description>&lt;p&gt;I do maintain the website of Official Rubik’s Cube Competition, Bandung Open 2016 and improving the site.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://squilliams.github.io/assets/bo2016.PNG&quot; alt=&quot;Bandung Open 2016&quot; /&gt;
+Visit the Bandung Open 2016 Website : &lt;a href=&quot;http://ardisatriawan.github.io/bo2016&quot;&gt;Bandung Open 2016&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 17 Feb 2016 23:10:36 +0700</pubDate>
+        <link>http://squilliams.github.io/jekyll/update/2016/02/17/bandung-open-2016-Copy.html</link>
+        <guid isPermaLink="true">http://squilliams.github.io/jekyll/update/2016/02/17/bandung-open-2016-Copy.html</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
+    
+      <item>
+        <title>Radio Kampus ITB Website!</title>
+        <description>&lt;p&gt;I do maintain the website of Radio Kampus ITB and adding new feature.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://squilliams.github.io/assets/rkschedule.PNG&quot; alt=&quot;My RK screenshot&quot; /&gt;
+Visit the Radio Kampus ITB Website : &lt;a href=&quot;http://www.radiokampusitb.com&quot;&gt;Radio Kampus ITB&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 17 Feb 2016 14:31:36 +0700</pubDate>
+        <link>http://squilliams.github.io/jekyll/update/2016/02/17/radio-kampus-itb.html</link>
+        <guid isPermaLink="true">http://squilliams.github.io/jekyll/update/2016/02/17/radio-kampus-itb.html</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
+    
+      <item>
+        <title>Simple Stack Exchange Website!</title>
+        <description>&lt;p&gt;This is one of my individual coursework in informatics (IF3110). This is built with pure HTML, CSS, PHP and Javascript from scratch without any framework/libraries. The total time to build this website is less than 1 day.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://squilliams.github.io/assets/sstackexchange.PNG&quot; alt=&quot;Simple Stack Exchange&quot; /&gt;
+&lt;img src=&quot;http://squilliams.github.io/assets/sstackexchange2.PNG&quot; alt=&quot;Simple Stack Exchange&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This site is not deployed and reside in my hard disk.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 15 Oct 2015 18:31:36 +0700</pubDate>
+        <link>http://squilliams.github.io/jekyll/update/2015/10/15/simple-stack-exchange.html</link>
+        <guid isPermaLink="true">http://squilliams.github.io/jekyll/update/2015/10/15/simple-stack-exchange.html</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
+    
+  </channel>
+</rss>
