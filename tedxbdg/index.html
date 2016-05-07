@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>TEDxBandung Registration OTS</title>
     <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="js/angular.js"></script>
     <script src="js/app.js"></script>
     
@@ -19,23 +18,38 @@
 
 <div class="panel panel-warning" ng-controller="ProductsCtrl">
     <div class="panel-heading" style="font-size:large">
-        TEDxBandung : Borderless Wisdom
+        <img src="img/logo.png" height="45">
     </div>
 
-    <form ng-submit="addFormSubmit()" ng-show="addFormShow">
-        <input type="text" ng-model="uid" placeholder="UID" />
-        <input type="text" ng-model="name" placeholder="Name" />
-        <input type="text" ng-model="email" placeholder="E-mail" />
-        <input type="text" ng-model="phone" placeholder="Phone Number" />
-        <input type="submit" value="Add Registrants" class="btn btn-default btn-success" />
-    </form>
-
-    <div class="panel panel-body">
+    <div class="">
             <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-8 col-md-offset-1">
+                    <h3>OTS</h3>
+                    <button class="btn btn-success" ng-click="showForm()" ng-hide="addFormShow">+</button>
+                    <button class="btn btn-warning" ng-click="hideForm()" ng-show="addFormShow">-</button>
+
+                    <form class="form-inline" ng-submit="addFormSubmit()" ng-show="addFormShow">
+                        <input type="text" class="form-control" ng-model="uid" placeholder="UID" width = "15"/>
+                        <input type="text" class="form-control" ng-model="name" placeholder="Name" />
+                        <input type="text" class="form-control" ng-model="email" placeholder="E-mail" />
+                        <input type="text" class="form-control" ng-model="phone" placeholder="Phone Number" />
+                        <input type="submit" value="Add Registrants" class="btn btn-default btn-success" />                        
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-5 col-md-offset-1">
+                                <input type="text" class="form-control" placeholder="UID" ng-model="filter"></input>  
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 col-md-offset-1">
+                    <h3>SIGNED IN</h3>
+                    <div class="table-responsive">
                     <table class="table">
                         <thead>
-                        <input type="text" placeholder="UID" ng-model="filter"></input>  
                         <tr>
                             <td>Unique ID</td>
                             <td>Name</td>
@@ -52,24 +66,34 @@
                         </tr>
                         </tbody>
                     </table>
+                    </div>
+                    
                 </div>
         
-                <div class="col-md-3">
+                <div class="col-md-4">
+                    <h3>CONFIRMED</h3>
+                    <div class="table-responsive">
                     <table class="table">
                             <thead>
-                            CONFIRMED
                             <tr>
                                 <td>Unique ID</td>
                                 <td>Name</td>
+                                <td>Action</td>
                             </tr>
                             </thead>
                             <tbody>
                             <tr ng-repeat="confirm in confirms">
                                 <td>{{ confirm.uid}}</td>
                                 <td>{{ confirm.name }}</td>
+                                <td>
+                                    <button class="btn btn-danger" ng-click="deleteProduct(confirm)" >Delete</button>
+                                </td>
                             </tr>
+                                
                             </tbody>
-                        </table>                
+                        </table>
+                    </div>
+                                    
                 </div>
             </div>
             

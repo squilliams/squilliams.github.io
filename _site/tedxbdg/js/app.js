@@ -57,4 +57,13 @@ myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, 
             phone: product.phone
         });
     };
+    
+    $scope.deleteProduct = function (product) {
+        var r = confirm("Are you sure you want to delete " + product.name + "?");
+        if (r == true) {
+            $scope.confirms.$remove(product);
+        } else {
+        }
+    };
+
 }]);
