@@ -46,7 +46,7 @@
             </div>
             <div class="row">
                 <div class="col-md-5 col-md-offset-1">
-                    <h3>SIGNED IN</h3>
+                    <h3>SIGNED IN ({{ registrants.length }})</h3>
                     <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -71,7 +71,7 @@
                 </div>
         
                 <div class="col-md-4">
-                    <h3>CONFIRMED</h3>
+                    <h3>CONFIRMED ({{ confirms.length }})</h3>
                     <div class="table-responsive">
                     <table class="table">
                             <thead>
@@ -83,7 +83,7 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="confirm in confirms">
-                                <td>{{ confirm.uid}}</td>
+                                <td>{{ confirm.uid }}</td>
                                 <td>{{ confirm.name }}</td>
                                 <td>
                                     <button class="btn btn-danger" ng-click="deleteProduct(confirm)" >Delete</button>
