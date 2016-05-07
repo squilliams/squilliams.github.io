@@ -1,3 +1,4 @@
+
 var myApp = angular.module('myApp', ['firebase']);
 
 myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, $firebaseArray) {
@@ -5,7 +6,9 @@ myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, 
     var myRegistrants = new Firebase('https://tedxbdgbimo.firebaseio.com/signed');
     
     var confirmed = new Firebase('https://tedxbdgbimo.firebaseio.com/confirmed');
-
+    
+    var ref = new Firebase("https://tedxbdgbimo.firebaseio.com");
+    
     $scope.registrants = $firebaseArray(myRegistrants);
     $scope.confirms = $firebaseArray(confirmed);
     //$scope.registrants = myRegistrants;
@@ -16,7 +19,9 @@ myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, 
         $scope.phone = '';
         $scope.email = '';
     }
-
+    $scope.clearSearch = function() {
+        $scope.filter = null;
+    }
 
     $scope.showForm = function () {
         $scope.addFormShow = true;
@@ -27,6 +32,7 @@ myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, 
     $scope.hideForm = function () {
         $scope.addFormShow = false;
     };
+    
         
 //    $scope.showProduct = function (registrant) {
 //        $scope.editFormShow = true;
@@ -48,6 +54,7 @@ myApp.controller('ProductsCtrl', ['$scope', '$firebaseArray', function ($scope, 
         
         clearForm();
     };
+
 
     $scope.confirmAttend = function (product) {
         $scope.confirms.$add({
