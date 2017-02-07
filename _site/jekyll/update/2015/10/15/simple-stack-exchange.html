@@ -9,12 +9,12 @@
   <title>Simple Stack Exchange Website!</title>
   <meta name="description" content="This is one of my individual coursework in informatics (IF3110). This is built with pure HTML, CSS, PHP and Javascript from scratch without any framework/lib...">
 
-  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/main.css" | prepend: site.baseurl }}">
   <link rel="canonical" href="http://squilliams.github.io/jekyll/update/2015/10/15/simple-stack-exchange.html">
   <link rel="alternate" type="application/rss+xml" title="Bimo's Static Page" href="http://squilliams.github.io/feed.xml">
-        <link rel="stylesheet" href="css/materialize.min.css">
+        <link rel="stylesheet" href="/css/materialize.min.css">
 
-    <script src="js/materialize.min.js"></script>
+    <script src="/js/materialize.min.js"></script>
 
 </head>
 
@@ -57,7 +57,7 @@
 -->
   <nav class="red" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="http://squilliams.github.io" class="brand-logo">Bimo's Static Page</a>
+      <a id="logo-container" href="/" class="brand-logo">Bimo's Static Page</a>
       <ul class="right hide-on-med-and-down">
         <li><a href="/about">About</a></li>
       </ul>
@@ -65,7 +65,7 @@
       <ul id="nav-mobile" class="side-nav">
         <li><a href="/about">about</a></li>
       </ul>
-      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">v</i></a>
 
     </div>
 
