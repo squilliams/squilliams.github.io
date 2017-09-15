@@ -15,23 +15,7 @@
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 	</head>
 	<body>
-            <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
-            <script>
-              // Initialize Firebase
-              var config = {
-                apiKey: "AIzaSyA76bom8waGRNB6Thm_DFs480er0LVCZHk",
-                authDomain: "landing-page-novita.firebaseapp.com",
-                databaseURL: "https://landing-page-novita.firebaseio.com",
-                projectId: "landing-page-novita",
-                storageBucket: "",
-                messagingSenderId: "421617608041"
-              };
-              firebase.initializeApp(config);
-                
-                var database = firebase.database();
-                var emails = database.ref('emails');
-            </script>
-
+        	<script src="assets/js/app.js"></script>
 		<!-- Header -->
 			<header id="header">
 				<h1>Novita</h1>
@@ -42,15 +26,15 @@
         
 		<!-- Signup Form -->
 			<form id="signup-form" method="post" action="#">
-				<input type="email" name="email" id="email" placeholder="Email Address" />
-				<input type="submit" value="Sign Up" />
+				<input type="email" name="email_1" id="email" placeholder="Email Address" />
+				<input type="submit" id="submit-form" value="Sign Up" />
 			</form>
 		<!-- Footer -->
 			<footer id="footer">
 				<ul class="icons">
-					<li><a href="twitter.com/novitageraldine" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-					<li><a href="instagram.com/novitageraldine" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-					<li><a href="facebook.com/novita.g.togatorop" class="icon fa-facebook"><span class="label">GitHub</span></a></li>
+					<li><a href="http://twitter.com/novitageraldine" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="http://instagram.com/novitageraldine" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="http://facebook.com/novita.g.togatorop" class="icon fa-facebook"><span class="label">GitHub</span></a></li>
 					<li><a href="18213042@std.stei.itb.ac.id" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
 				</ul>
 				<ul class="copyright">
