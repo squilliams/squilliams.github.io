@@ -11,10 +11,11 @@
 ">
 
   <link rel="stylesheet" href="/css/main.css" | prepend: site.baseurl }}">
-  <link rel="canonical" href="http://squilliams.github.io/">
-  <link rel="alternate" type="application/rss+xml" title="Bimo's Static Page" href="http://squilliams.github.io/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/">
+  <link rel="alternate" type="application/rss+xml" title="Bimo's Static Page" href="http://localhost:4000/feed.xml">
   <link rel="stylesheet" href="/css/materialize.css">   
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel="stylesheet">
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="/js/script.js"></script>
   <script src="/js/materialize.js"></script>
@@ -26,13 +27,21 @@
 
     <header class="site-header">
 
-  <nav class="green accent-4" role="navigation">
+  <nav class="pink darken-3" role="navigation">
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Bimo's Static Page</a>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="/about">About</a></li>
-      </ul>
+      <ul class="nav right hide-on-med-and-down">
+        
+            <li class="nav-item">
+                <a class="nav-link grey-text text-lighten-3" href="/">Home</a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link grey-text text-lighten-3" href="/about/">About</a>
+            </li>
+        
+      </ul> 
 
       <ul class="side-nav nav-mobile" id="mobile-demo">
         <li><a href="/">home</a></li>
@@ -47,44 +56,69 @@
     <div class="page-content">
       <div class="wrapper">
         <div class="row">
-    <div class="col s2"><i class="large material-icons">assignment_ind</i></div>
-    <div class="col s2"><i class="large material-icons">email</i></div>
-    <div class="col s2"><i class="large material-icons">chat_bubble_outline</i></div>
-  </div>
-<div class="home">
+
+        <div class="col s12 m4 l3"> <!-- Note that "m4 l3" was added -->
+          <!-- Grey navigation panel
   
-  <h1 class="page-heading">Posts</h1>
+                This content will be:
+            3-columns-wide on large screens,
+            4-columns-wide on medium screens,
+            12-columns-wide on small screens  -->
+            <img class="circle responsive-img" src="assets/profilephoto.jpeg" />
+            <span class="black-text center-align">
+                <blockquote>This is me</blockquote>
+            </span>
+        </div>
+  
+        <div class="col s12 m8 l9"> <!-- Note that "m8 l9" was added -->
+          <!-- Teal page content
+  
+                This content will be:
+            9-columns-wide on large screens,
+            8-columns-wide on medium screens,
+            12-columns-wide on small screens  -->
+            <div class="posts">
+                
+                <article>
+                    <h4><a class="pink-text text-darken-4" href="/jekyll/update/2019/06/10/new-update.html">New Update to My Static Site</a></h4>
+                    <span class="post-meta">Published on 10 Jun 2019</span>
+                    <p><span class="post-content"><p><strong>It’s been a long time</strong> since I modify this static page. I hope I can add more to this static page later.</p>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Feb 17, 2016</span>
+</span></p>
+                    <div class="divider"></div>
+                </article>
+                
+                <article>
+                    <h4><a class="pink-text text-darken-4" href="/jekyll/update/2016/02/17/bandung-open-2016-Copy.html">Bandung Open 2016 Website!</a></h4>
+                    <span class="post-meta">Published on 17 Feb 2016</span>
+                    <p><span class="post-content"><p>I do maintain the website of Official Rubik’s Cube Competition, Bandung Open 2016 and improving the site.</p>
 
-        <h2>
-          <a class="post-link" href="/jekyll/update/2016/02/17/bandung-open-2016-Copy.html">Bandung Open 2016 Website!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Feb 17, 2016</span>
+</span></p>
+                    <div class="divider"></div>
+                </article>
+                
+                <article>
+                    <h4><a class="pink-text text-darken-4" href="/jekyll/update/2016/02/17/radio-kampus-itb.html">Radio Kampus ITB Website!</a></h4>
+                    <span class="post-meta">Published on 17 Feb 2016</span>
+                    <p><span class="post-content"><p>I do maintain the website of Radio Kampus ITB and adding new feature.</p>
 
-        <h2>
-          <a class="post-link" href="/jekyll/update/2016/02/17/radio-kampus-itb.html">Radio Kampus ITB Website!</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 15, 2015</span>
+</span></p>
+                    <div class="divider"></div>
+                </article>
+                
+                <article>
+                    <h4><a class="pink-text text-darken-4" href="/jekyll/update/2015/10/15/simple-stack-exchange.html">Simple Stack Exchange Website!</a></h4>
+                    <span class="post-meta">Published on 15 Oct 2015</span>
+                    <p><span class="post-content"><p>This is one of my individual coursework in informatics (IF3110). This is built with pure HTML, CSS, PHP and Javascript from scratch without any framework/libraries. The total time to build this website is less than 1 day.</p>
 
-        <h2>
-          <a class="post-link" href="/jekyll/update/2015/10/15/simple-stack-exchange.html">Simple Stack Exchange Website!</a>
-        </h2>
-      </li>
-    
-  </ul>
-
-
-</div>
+</span></p>
+                    <div class="divider"></div>
+                </article>
+                
+            </div>
+        </div>
+  
+      </div>
 
       </div>
     </div>

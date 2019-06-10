@@ -11,10 +11,11 @@
 ">
 
   <link rel="stylesheet" href="/css/main.css" | prepend: site.baseurl }}">
-  <link rel="canonical" href="http://squilliams.github.io/about/">
-  <link rel="alternate" type="application/rss+xml" title="Bimo's Static Page" href="http://squilliams.github.io/feed.xml">
+  <link rel="canonical" href="http://localhost:4000/about/">
+  <link rel="alternate" type="application/rss+xml" title="Bimo's Static Page" href="http://localhost:4000/feed.xml">
   <link rel="stylesheet" href="/css/materialize.css">   
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel="stylesheet">
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="/js/script.js"></script>
   <script src="/js/materialize.js"></script>
@@ -26,13 +27,21 @@
 
     <header class="site-header">
 
-  <nav class="green accent-4" role="navigation">
+  <nav class="pink darken-3" role="navigation">
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Bimo's Static Page</a>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="/about">About</a></li>
-      </ul>
+      <ul class="nav right hide-on-med-and-down">
+        
+            <li class="nav-item">
+                <a class="nav-link grey-text text-lighten-3" href="/">Home</a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link grey-text text-lighten-3" href="/about/">About</a>
+            </li>
+        
+      </ul> 
 
       <ul class="side-nav nav-mobile" id="mobile-demo">
         <li><a href="/">home</a></li>
@@ -49,11 +58,11 @@
         <article class="post">
 
   <header class="post-header">
-    <h1 class="post-title">About</h1>
+    <h2 class="post-title pink-text text-darken-4">About</h2>
   </header>
 
   <div class="post-content">
-    <p>Bimo Aryo Tyasono is a Computer Science/Informatics student at Institut Teknologi Bandung. You can read my blog at <a href="http://tentangbimo.blogspot.com/">tentangbimo</a></p>
+    <p>Bimo Aryo Tyasono is Computer Science/Informatics graduate from Institut Teknologi Bandung. You can read my general blog at <a href="http://tentangbimo.blogspot.com/">tentangbimo</a></p>
 
   </div>
 

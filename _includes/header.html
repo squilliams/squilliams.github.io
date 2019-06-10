@@ -1,12 +1,16 @@
 <header class="site-header">
 
-  <nav class="green accent-4" role="navigation">
+  <nav class="pink darken-3" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="{{ site.baseurl }}/" class="brand-logo">Bimo's Static Page</a>
+      <a id="logo-container" href="{{ site.baseurl }}/" class="brand-logo">{{ site.title }}</a>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="/about">About</a></li>
-      </ul>
+      <ul class="nav right hide-on-med-and-down">
+        {% for item in site.data.navigation %}
+            <li class="nav-item">
+                <a class="nav-link grey-text text-lighten-3" href="{{ item.path }}">{{ item.title }}</a>
+            </li>
+        {% endfor %}
+      </ul> 
 
       <ul class="side-nav nav-mobile" id="mobile-demo">
         <li><a href="/">home</a></li>
