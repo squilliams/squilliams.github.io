@@ -6,9 +6,30 @@
 </description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 10 Jun 2019 23:10:37 +0700</pubDate>
-    <lastBuildDate>Mon, 10 Jun 2019 23:10:37 +0700</lastBuildDate>
+    <pubDate>Tue, 11 Jun 2019 11:45:17 +0700</pubDate>
+    <lastBuildDate>Tue, 11 Jun 2019 11:45:17 +0700</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Novita E-Invitation Project</title>
+        <description>&lt;p&gt;In 2017 my friend was doing her thesis defend and because she was so popular I made a simple landing page for dummy RSVP (just for fun publication). Her social media is also displayed here by using flat icon.&lt;/p&gt;
+
+&lt;p&gt;This page was created using template from &lt;strong&gt;HTML5 UP&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/assets/Novita.png&quot; alt=&quot;Novita screenshot&quot; /&gt;
+Visit the dummy site here : &lt;a href=&quot;http://squilliams.github.io./novita&quot;&gt;Novita Live in Concert&lt;/a&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 11 Jun 2019 00:00:00 +0700</pubDate>
+        <link>http://localhost:4000/jekyll/update/2019/06/11/novita-e-invitation.html</link>
+        <guid isPermaLink="true">http://localhost:4000/jekyll/update/2019/06/11/novita-e-invitation.html</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
     
       <item>
         <title>New Update to My Static Site</title>
