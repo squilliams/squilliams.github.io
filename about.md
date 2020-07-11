@@ -6,6 +6,7 @@ image: assets/images/bimo2020.jpg
 nav-menu: true
 ---
 <div id="main" class="alt">
+<section id="one">
 	<div class="inner">
         <iframe width="300" height="200" src="https://www.youtube.com/embed/Wlml9VU2voI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <h2 id="content">About Me</h2>
@@ -14,4 +15,10 @@ nav-menu: true
         You can also read my general blog at <a href ="http://tentangbimo.blogspot.com/">tentangbimo</a>, and sometimes I upload videos to my <a href="http://www.youtube.com/c/BimoAryoT">youtube channel</a></p>
         <h4>Stay healthy, and stay safe!</h4>
     </div>
+    </section>
+    <section id="two">
+    <div class="inner">
+            <iframe src="https://open.spotify.com/embed/playlist/2OBwLxkCzCfE1npt44UxXB" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    </div>
+    </section>
 </div>
