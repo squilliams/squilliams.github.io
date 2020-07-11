@@ -1,7 +1,17 @@
 ---
 layout: page
-title: About
+title: About Me
 permalink: /about/
+image: assets/images/bimo2020.jpg
+nav-menu: true
 ---
-
-Bimo Aryo Tyasono is Computer Science/Informatics graduate from Institut Teknologi Bandung. You can read my general blog at [tentangbimo](http://tentangbimo.blogspot.com/)
+<div id="main" class="alt">
+	<div class="inner">
+        <iframe width="300" height="200" src="https://www.youtube.com/embed/Wlml9VU2voI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <h2 id="content">About Me</h2>
+        <p><span class="image left 4u"><img src="{% link assets/images/bimo2020.jpg %}" alt="" /></span>Bimo Tyasono is a (Central) Banker. Because of the 2020 pandemic, Bimo started a podcast with his friend on Spotify named <a href="http://bit.ly/PodcastFnB">Podcast FnB: Podcast Fira dan Bimo</a>. Bimo is also open to connect with new friends and explore new opportunity.<br> <br>
+        Since 2018, Bimo tried to consistently log his <a href="/moviesandbooks">movies and books activity.</a> Bimo is also open to any books and movies/series recommendation. <br> <br>
+        You can also read my general blog at <a href ="http://tentangbimo.blogspot.com/">tentangbimo</a>, and sometimes I upload videos to my <a href="http://www.youtube.com/c/BimoAryoT">youtube channel</a></p>
+        <h4>Stay healthy, and stay safe!</h4>
+    </div>
+</div>
