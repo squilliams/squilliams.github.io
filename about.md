@@ -18,7 +18,16 @@ nav-menu: true
     </section>
     <section id="two">
     <div class="inner">
-            <iframe src="https://open.spotify.com/embed/playlist/2OBwLxkCzCfE1npt44UxXB" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    </div>
+        <div class="row">
+                <div class="6u 12u$(small)">
+                        <h3>Spotify Top 150 Indonesian Album</h3>
+                        <iframe src="https://open.spotify.com/embed/playlist/2OBwLxkCzCfE1npt44UxXB" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                </div>
+                <div class="6u$ 12u$(small)">
+                        <h3>Random Powerpoint Deck</h3>
+                        <iframe src="https://www.slideshare.net/BimoAryoTyasono/slideshelf" width="490px" height="470px" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:none; position:absolute;" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+                </div>
+        </div>
+        </div>
     </section>
 </div>
