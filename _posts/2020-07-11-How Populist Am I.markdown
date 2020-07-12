@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "I am A Populist! According to Guardian"
+date:   2020-07-11 23:13:36 +0700
 categories: jekyll update
 ---
 **Guardian** made this quiz to tell find out how populist people are. In this quiz I was categorized as Populist Left.

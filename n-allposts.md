@@ -1,8 +1,14 @@
 ---
-title: All Posts
-permalink: /allposts/
-image: assets/images/journallposts.jpg
 layout: allposts
+title: All posts
+landing-title: 'All posts'
+nav-menu: true
+description: null
+image: assets/images/journallposts.jpg
+permalink: /allposts/
+author: null
+show_tile: true
+
 ---
 <div class="home">
   <h3>Posts</h3>
