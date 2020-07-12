@@ -1,7 +1,7 @@
 # site settings
 title: BIMO TYASONO'S
 subtitle: Personal Website
-email: bimoaryo@rocketmail.com
+email: tyasono@icloud.com
 description: Bimo Tyasono's personal website
 baseurl: "" # the subpath of your site, e.g. /blog
 url: # the base hostname & protocol for your site
@@ -24,7 +24,7 @@ github_url:
 gitlab_url: 
 googleplus_url: 
 instagram_url: https://instagram.com/squillliams
-linkedin_url: https://www.linkedin.com/in/bimo-aryo-tyasono
+linkedin_url: https://www.linkedin.com/in/bimo-tyasono
 pinterest_url:
 slack_url:
 twitter_url: 
