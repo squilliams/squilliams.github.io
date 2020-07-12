@@ -25,11 +25,11 @@ nav-menu: true
 <div class="row">
 	<div class="6u 12u$(small)">
 		<h3>Letterboxd</h3>
-		<p><span class="image left"><script language="JavaScript" src="http://feed2js.org//feed2js.php?src=https%3A%2F%2Fletterboxd.com%2Fsquilliams%2Frss%2F&num=3&targ=y&utf=y&css=bimo&html=a"  charset="UTF-8" type="text/javascript"></script></span></p>
+		<p><span class="image left"><script language="JavaScript" src="https://feed2js.org//feed2js.php?src=https%3A%2F%2Fletterboxd.com%2Fsquilliams%2Frss%2F&num=3&targ=y&utf=y&css=bimo&html=a"  charset="UTF-8" type="text/javascript"></script></span></p>
 	</div>
 	<div class="6u$ 12u$(small)">
 		<h3>Goodreads</h3>
-		<p><script language="JavaScript" src="http://feed2js.org//feed2js.php?src=https%3A%2F%2Fwww.goodreads.com%2Fuser%2Fupdates_rss%2F4668551%3Fkey%3DZO3SfOglQYVzS7QTt4k85fnVoTX9YWznGhBnVgn5pWqNxrtS&num=10&targ=y&utf=y&css=bimogr&html=a"  charset="UTF-8" type="text/javascript"></script>
+		<p><script language="JavaScript" src="https://feed2js.org//feed2js.php?src=https%3A%2F%2Fwww.goodreads.com%2Fuser%2Fupdates_rss%2F4668551%3Fkey%3DZO3SfOglQYVzS7QTt4k85fnVoTX9YWznGhBnVgn5pWqNxrtS&num=10&targ=y&utf=y&css=bimogr&html=a"  charset="UTF-8" type="text/javascript"></script>
 		</p>
 	</div>
 </div>
