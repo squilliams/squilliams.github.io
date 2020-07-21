@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>BIMO TYASONO'S</title>
+    <title>BIMO TYASONO</title>
     <description>Bimo Tyasono's personal website</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 21 Jul 2020 09:42:01 +0700</pubDate>
-    <lastBuildDate>Tue, 21 Jul 2020 09:42:01 +0700</lastBuildDate>
+    <pubDate>Tue, 21 Jul 2020 19:56:17 +0700</pubDate>
+    <lastBuildDate>Tue, 21 Jul 2020 19:56:17 +0700</lastBuildDate>
     <generator>Jekyll v4.1.1</generator>
     
       <item>
