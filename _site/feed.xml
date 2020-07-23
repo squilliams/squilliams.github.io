@@ -5,9 +5,44 @@
     <description>Bimo Tyasono's personal website</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 21 Jul 2020 19:56:17 +0700</pubDate>
-    <lastBuildDate>Tue, 21 Jul 2020 19:56:17 +0700</lastBuildDate>
+    <pubDate>Thu, 23 Jul 2020 21:22:35 +0700</pubDate>
+    <lastBuildDate>Thu, 23 Jul 2020 21:22:35 +0700</lastBuildDate>
     <generator>Jekyll v4.1.1</generator>
+    
+      <item>
+        <title>Create HTML-Based Email in Microsoft Outlook (and Prevent Mistakes That I Made)</title>
+        <description>&lt;p&gt;Office email is kinda boring if you just use the normal Outlook editor. I saw some marketing (or spam) email that is more attractive in my personal inbox. If the marketing can do that in email, why can’t I?&lt;/p&gt;
+
+&lt;p&gt;When I googled, I came across this &lt;a href=&quot;https://www.linkedin.com/pulse/how-insert-html-source-code-outlook-emails-maurizio-la-cava/&quot;&gt;link&lt;/a&gt; on how to insert HTML source code to Outlook emails.&lt;/p&gt;
+
+&lt;p&gt;I tried to follow the tutorial, using one of the free templates that is available on internet &lt;a href=&quot;https://graphicmama.com/blog/free-responsive-html-email-templates/&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After I click &lt;strong&gt;send&lt;/strong&gt; button, the nightmare happened.&lt;/p&gt;
+
+&lt;h4 id=&quot;the-image-didnt-showed&quot;&gt;The Image Didn’t Showed&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/email2.png&quot; alt=&quot;Image Didn't Showed&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Later I found out that you can’t put relative directory on your HTML email&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;you need absolute link&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;so instead of putting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;img src=&quot;assets/pic1.png&quot;&amp;gt;&lt;/code&gt; you should put &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;img src=&quot;http://www.sanfiz.ro/images/2020/06/05/pic1.png&quot;&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/email1.png&quot; alt=&quot;Image Now Appear&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope you won’t make any mistakes that I made earlier in the office :D&lt;/p&gt;
+</description>
+        <pubDate>Thu, 23 Jul 2020 20:57:36 +0700</pubDate>
+        <link>http://localhost:4000/jekyll/update/2020/07/23/creating-HTML-based-email-in-outlook.html</link>
+        <guid isPermaLink="true">http://localhost:4000/jekyll/update/2020/07/23/creating-HTML-based-email-in-outlook.html</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
     
       <item>
         <title>Playing AO Tennis 2 Live on Youtube</title>

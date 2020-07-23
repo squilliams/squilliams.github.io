@@ -1,6 +1,13 @@
-I"Ÿ<div class="home">
+I"È<div class="home">
   <h3>Posts</h3>
   <ul class="post-list">
+    
+      <li>
+        <span class="post-meta">Jul 23, 2020</span>
+        <h3>
+          <a class="post-link" href="/jekyll/update/2020/07/23/creating-HTML-based-email-in-outlook.html">Create HTML-Based Email in Microsoft Outlook (and Prevent Mistakes That I Made)</a>
+        </h3>
+      </li>
     
       <li>
         <span class="post-meta">Jul 21, 2020</span>
