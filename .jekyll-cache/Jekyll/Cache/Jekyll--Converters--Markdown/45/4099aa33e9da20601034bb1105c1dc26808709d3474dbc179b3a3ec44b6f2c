@@ -1,0 +1,22 @@
+I"f<p>Office email is kinda boring if you just use the normal Outlook editor. I saw some marketing (or spam) email that is more attractive in my personal inbox. If the marketing can do that in email, why can’t I?</p>
+
+<p>When I googled, I came across this <a href="https://www.linkedin.com/pulse/how-insert-html-source-code-outlook-emails-maurizio-la-cava/">link</a> on how to insert HTML source code to Outlook emails.</p>
+
+<p>I tried to follow the tutorial, using one of the free templates that is available on internet <a href="https://graphicmama.com/blog/free-responsive-html-email-templates/">here</a></p>
+
+<p>After I click <strong>send</strong> button, the nightmare happened.</p>
+
+<h4 id="the-image-didnt-showed">The Image Didn’t Showed</h4>
+<p><img src="/assets/images/email2.png" alt="Image Didn't Showed" /></p>
+
+<p>Later I found out that you can’t put relative directory on your HTML email</p>
+<blockquote>
+  <p>you need absolute link</p>
+</blockquote>
+
+<p>so instead of putting <code class="language-plaintext highlighter-rouge">&lt;img src="assets/pic1.png"&gt;</code> you should put <code class="language-plaintext highlighter-rouge">&lt;img src="http://www.sanfiz.ro/images/2020/06/05/pic1.png"&gt;</code></p>
+
+<p><img src="/assets/images/email1.png" alt="Image Now Appear" /></p>
+
+<p>I hope you won’t make any mistakes that I made earlier in the office :D</p>
+:ET
