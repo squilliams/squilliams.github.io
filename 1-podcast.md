@@ -2,7 +2,7 @@
 layout: landing
 title: "Podcast FnB: Podcast Fira dan Bimo"
 description: Podcast FnB (Podcast Fira dan Bimo) akan membahas asam dan garam kehidupan dari sudut pandang yang lain ditambah sedikit bumbu psikologi. Stay tune! Connect with us on IG @squilliams @zhafirahfarina
-image: assets/images/FnB2.png
+image: assets/images/FnBCover.jpeg
 nav-menu: true
 permalink: /podcastfnb
 ---
