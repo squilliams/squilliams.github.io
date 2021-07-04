@@ -3,7 +3,7 @@ layout: allposts
 title: All posts
 landing-title: 'All posts'
 nav-menu: true
-description: null
+description: 'My experimental blog-like static post'
 image: assets/images/journallposts.jpg
 permalink: /allposts/
 author: null
