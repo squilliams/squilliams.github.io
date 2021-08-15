@@ -2,7 +2,7 @@
 title: BIMO TYASONO
 subtitle: Personal Website
 email: tyasono@icloud.com
-description: Bimo Tyasono's personal website
+description: Bimo Tyasono's personal website. For business inquiry, DM on <a href="https://instagram.com/squillliams">IG</a> or contact me through the <a href="#contact">email form</a>
 baseurl: "" # the subpath of your site, e.g. /blog
 url: # the base hostname & protocol for your site
 author:
@@ -27,7 +27,8 @@ instagram_url: https://instagram.com/squillliams
 linkedin_url: https://www.linkedin.com/in/bimo-tyasono
 pinterest_url:
 slack_url:
-twitter_url: https://www.twitter.com/squidmund
+twitter_url: https://www.twitter.com/squilliams
+tiktok_url: https://www.tiktok.com/@squillliams
 youtube_url: https://www.youtube.com/c/BimoAryoT
 
 # build settings
