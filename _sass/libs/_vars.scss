@@ -20,7 +20,7 @@
 
 // Font.
 	$font: (
-		family:				('Source Sans Pro', Helvetica, sans-serif),
+		family:				('Cabin', Helvetica, sans-serif),
 		family-fixed:		('Courier New', monospace),
 		weight:				300,
 		weight-bold:		600,
@@ -30,18 +30,18 @@
 
 // Palette. E07631
 	$palette: (
-		bg:					#78205F,
-		bg-alt:				#784469,
+		bg:					#0098E0,
+		bg-alt:				#6acefc,
 		fg:					#ffffff,
 		fg-bold:			#ffffff,
 		fg-light:			rgba(244, 244, 255, 0.767),
 		border:				rgba(212,212,255,0.1),
 		border-bg:			rgba(212,212,255,0.035),
-		highlight:			#F7DF5C,
+		highlight:			#E07A00,
 		accent1:			#6fc3df,
-		accent2:			#8d82c4,
+		accent2:			#305261,
 		accent3:			#ec8d81,
-		accent4:			#e7b788,
+		accent4:			#8B612E,
 		accent5:			#8ea9e8,
 		accent6:			#87c5a4
 	);

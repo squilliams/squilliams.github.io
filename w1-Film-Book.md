@@ -6,6 +6,42 @@ image: assets/images/pic07.jpg
 permalink: /moviesandbooks
 nav-menu: true
 ---
+<script>
+	async function fetchRSSFeed(feedUrl, elementId) {
+	const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+	try {
+		const response = await fetch(apiUrl);
+		const data = await response.json();
+		let htmlContent = '';
+
+		data.items.slice(0, 5).forEach(item => { // Limit to the first 5 entries
+		htmlContent += `
+			<div class="rss-entry">
+			<h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+			<p>${item.description || 'No description available.'}</p>
+			</div>
+		`;
+		});
+
+		document.getElementById(elementId).innerHTML = htmlContent;
+	} catch (error) {
+		console.error("Failed to fetch RSS feed", error);
+		document.getElementById(elementId).innerHTML = '<p>Failed to load RSS feed.</p>';
+	}
+	}
+
+	// Fetch and display the Letterboxd feed
+	fetchRSSFeed('https://letterboxd.com/squilliams/rss/', 'rss-feed-content');
+
+	// Fetch and display the Goodreads feed
+	fetchRSSFeed('https://www.goodreads.com/user/updates_rss/4668551', 'goodreads-feed-content');
+</script>
+<style>
+  .rss-entry img {
+    max-height: 200px;
+    width: auto; /* This ensures the aspect ratio is maintained */
+  }
+</style>
 
 <!-- Main -->
 <div id="main">
@@ -25,12 +61,11 @@ nav-menu: true
 <div class="row">
 	<div class="6u 12u$(small)">
 		<h3>Letterboxd</h3>
-		<p><span class="image left"><script language="JavaScript" src="https://feed2js.org//feed2js.php?src=https%3A%2F%2Fletterboxd.com%2Fsquilliams%2Frss%2F&num=3&targ=y&utf=y&css=bimo&html=a"  charset="UTF-8" type="text/javascript"></script></span></p>
+		<div id="rss-feed-content"></div>
 	</div>
 	<div class="6u$ 12u$(small)">
 		<h3>Goodreads</h3>
-		<p><script language="JavaScript" src="https://feed2js.org//feed2js.php?src=https%3A%2F%2Fwww.goodreads.com%2Fuser%2Fupdates_rss%2F4668551%3Fkey%3DZO3SfOglQYVzS7QTt4k85fnVoTX9YWznGhBnVgn5pWqNxrtS&num=10&targ=y&utf=y&css=bimogr&html=a"  charset="UTF-8" type="text/javascript"></script>
-		</p>
+		<div id="goodreads-feed-content"></div>		
 	</div>
 </div>
 </div>
