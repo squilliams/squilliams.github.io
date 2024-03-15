@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About Me
-description: 'Tiktok, VO, Podcast, Youtube, Blog?'
+description: 'Tiktok, VO, Podcast, Youtube, Blog'
 permalink: /about/
 image: assets/images/bimo2021.jpg
 nav-menu: true
@@ -10,9 +10,7 @@ nav-menu: true
 <section id="one">
 	<div class="inner">
         <h2 id="content">About Me</h2>
-        <p><span class="image left 4u"><img src="{% link assets/images/bimo2021.jpg %}" alt="" /></span>I am currently a (Central) Banker. Because of the 2020 pandemic, I started a podcast with my friend Fira on Spotify named <a href="http://bit.ly/PodcastFnB">Podcast FnB: Podcast Fira dan Bimo</a>. The podcast has 2 season (a total of 41 episodes). I am also doing Voice-Over work that you can see <a href="/voportfolio">here</a> .<br> <br>
-        In 2021, I started exploring the popular video sharing app Tiktok and gained more than 90k followers there. You can visit the tiktok profile <a href ="http://tiktok.com/@squillliams">here (Tiktok @squillliams)</a>
-        <br> <br>
+        <p><span class="image left 4u"><img src="{% link assets/images/bimo2021.jpg %}" alt="" /></span>I am currently a (Central) Banker. Because of the pandemic, I started a Tiktok account that shares tips that ease people's life <a href="https://tiktok.com/@squillliams">squillliams | Life Tips</a>. The Tiktok now mainly shares about Technology tips, but sometimes also shares about other things as well. I am also doing Voice-Over work that you can see <a href="/voportfolio">here</a> .<br> <br>
         Since 2018, I tried to consistently log my <a href="/moviesandbooks">movies and books activity.</a> I am also open to any books and movies/series recommendation. <br> <br>
         You can also read my general blog at <a href ="http://tentangbimo.blogspot.com/">tentangbimo</a>, and sometimes I upload videos to my <a href="http://www.youtube.com/c/BimoAryoT">youtube channel</a></p>
         <h4>Stay healthy, and stay safe!</h4>
