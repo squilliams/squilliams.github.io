@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Paper Downloader</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>E-Paper Downloader</h1>
+        <div class="form-container">
+            <h2>Magazine Download</h2>
+            <form id="magazine-form">
+                <div class="form-group">
+                    <label for="magazine-publication">Publication:</label>
+                    <select id="magazine-publication" name="publication" required>
+                        <option value="">Select a publication</option>
+                        <option value="economist">The Economist</option>
+                        <option value="tempo">Tempo</option>
+                        <option value="time">Time</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="magazine-date">Date:</label>
+                    <input type="date" id="magazine-date" name="date" required>
+                </div>
+                <button type="submit" class="submit-btn">Download Magazine</button>            
+            </form>
+            <h2>Newspaper Download</h2>
+            <form id="newspaper-form">
+                <div class="form-group">
+                    <label for="newspaper-name">Newspaper:</label>
+                    <select id="newspaper-name" name="newspaper" required>
+                        <option value="">Select a newspaper</option>
+                        <option value="Kompas">Kompas</option>
+                        <option value="Pikiran Rakyat">Pikiran Rakyat</option>
+                        <option value="Wall Street Journal">Wall Street Journal</option>
+                        <option value="Washington Post">Washington Post</option>
+                        <option value="Financial Times">Financial Times</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newspaper-date">Date:</label>
+                    <input type="date" id="newspaper-date" name="date" required>
+                </div>
+                <button type="submit" class="submit-btn">Download Newspaper</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
