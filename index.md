@@ -1,7 +1,7 @@
 ---
 layout: home
 title: Home
-description: 'Tiktok, VO, Podcast, Youtube, Blog?'
+description: 'Tiktok, VO, Youtube, Blog'
 landing-title: 'Hi, my name is Bimo'
 description: null
 image: assets/images/banner.jpg
