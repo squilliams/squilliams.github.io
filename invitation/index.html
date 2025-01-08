@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Wedding Invitations Dea & Bimo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    input[type="text"], select {
+      margin-bottom: 1rem;
+      margin-right: 1rem;
+      padding: 0.5rem;
+    }
+    .invitation {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .invite-name {
+      font-weight: bold;
+    }
+    button {
+      margin-top: 0.5rem;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Wedding Invitations Message Lists</h1>
+
+  <!-- Search by Name -->
+  <label for="searchBox">Search by name:</label>
+  <input
+    id="searchBox"
+    type="text"
+    placeholder="Type a name..."
+    oninput="handleSearchAndFilter()"
+  />
+
+  <!-- Filter by Group (dropdown) -->
+  <label for="groupSelect">Filter by group:</label>
+  <select id="groupSelect" onchange="handleSearchAndFilter()">
+    <!-- We'll populate this dynamically -->
+  </select>
+
+  <!-- Container for invitations -->
+  <div id="invitationsContainer">
+    <!-- The script will inject invitations here -->
+  </div>
+
+  <script>
+    // 1. List of multiple TSV URLs
+    const TSV_URLS = [
+      // Replace these with real TSV export links from each sheet
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=766178584&single=true&output=tsv",
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=1674697729&single=true&output=tsv", 
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=61925263&single=true&output=tsv",
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=1512406102&single=true&output=tsv"
+    // Add more as needed
+    ];
+
+    // 2. We'll store all data (from all TSVs) in here
+    let allInvitations = [];
+
+    // On page load, fetch all TSVs in parallel
+    window.addEventListener("DOMContentLoaded", () => {
+      fetchAllTSVs();
+    });
+
+    async function fetchAllTSVs() {
+      try {
+        // Map each URL to a fetch+parse promise
+        const fetchPromises = TSV_URLS.map(url => {
+          return fetch(url)
+            .then(res => res.text())
+            .then(tsvText => parseTSV(tsvText));
+        });
+
+        // Wait for all fetches to complete
+        const arrayOfDataArrays = await Promise.all(fetchPromises);
+        // arrayOfDataArrays is like: [ [obj1, obj2, ...], [objA, objB, ...], ... ]
+
+        // Combine all data into one array
+        allInvitations = arrayOfDataArrays.flat();
+
+        // Populate the group dropdown based on the combined data
+        populateGroupDropdown(allInvitations);
+
+        // Render everything by default
+        renderInvitations(allInvitations);
+
+      } catch (error) {
+        console.error("Error fetching/parsing TSVs:", error);
+      }
+    }
+
+    /**
+     * Basic TSV parser:
+     * Expects first row to have headers like:
+     * Name, Unique Code, Group, Invitation Message
+     */
+    function parseTSV(tsvText) {
+      // Split by new line
+      const lines = tsvText.trim().split("\n");
+      // Assume each line is tab-separated
+      const headers = lines[0].split("\t");
+
+      // Find indexes (in case columns move around)
+      const nameIndex = headers.indexOf("name");
+      const codeIndex = headers.indexOf("invitation_code");
+      const groupIndex = headers.indexOf("group");
+      const msgIndex = headers.indexOf("invitation_message");
+
+      // Convert each line (except header) into an object
+      const data = lines.slice(1).map(line => {
+        const fields = line.split("\t"); // split by tab
+        return {
+          name:    fields[nameIndex]   || "",
+          code:    fields[codeIndex]   || "",
+          group:   fields[groupIndex]  || "",
+          message: fields[msgIndex]    || ""
+        };
+      });
+      return data;
+    }
+
+    /**
+     * Populate the "Filter by group" dropdown with unique group values.
+     */
+    function populateGroupDropdown(dataArray) {
+      const groupSelect = document.getElementById("groupSelect");
+
+      // Extract distinct groups
+      const uniqueGroups = [...new Set(dataArray.map(item => item.group))].sort();
+
+      // Clear existing
+      groupSelect.innerHTML = "";
+
+      // Create an "All Groups" option (empty value)
+      const allOption = document.createElement("option");
+      allOption.value = "";
+      allOption.textContent = "All Groups";
+      groupSelect.appendChild(allOption);
+
+      // Create an option for each unique group
+      uniqueGroups.forEach(g => {
+        const opt = document.createElement("option");
+        opt.value = g;
+        opt.textContent = g;
+        groupSelect.appendChild(opt);
+      });
+    }
+
+    /**
+     * Called whenever you type in the search box or change the group dropdown.
+     * Filters the data by both name and group.
+     */
+    function handleSearchAndFilter() {
+      const searchQuery = document.getElementById("searchBox").value.toLowerCase();
+      const selectedGroup = document.getElementById("groupSelect").value;
+
+      // Filter by name (case-insensitive) and group
+      const filtered = allInvitations.filter(item => {
+        const matchesName  = item.name.toLowerCase().includes(searchQuery);
+        const matchesGroup = selectedGroup === "" || item.group === selectedGroup;
+        return matchesName && matchesGroup;
+      });
+
+      // Re-render the filtered list
+      renderInvitations(filtered);
+    }
+
+    /**
+     * Render invitations into the DOM
+     */
+    function renderInvitations(dataArray) {
+      const container = document.getElementById("invitationsContainer");
+      container.innerHTML = ""; // clear previous
+
+      dataArray.forEach(item => {
+        // Create a container
+        const invitationDiv = document.createElement("div");
+        invitationDiv.classList.add("invitation");
+
+        // Display name and group together
+        const nameEl = document.createElement("div");
+        nameEl.classList.add("invite-name");
+        // e.g. "John (Family)"
+        nameEl.textContent = `${item.name} (${item.group})`;
+
+        // Display message
+        const msgEl = document.createElement("pre");
+        msgEl.textContent = item.message;
+
+        // Copy button
+        const copyBtn = document.createElement("button");
+        copyBtn.textContent = "Copy Message";
+        copyBtn.addEventListener("click", () => {
+          copyToClipboard(item.message);
+        });
+
+        // Append
+        invitationDiv.appendChild(nameEl);
+        invitationDiv.appendChild(msgEl);
+        invitationDiv.appendChild(copyBtn);
+
+        container.appendChild(invitationDiv);
+      });
+    }
+
+    /**
+     * Copy text to clipboard
+     */
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text)
+        .then(() => alert("Copied!"))
+        .catch(err => console.error("Failed to copy:", err));
+    }
+  </script>
+</body>
+</html>
