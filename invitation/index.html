@@ -2,19 +2,17 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Wedding Invitations from JSON</title>
+  <title>Wedding Invitations (Show All by Default)</title>
   <style>
     /* 
-      1. Full-page blue gradient background
-      2. White container with slight transparency
-      3. Elegant fonts and spacing
+      Simple gradient background, central container, etc.
+      Adjust styling as you wish.
     */
     body {
       margin: 0;
       padding: 0;
       font-family: "Open Sans", sans-serif;
       background: linear-gradient(to right, #6190E8, #A7BFE8);
-      /* Fallback color if gradient not supported */
       background-color: #6190E8;
     }
     .container {
@@ -25,13 +23,10 @@
       padding: 2rem;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     }
-
     h1 {
       text-align: center;
       color: #333;
     }
-
-    /* Form controls for search/filter */
     .filters {
       display: flex;
       flex-wrap: wrap;
@@ -43,15 +38,13 @@
       font-weight: 600;
       color: #333;
     }
-    .filters input[type="text"],
-    .filters select {
+    .filters input[type="text"], .filters select {
       padding: 0.5rem;
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
 
-    /* Invitation card styling */
     .invitation {
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -59,22 +52,18 @@
       margin-bottom: 1rem;
       background-color: #f8f8f8;
     }
-
     .invite-name {
       font-weight: bold;
       margin-bottom: 0.5rem;
       color: #333;
     }
-
-    /* Preserve newlines in the message visually */
     .invitation-message {
-      white-space: pre-wrap;   /* important for line breaks */
+      white-space: pre-wrap;
       word-wrap: break-word;
       margin-bottom: 1rem;
       color: #555;
-      font-family: inherit;    
+      font-family: inherit;
     }
-
     .copy-btn {
       background-color: #6190E8;
       color: #fff;
@@ -106,93 +95,68 @@
 
       <label for="groupSelect">Filter by group:</label>
       <select id="groupSelect" onchange="handleSearchAndFilter()">
-        <!-- We'll populate this dynamically -->
+        <!-- We'll populate this with "All" + unique groups -->
       </select>
     </div>
 
     <!-- Container for invitations -->
-    <div id="invitationsContainer">
-      <!-- The script will inject invitation cards here -->
-    </div>
+    <div id="invitationsContainer"></div>
   </div>
 
   <script>
-    /**
-     * 1. Replace with the deployment URL from your Google Apps Script
-     *    that returns JSON for ALL sheets.
-     */
+    // 1. Replace this with your Google Apps Script JSON URL (or TSV/CSV URL).
     const JSON_URL = "https://script.google.com/macros/s/AKfycbwZNf68HVQtRVe4Hyrtvvj6CfOb6H3o48wngzb0-ZmjjkL-QyLUXUchJ_xkRyupvl_g/exec";
 
-    // We'll store the combined data from all sheets in this array
+    // We'll store all invitations here
     let allInvitations = [];
 
     window.addEventListener("DOMContentLoaded", () => {
-      fetchAllDataFromJSON();
+      fetchData();
     });
 
-    /**
-     * Fetch JSON from your Google Apps Script.
-     * The JSON is expected to look like:
-     * {
-     *   "Sheet1": [
-     *       {"Name": "John", "Group": "Family", "Invitation Message": "Line1\nLine2"},
-     *       ...
-     *   ],
-     *   "Sheet2": [
-     *       ...
-     *   ]
-     * }
-     */
-    async function fetchAllDataFromJSON() {
+    // 2. Fetch JSON (or TSV, etc.). For JSON, it's straightforward:
+    async function fetchData() {
       try {
         const response = await fetch(JSON_URL);
         const data = await response.json();
 
-        // "data" is an object keyed by sheet names. e.g.:
-        // { Sheet1: [...rows], Sheet2: [...rows], ... }
-
-        // 2. Combine (flatten) data from all sheets into one big array
-        //    If you want them separate, handle them individually.
-        allInvitations = [];
+        // Data might look like { "Sheet1": [...], "Sheet2": [...], ... }
+        // Flatten them if you have multiple sheets
+        let combined = [];
         for (let sheetName in data) {
-          // data[sheetName] is an array of row objects for that sheet
-          // e.g. {Name: "...", Group: "...", Invitation Message: "...", etc.}
-          allInvitations = allInvitations.concat(data[sheetName]);
+          combined = combined.concat(data[sheetName]);
         }
 
-        // 3. Transform each row object to a consistent format for your code
-        //    e.g., rename columns if needed
-        //    We'll assume the headers are "Name", "Group", "Invitation Message"
-        //    If your headers differ, adjust accordingly.
-        allInvitations = allInvitations.map(item => {
-          return {
-            name: item["name"] || "",
-            group: item["group"] || "",
-            message: item["invitation_message"] || ""
-          };
-        });
+        // Now combined is an array of row objects, e.g.:
+        // [ {"Name":"John","Group":"Family","Invitation Message":"..."}, ...]
 
-        // 4. Populate the group dropdown
+        // 3. Transform columns to a consistent format
+        //    Adjust if your columns have different headers.
+        allInvitations = combined.map(row => ({
+          name: row["name"] || "",
+          group: row["group"] || "",
+          message: row["invitation_message"] || ""
+        }));
+
+        // 4. Populate group dropdown
         populateGroupDropdown(allInvitations);
 
-        // 5. Show all invitations by default
+        // 5. Show ALL invitations immediately
         renderInvitations(allInvitations);
 
       } catch (error) {
-        console.error("Error fetching/parsing JSON:", error);
+        console.error("Error fetching or parsing data:", error);
       }
     }
 
-    /**
-     * Create dropdown options (including an "All Groups" option).
-     */
+    // Create the group dropdown options
     function populateGroupDropdown(dataArray) {
       const groupSelect = document.getElementById("groupSelect");
 
-      // Extract unique groups
+      // Get unique groups (sorted)
       const uniqueGroups = [...new Set(dataArray.map(item => item.group))].sort();
 
-      // Clear existing
+      // Clear out old options
       groupSelect.innerHTML = "";
 
       // "All Groups" option
@@ -201,56 +165,49 @@
       allOption.textContent = "All Groups";
       groupSelect.appendChild(allOption);
 
-      // Create an option for each unique group
-      uniqueGroups.forEach(g => {
+      // Add each unique group
+      uniqueGroups.forEach(groupName => {
         const opt = document.createElement("option");
-        opt.value = g;
-        opt.textContent = g;
+        opt.value = groupName;
+        opt.textContent = groupName;
         groupSelect.appendChild(opt);
       });
     }
 
-    /**
-     * Handle searching by name + filtering by group simultaneously.
-     */
+    // 6. Handle search+filter logic
     function handleSearchAndFilter() {
-      const searchQuery = document.getElementById("searchBox").value.toLowerCase();
+      const searchTerm = document.getElementById("searchBox").value.toLowerCase();
       const selectedGroup = document.getElementById("groupSelect").value;
 
-      // Filter
-      const filtered = allInvitations.filter(item => {
-        const matchesName = item.name.toLowerCase().includes(searchQuery);
-        const matchesGroup = selectedGroup === "" || item.group === selectedGroup;
+      // Filter the allInvitations array
+      const filtered = allInvitations.filter(inv => {
+        const matchesName = inv.name.toLowerCase().includes(searchTerm);
+        const matchesGroup = selectedGroup === "" || inv.group === selectedGroup;
         return matchesName && matchesGroup;
       });
 
       renderInvitations(filtered);
     }
 
-    /**
-     * Render the invitations as "cards."
-     */
+    // 7. Render invitations in the container
     function renderInvitations(dataArray) {
       const container = document.getElementById("invitationsContainer");
-      container.innerHTML = ""; // clear
+      container.innerHTML = "";
 
       dataArray.forEach(item => {
-        // Outer container
-        const invitationDiv = document.createElement("div");
-        invitationDiv.classList.add("invitation");
+        const card = document.createElement("div");
+        card.classList.add("invitation");
 
-        // Name
         const nameEl = document.createElement("div");
         nameEl.classList.add("invite-name");
-        // If group is not empty, show "Name (Group)"
-        nameEl.textContent = item.group ? `${item.name} (${item.group})` : item.name;
+        nameEl.textContent = item.group 
+          ? `${item.name} (${item.group})`
+          : item.name;
 
-        // Message (pre to preserve newlines)
         const msgEl = document.createElement("pre");
         msgEl.classList.add("invitation-message");
         msgEl.textContent = item.message;
 
-        // Copy button
         const copyBtn = document.createElement("button");
         copyBtn.classList.add("copy-btn");
         copyBtn.textContent = "Copy Message";
@@ -258,17 +215,14 @@
           copyToClipboard(item.message);
         });
 
-        // Append
-        invitationDiv.appendChild(nameEl);
-        invitationDiv.appendChild(msgEl);
-        invitationDiv.appendChild(copyBtn);
-        container.appendChild(invitationDiv);
+        card.appendChild(nameEl);
+        card.appendChild(msgEl);
+        card.appendChild(copyBtn);
+        container.appendChild(card);
       });
     }
 
-    /**
-     * Copy text (including newlines) using a hidden <textarea>.
-     */
+    // 8. Copy text with line breaks
     function copyToClipboard(text) {
       const textArea = document.createElement("textarea");
       textArea.style.position = "fixed";
