@@ -2,259 +2,266 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Wedding Invitations (Material Design)</title>
-  <!-- Include the MDL CSS and a Material Icon font -->
+  <title>🎉 Wedding Invitations 🎉</title>
+  <!-- MDL CSS & Icons -->
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <!-- MDL JS -->
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  
+
   <style>
-    /* Override the default body background to a Material-inspired gradient */
+    /* Body gradient background */
     body {
       margin: 0;
       font-family: "Roboto", "Helvetica", "Arial", sans-serif;
       background: linear-gradient(to right, #7986CB, #9FA8DA);
       min-height: 100vh;
+      display: flex;
+      justify-content: center;
     }
 
-    /* The main layout container */
-    .mdl-layout__content {
-      padding: 20px;
+    /* Main container, centered with margin for top/bottom spacing */
+    .main-container {
+      width: 95%;
+      max-width: 600px;
+      margin: 2rem auto;
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
     }
 
-    /* The loading spinner container */
+    /* Centered title with emoji */
+    .title {
+      text-align: center;
+      color: #333;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    /* Loading spinner and text, centered */
     #loader {
-      display: none;
+      display: none; 
       text-align: center;
       margin-bottom: 1rem;
     }
-    /* Spinner style (MDL spinner is given .mdl-spinner, we just center it) */
-    .centered-spinner {
+    .spinner {
       margin: 0 auto;
     }
 
-    /* Invitation card overrides */
+    /* Filters stacked (search on top, group below) */
+    .filters {
+      display: flex;
+      flex-direction: column; /* stack vertically */
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* MDL textfield or select should take full width on mobile */
+    .mdl-textfield, .mdl-textfield__input {
+      width: 100%;
+    }
+
+    /* Invitations: use MDL card styling */
     .invitation-card {
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 1rem;
     }
-
-    /* The text inside the card */
     .invitation-content {
       white-space: pre-wrap; /* preserve line breaks */
-      margin: 16px 0;
     }
 
-    /* The copy button styling override */
+    /* Copy button spacing */
     .copy-btn {
       margin-top: 8px;
-    }
-
-    /* Responsive: let MDL’s grid system do most of the work. If you want more control, 
-       you can use queries or rely on MDL’s grid classes (mdl-cell--x-col) etc. */
-    @media (max-width: 600px) {
-      .mdl-grid {
-        padding: 0;
-      }
     }
   </style>
 </head>
 <body>
 
-<!-- MDL Layout with a fixed header -->
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-  <header class="mdl-layout__header mdl-layout__header--transparent">
-    <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Wedding Invitations</span>
-      <!-- Spacer to align things to the right -->
-      <div class="mdl-layout-spacer"></div>
+  <!-- Main content container -->
+  <div class="main-container">
+
+    <!-- Loading indicator -->
+    <div id="loader">
+      <!-- MDL spinner -->
+      <div class="mdl-spinner mdl-js-spinner is-active spinner"></div>
+      <p>Loading invitations...</p>
     </div>
-  </header>
 
-  <main class="mdl-layout__content">
-    <div class="mdl-grid">
+    <!-- Title with emoji -->
+    <div class="title">🎉 Wedding Invitations 🎉</div>
 
-      <!-- The loading spinner -->
-      <div id="loader" class="mdl-cell mdl-cell--12-col">
-        <div class="mdl-spinner mdl-js-spinner is-active centered-spinner"></div>
-        <p>Loading invitations...</p>
+    <!-- Filters stack: search box over group filter -->
+    <div class="filters">
+      <!-- Search box -->
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input 
+          class="mdl-textfield__input" 
+          type="text" 
+          id="searchBox"
+          oninput="handleSearchAndFilter()"
+        >
+        <label class="mdl-textfield__label" for="searchBox">
+          Search by name...
+        </label>
       </div>
 
-      <!-- Filters: Name search + Group filter -->
-      <div class="mdl-cell mdl-cell--12-col mdl-grid">
-        <div class="mdl-cell mdl-cell--4-col">
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input 
-              class="mdl-textfield__input" 
-              type="text" 
-              id="searchBox" 
-              oninput="handleSearchAndFilter()"
-            >
-            <label class="mdl-textfield__label" for="searchBox">Search by name...</label>
-          </div>
-        </div>
-
-        <div class="mdl-cell mdl-cell--4-col">
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <select 
-              class="mdl-textfield__input" 
-              id="groupSelect" 
-              onchange="handleSearchAndFilter()"
-            >
-              <!-- Populated dynamically -->
-            </select>
-            <label class="mdl-textfield__label" for="groupSelect">Filter by group</label>
-          </div>
-        </div>
+      <!-- Group filter -->
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <select
+          class="mdl-textfield__input"
+          id="groupSelect"
+          onchange="handleSearchAndFilter()"
+        >
+          <!-- Populated dynamically -->
+        </select>
+        <label class="mdl-textfield__label" for="groupSelect">
+          Filter by group
+        </label>
       </div>
-
-      <!-- Invitations container (cards will be appended here) -->
-      <div 
-        id="invitationsContainer" 
-        class="mdl-cell mdl-cell--12-col"
-      ></div>
-
     </div>
-  </main>
-</div>
 
-<script>
-  // Replace with your JSON endpoint or Google Apps Script link
-  const JSON_URL = "https://script.google.com/macros/s/AKfycbz3nwQ0sVPGiBdN7oswuLtzlnTpqVMCdC34SlFnEUKlTf-6jzipb3ups3TYIDsXBV0/exec";
+    <!-- Invitations container (cards go here) -->
+    <div id="invitationsContainer"></div>
 
-  let allInvitations = [];
+  </div>
 
-  document.addEventListener("DOMContentLoaded", () => {
-    fetchData();
-  });
+  <script>
+    // Replace with your JSON/Apps Script URL
+    const JSON_URL = "https://script.google.com/macros/s/AKfycbz3nwQ0sVPGiBdN7oswuLtzlnTpqVMCdC34SlFnEUKlTf-6jzipb3ups3TYIDsXBV0/exec";
+    let allInvitations = [];
 
-  async function fetchData() {
-    // Show loader
-    document.getElementById("loader").style.display = "block";
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchData();
+    });
 
-    try {
-      const response = await fetch(JSON_URL);
-      const data = await response.json();
+    async function fetchData() {
+      // Show loader
+      document.getElementById("loader").style.display = "block";
 
-      // Flatten or handle your data as needed
-      // Example if data has multiple sheet keys
-      let combined = [];
-      for (let sheetName in data) {
-        data[sheetName].forEach(item => {
-          combined.push({
-            name: item.name || "",
-            group: item.group != null ? String(item.group) : "",
-            message: item.invitation_message || "",
-            sheet: sheetName
+      try {
+        const response = await fetch(JSON_URL);
+        const data = await response.json();
+
+        // Flatten if multiple sheets
+        let combined = [];
+        for (let sheetName in data) {
+          data[sheetName].forEach(item => {
+            combined.push({
+              name: item.name || "",
+              group: item.group != null ? String(item.group) : "",
+              message: item.invitation_message || "",
+              sheet: sheetName
+            });
           });
-        });
+        }
+        allInvitations = combined;
+
+        populateGroupDropdown(allInvitations);
+        renderInvitations(allInvitations);
+
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        alert("Error fetching data: " + err);
+      } finally {
+        // Hide loader
+        document.getElementById("loader").style.display = "none";
       }
-      allInvitations = combined;
-
-      populateGroupDropdown(allInvitations);
-      renderInvitations(allInvitations);
-
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      alert("Error fetching data: " + err);
-    } finally {
-      // Hide loader
-      document.getElementById("loader").style.display = "none";
     }
-  }
 
-  function populateGroupDropdown(dataArray) {
-    const groupSelect = document.getElementById("groupSelect");
-    groupSelect.innerHTML = "";
+    function populateGroupDropdown(dataArray) {
+      const groupSelect = document.getElementById("groupSelect");
+      groupSelect.innerHTML = "";
 
-    const uniqueGroups = [...new Set(dataArray.map(inv => inv.group))].sort();
+      // "All" option
+      const allOpt = document.createElement("option");
+      allOpt.value = "";
+      allOpt.textContent = "All Groups";
+      groupSelect.appendChild(allOpt);
 
-    // "All groups" option
-    const allOpt = document.createElement("option");
-    allOpt.value = "";
-    allOpt.textContent = "All Groups";
-    groupSelect.appendChild(allOpt);
+      // Unique groups
+      const uniqueGroups = [...new Set(dataArray.map(inv => inv.group))].sort();
+      uniqueGroups.forEach(gr => {
+        const opt = document.createElement("option");
+        opt.value = gr;
+        opt.textContent = gr;
+        groupSelect.appendChild(opt);
+      });
+    }
 
-    uniqueGroups.forEach(gr => {
-      const opt = document.createElement("option");
-      opt.value = gr;
-      opt.textContent = gr;
-      groupSelect.appendChild(opt);
-    });
-  }
+    function handleSearchAndFilter() {
+      const searchValue = document.getElementById("searchBox").value.toLowerCase();
+      const selectedGroup = document.getElementById("groupSelect").value;
 
-  function handleSearchAndFilter() {
-    const searchValue = document.getElementById("searchBox").value.toLowerCase();
-    const selectedGroup = document.getElementById("groupSelect").value;
+      const filtered = allInvitations.filter(inv => {
+        const matchName = inv.name.toLowerCase().includes(searchValue);
+        const matchGroup = !selectedGroup || inv.group === selectedGroup;
+        return matchName && matchGroup;
+      });
 
-    const filtered = allInvitations.filter(inv => {
-      const matchName = inv.name.toLowerCase().includes(searchValue);
-      const matchGroup = !selectedGroup || inv.group === selectedGroup;
-      return matchName && matchGroup;
-    });
+      renderInvitations(filtered);
+    }
 
-    renderInvitations(filtered);
-  }
+    function renderInvitations(dataArray) {
+      const container = document.getElementById("invitationsContainer");
+      container.innerHTML = "";
 
-  function renderInvitations(dataArray) {
-    const container = document.getElementById("invitationsContainer");
-    container.innerHTML = "";
+      dataArray.forEach(item => {
+        // MDL Card
+        const card = document.createElement("div");
+        card.className = "mdl-card mdl-shadow--2dp invitation-card";
 
-    dataArray.forEach(item => {
-      // MDL Card
-      const card = document.createElement("div");
-      card.className = "mdl-card mdl-shadow--2dp invitation-card";
+        // Title
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "mdl-card__title";
 
-      // Card Title (name)
-      const titleDiv = document.createElement("div");
-      titleDiv.className = "mdl-card__title";
-      // We’ll just use plain text with some heading style
-      const titleText = document.createElement("h2");
-      titleText.className = "mdl-card__title-text";
-      titleText.textContent = item.group
-        ? `${item.name} (${item.group}) [${item.sheet}]`
-        : item.name;
-      titleDiv.appendChild(titleText);
+        const titleText = document.createElement("h2");
+        titleText.className = "mdl-card__title-text";
+        titleText.textContent = item.group
+          ? `${item.name} (${item.group}) [${item.sheet}]`
+          : item.name;
 
-      // Card supporting text (invitation message)
-      const supportText = document.createElement("div");
-      supportText.className = "mdl-card__supporting-text invitation-content";
-      supportText.textContent = item.message;
+        titleDiv.appendChild(titleText);
 
-      // Action area with copy button
-      const actionDiv = document.createElement("div");
-      actionDiv.className = "mdl-card__actions mdl-card--border";
+        // Message
+        const textDiv = document.createElement("div");
+        textDiv.className = "mdl-card__supporting-text invitation-content";
+        textDiv.textContent = item.message;
 
-      const copyBtn = document.createElement("button");
-      copyBtn.className = "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent copy-btn";
-      copyBtn.textContent = "Copy Message";
-      copyBtn.addEventListener("click", () => copyToClipboard(item.message));
+        // Actions (copy button)
+        const actionDiv = document.createElement("div");
+        actionDiv.className = "mdl-card__actions mdl-card--border";
 
-      actionDiv.appendChild(copyBtn);
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent copy-btn";
+        copyBtn.textContent = "Copy Message";
+        copyBtn.addEventListener("click", () => copyToClipboard(item.message));
 
-      // Append to card
-      card.appendChild(titleDiv);
-      card.appendChild(supportText);
-      card.appendChild(actionDiv);
+        actionDiv.appendChild(copyBtn);
 
-      container.appendChild(card);
-    });
-  }
+        // Build card
+        card.appendChild(titleDiv);
+        card.appendChild(textDiv);
+        card.appendChild(actionDiv);
 
-  function copyToClipboard(text) {
-    const textArea = document.createElement("textarea");
-    textArea.style.position = "fixed";
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.opacity = "0";
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textArea);
-    alert("Copied with line breaks!");
-  }
-</script>
+        container.appendChild(card);
+      });
+    }
 
+    function copyToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.style.position = "fixed";
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.opacity = "0";
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      alert("Copied with line breaks!");
+    }
+  </script>
 </body>
 </html>
