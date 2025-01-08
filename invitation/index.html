@@ -68,7 +68,7 @@
 
     /* Preserve newlines in the message */
     .invitation-message {
-      white-space: pre-wrap;   /* important to keep line breaks */
+      white-space: pre-wrap;   /* important to keep line breaks visible */
       word-wrap: break-word;
       margin-bottom: 1rem;
       color: #555;
@@ -119,18 +119,18 @@
   <script>
     /**
      * 1. Your TSV URLs (one or more) go here.
-     *    Make sure each sheet is published with output=tsv and includes your columns:
-     *    Name, Group, Invitation Message, etc.
+     *    Make sure each sheet is published with output=tsv and includes columns:
+     *    Name, Unique Code (optional), Group, Invitation Message, etc.
      */
     const TSV_URLS = [
       // Example:
-      // "https://docs.google.com/spreadsheets/d/XXXXXX/pub?gid=111111&single=true&output=tsv"
+      // "https://docs.google.com/spreadsheets/d/XXXXXX/pub?gid=111111&single=true&output=tsv",
       // "https://docs.google.com/spreadsheets/d/XXXXXX/pub?gid=222222&single=true&output=tsv"
-      // Add your actual published TSV links below:
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=1512406102&single=true&output=tsv",
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=61925263&single=true&output=tsv",
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=1674697729&single=true&output=tsv",
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=766178584&single=true&output=tsv"    
+      // Replace with your actual published TSV link(s):
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=1512406102&single=true&output=tsv",
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=61925263&single=true&output=tsv",
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=1674697729&single=true&output=tsv",
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=766178584&single=true&output=tsv"
     ];
 
     // 2. We'll store all data (from all TSVs) here
@@ -176,7 +176,7 @@
 
       // Find relevant column indices
       const nameIndex = headers.indexOf("name");
-      const codeIndex = headers.indexOf("invitation_code"); // optional if you have it
+      const codeIndex = headers.indexOf("invitation_code"); // optional
       const groupIndex = headers.indexOf("group");
       const messageIndex = headers.indexOf("invitation_message");
 
@@ -222,6 +222,7 @@
 
     /**
      * Handle search (by name) and filter (by group) together.
+     * Show only filtered results or all if no filter.
      */
     function handleSearchAndFilter() {
       const searchQuery = document.getElementById("searchBox").value.toLowerCase();
@@ -244,19 +245,19 @@
       const container = document.getElementById("invitationsContainer");
       container.innerHTML = ""; // clear existing
 
-      // For each item, build an "invitation card"
       dataArray.forEach(item => {
+        // Create a container for each invitation
         const invitationDiv = document.createElement("div");
         invitationDiv.classList.add("invitation");
 
-        // Name (plus group in parentheses)
+        // Name (plus group in parentheses if exists)
         const nameEl = document.createElement("div");
         nameEl.classList.add("invite-name");
         nameEl.textContent = item.group
           ? `${item.name} (${item.group})`
           : `${item.name}`;
 
-        // Message (preserve line breaks)
+        // Message (preserve line breaks visually)
         const msgEl = document.createElement("pre");
         msgEl.classList.add("invitation-message");
         msgEl.textContent = item.message;
@@ -278,13 +279,34 @@
     }
 
     /**
-     * Copies text (with newlines) to the clipboard.
+     * Copies text (including newlines) to the clipboard using a hidden <textarea>.
+     * This method ensures newlines are preserved.
      */
     function copyToClipboard(text) {
-      // This should preserve newlines as long as they exist in "text"
-      navigator.clipboard.writeText(text)
-        .then(() => alert("Copied with line breaks!"))
-        .catch(err => console.error("Failed to copy:", err));
+      // Create a hidden <textarea>
+      const textArea = document.createElement("textarea");
+      textArea.style.position = "fixed";
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.opacity = "0";
+
+      // Set its value to the text we want to copy (including \n for line breaks)
+      textArea.value = text;
+
+      // Add it to the document
+      document.body.appendChild(textArea);
+
+      // Select its contents
+      textArea.focus();
+      textArea.select();
+
+      // Execute copy command
+      document.execCommand("copy");
+
+      // Remove the textarea
+      document.body.removeChild(textArea);
+
+      alert("Copied with line breaks!");
     }
   </script>
 </body>
