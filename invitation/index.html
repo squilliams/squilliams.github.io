@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Wedding Invitations (TSV with Newlines)</title>
+  <title>Wedding Invitations from JSON</title>
   <style>
     /* 
       1. Full-page blue gradient background
@@ -66,13 +66,13 @@
       color: #333;
     }
 
-    /* Preserve newlines in the message */
+    /* Preserve newlines in the message visually */
     .invitation-message {
-      white-space: pre-wrap;   /* important to keep line breaks visible */
+      white-space: pre-wrap;   /* important for line breaks */
       word-wrap: break-word;
       margin-bottom: 1rem;
       color: #555;
-      font-family: inherit;    /* keep consistent font */
+      font-family: inherit;    
     }
 
     .copy-btn {
@@ -118,88 +118,78 @@
 
   <script>
     /**
-     * 1. Your TSV URLs (one or more) go here.
-     *    Make sure each sheet is published with output=tsv and includes columns:
-     *    Name, Unique Code (optional), Group, Invitation Message, etc.
+     * 1. Replace with the deployment URL from your Google Apps Script
+     *    that returns JSON for ALL sheets.
      */
-    const TSV_URLS = [
-      // Example:
-      // "https://docs.google.com/spreadsheets/d/XXXXXX/pub?gid=111111&single=true&output=tsv",
-      // "https://docs.google.com/spreadsheets/d/XXXXXX/pub?gid=222222&single=true&output=tsv"
-      // Replace with your actual published TSV link(s):
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=1512406102&single=true&output=tsv",
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=61925263&single=true&output=tsv",
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=1674697729&single=true&output=tsv",
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKiNwsIyFlBBHT6uGx696qXIO2iWnBgVl1-mfrDFNAu7oJnVJfLkjeaAeU6ZfCt5N4YHYJgVd8hCkf/pub?gid=766178584&single=true&output=tsv"
-    ];
+    const JSON_URL = "https://script.google.com/macros/s/AKfycbwZNf68HVQtRVe4Hyrtvvj6CfOb6H3o48wngzb0-ZmjjkL-QyLUXUchJ_xkRyupvl_g/exec";
 
-    // 2. We'll store all data (from all TSVs) here
+    // We'll store the combined data from all sheets in this array
     let allInvitations = [];
 
-    // On page load, fetch all TSVs
     window.addEventListener("DOMContentLoaded", () => {
-      fetchAllTSVs();
+      fetchAllDataFromJSON();
     });
 
-    async function fetchAllTSVs() {
+    /**
+     * Fetch JSON from your Google Apps Script.
+     * The JSON is expected to look like:
+     * {
+     *   "Sheet1": [
+     *       {"Name": "John", "Group": "Family", "Invitation Message": "Line1\nLine2"},
+     *       ...
+     *   ],
+     *   "Sheet2": [
+     *       ...
+     *   ]
+     * }
+     */
+    async function fetchAllDataFromJSON() {
       try {
-        // Fetch each URL in parallel
-        const fetchPromises = TSV_URLS.map(url => {
-          return fetch(url)
-            .then(res => res.text())
-            .then(tsvText => parseTSV(tsvText));
+        const response = await fetch(JSON_URL);
+        const data = await response.json();
+
+        // "data" is an object keyed by sheet names. e.g.:
+        // { Sheet1: [...rows], Sheet2: [...rows], ... }
+
+        // 2. Combine (flatten) data from all sheets into one big array
+        //    If you want them separate, handle them individually.
+        allInvitations = [];
+        for (let sheetName in data) {
+          // data[sheetName] is an array of row objects for that sheet
+          // e.g. {Name: "...", Group: "...", Invitation Message: "...", etc.}
+          allInvitations = allInvitations.concat(data[sheetName]);
+        }
+
+        // 3. Transform each row object to a consistent format for your code
+        //    e.g., rename columns if needed
+        //    We'll assume the headers are "Name", "Group", "Invitation Message"
+        //    If your headers differ, adjust accordingly.
+        allInvitations = allInvitations.map(item => {
+          return {
+            name: item["name"] || "",
+            group: item["group"] || "",
+            message: item["invitation_message"] || ""
+          };
         });
 
-        // Wait for all fetches
-        const arrayOfArrays = await Promise.all(fetchPromises);
-        // Flatten the results into one array
-        allInvitations = arrayOfArrays.flat();
-
-        // Populate the group dropdown
+        // 4. Populate the group dropdown
         populateGroupDropdown(allInvitations);
 
-        // Render everything by default (i.e., show all invitations)
+        // 5. Show all invitations by default
         renderInvitations(allInvitations);
+
       } catch (error) {
-        console.error("Error fetching/parsing TSVs:", error);
+        console.error("Error fetching/parsing JSON:", error);
       }
     }
 
     /**
-     * Basic TSV parser that expects columns:
-     *   Name, Unique Code (optional), Group, Invitation Message
-     */
-    function parseTSV(tsvText) {
-      const lines = tsvText.trim().split("\n");
-      // Split the first line by tab to get header names
-      const headers = lines[0].split("\t");
-
-      // Find relevant column indices
-      const nameIndex = headers.indexOf("name");
-      const codeIndex = headers.indexOf("invitation_code"); // optional
-      const groupIndex = headers.indexOf("group");
-      const messageIndex = headers.indexOf("invitation_message");
-
-      // Slice off the header row and parse each line
-      const data = lines.slice(1).map(line => {
-        const fields = line.split("\t"); // split by tab
-        return {
-          name: fields[nameIndex] || "",
-          code: codeIndex >= 0 ? (fields[codeIndex] || "") : "",
-          group: fields[groupIndex] || "",
-          message: fields[messageIndex] || ""
-        };
-      });
-      return data;
-    }
-
-    /**
-     * Create group dropdown options (including "All Groups").
+     * Create dropdown options (including an "All Groups" option).
      */
     function populateGroupDropdown(dataArray) {
       const groupSelect = document.getElementById("groupSelect");
 
-      // Gather unique group names
+      // Extract unique groups
       const uniqueGroups = [...new Set(dataArray.map(item => item.group))].sort();
 
       // Clear existing
@@ -211,7 +201,7 @@
       allOption.textContent = "All Groups";
       groupSelect.appendChild(allOption);
 
-      // One option per group
+      // Create an option for each unique group
       uniqueGroups.forEach(g => {
         const opt = document.createElement("option");
         opt.value = g;
@@ -221,14 +211,13 @@
     }
 
     /**
-     * Handle search (by name) and filter (by group) together.
-     * Show only filtered results or all if no filter.
+     * Handle searching by name + filtering by group simultaneously.
      */
     function handleSearchAndFilter() {
       const searchQuery = document.getElementById("searchBox").value.toLowerCase();
       const selectedGroup = document.getElementById("groupSelect").value;
 
-      // Filter by name and group
+      // Filter
       const filtered = allInvitations.filter(item => {
         const matchesName = item.name.toLowerCase().includes(searchQuery);
         const matchesGroup = selectedGroup === "" || item.group === selectedGroup;
@@ -239,25 +228,24 @@
     }
 
     /**
-     * Render the invitations into the invitationsContainer.
+     * Render the invitations as "cards."
      */
     function renderInvitations(dataArray) {
       const container = document.getElementById("invitationsContainer");
-      container.innerHTML = ""; // clear existing
+      container.innerHTML = ""; // clear
 
       dataArray.forEach(item => {
-        // Create a container for each invitation
+        // Outer container
         const invitationDiv = document.createElement("div");
         invitationDiv.classList.add("invitation");
 
-        // Name (plus group in parentheses if exists)
+        // Name
         const nameEl = document.createElement("div");
         nameEl.classList.add("invite-name");
-        nameEl.textContent = item.group
-          ? `${item.name} (${item.group})`
-          : `${item.name}`;
+        // If group is not empty, show "Name (Group)"
+        nameEl.textContent = item.group ? `${item.name} (${item.group})` : item.name;
 
-        // Message (preserve line breaks visually)
+        // Message (pre to preserve newlines)
         const msgEl = document.createElement("pre");
         msgEl.classList.add("invitation-message");
         msgEl.textContent = item.message;
@@ -270,7 +258,7 @@
           copyToClipboard(item.message);
         });
 
-        // Append elements
+        // Append
         invitationDiv.appendChild(nameEl);
         invitationDiv.appendChild(msgEl);
         invitationDiv.appendChild(copyBtn);
@@ -279,31 +267,19 @@
     }
 
     /**
-     * Copies text (including newlines) to the clipboard using a hidden <textarea>.
-     * This method ensures newlines are preserved.
+     * Copy text (including newlines) using a hidden <textarea>.
      */
     function copyToClipboard(text) {
-      // Create a hidden <textarea>
       const textArea = document.createElement("textarea");
       textArea.style.position = "fixed";
       textArea.style.top = "0";
       textArea.style.left = "0";
       textArea.style.opacity = "0";
-
-      // Set its value to the text we want to copy (including \n for line breaks)
       textArea.value = text;
 
-      // Add it to the document
       document.body.appendChild(textArea);
-
-      // Select its contents
-      textArea.focus();
       textArea.select();
-
-      // Execute copy command
       document.execCommand("copy");
-
-      // Remove the textarea
       document.body.removeChild(textArea);
 
       alert("Copied with line breaks!");
