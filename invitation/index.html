@@ -2,18 +2,13 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Wedding Invitations (Show All by Default)</title>
+  <title>Wedding Invitations (Multiple Sheets)</title>
   <style>
-    /* 
-      Simple gradient background, central container, etc.
-      Adjust styling as you wish.
-    */
     body {
-      margin: 0;
+      margin: 0; 
       padding: 0;
       font-family: "Open Sans", sans-serif;
       background: linear-gradient(to right, #6190E8, #A7BFE8);
-      background-color: #6190E8;
     }
     .container {
       max-width: 800px;
@@ -21,7 +16,7 @@
       background: rgba(255, 255, 255, 0.9);
       border-radius: 8px;
       padding: 2rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
     }
     h1 {
       text-align: center;
@@ -38,13 +33,13 @@
       font-weight: 600;
       color: #333;
     }
-    .filters input[type="text"], .filters select {
+    .filters input[type="text"],
+    .filters select {
       padding: 0.5rem;
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-
     .invitation {
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -58,11 +53,9 @@
       color: #333;
     }
     .invitation-message {
-      white-space: pre-wrap;
-      word-wrap: break-word;
+      white-space: pre-wrap; /* preserves line breaks visually */
       margin-bottom: 1rem;
       color: #555;
-      font-family: inherit;
     }
     .copy-btn {
       background-color: #6190E8;
@@ -83,7 +76,6 @@
   <div class="container">
     <h1>Wedding Invitations</h1>
 
-    <!-- Filters Section -->
     <div class="filters">
       <label for="searchBox">Search by name:</label>
       <input
@@ -95,134 +87,140 @@
 
       <label for="groupSelect">Filter by group:</label>
       <select id="groupSelect" onchange="handleSearchAndFilter()">
-        <!-- We'll populate this with "All" + unique groups -->
+        <!-- We'll populate with "All" + unique group values -->
       </select>
     </div>
 
-    <!-- Container for invitations -->
     <div id="invitationsContainer"></div>
   </div>
 
   <script>
-    // 1. Replace this with your Google Apps Script JSON URL (or TSV/CSV URL).
+    // Replace this with your JSON endpoint (Apps Script URL, etc.)
     const JSON_URL = "https://script.google.com/macros/s/AKfycbwZNf68HVQtRVe4Hyrtvvj6CfOb6H3o48wngzb0-ZmjjkL-QyLUXUchJ_xkRyupvl_g/exec";
 
-    // We'll store all invitations here
+    // We'll store all flattened data here.
+    // Each object: { name, group, message, sheet }
     let allInvitations = [];
 
     window.addEventListener("DOMContentLoaded", () => {
       fetchData();
     });
 
-    // 2. Fetch JSON (or TSV, etc.). For JSON, it's straightforward:
     async function fetchData() {
       try {
         const response = await fetch(JSON_URL);
         const data = await response.json();
+        // data might look like:
+        // {
+        //   "UNPAD": [{name:..., group:..., invitation_message:...}, ...],
+        //   "78": [{name:..., group:..., invitation_message:...}, ...],
+        //   ...
+        // }
 
-        // Data might look like { "Sheet1": [...], "Sheet2": [...], ... }
-        // Flatten them if you have multiple sheets
+        // Flatten all sheets into one array
+        // We'll also store the sheet name in each item as "sheet"
         let combined = [];
         for (let sheetName in data) {
-          combined = combined.concat(data[sheetName]);
+          const rows = data[sheetName]; // array for that sheet
+          rows.forEach(item => {
+            combined.push({
+              // Map your fields to consistent property names
+              name: item.name || "",
+              // Convert group to string in case it's numeric
+              group: item.group != null ? String(item.group) : "",
+              message: item.invitation_message || "",
+              // Also store the sheet name, if you want to see which sheet it came from
+              sheet: sheetName
+            });
+          });
         }
 
-        // Now combined is an array of row objects, e.g.:
-        // [ {"Name":"John","Group":"Family","Invitation Message":"..."}, ...]
+        // Assign to the global array
+        allInvitations = combined;
 
-        // 3. Transform columns to a consistent format
-        //    Adjust if your columns have different headers.
-        allInvitations = combined.map(row => ({
-          name: row["name"] || "",
-          group: row["group"] || "",
-          message: row["invitation_message"] || ""
-        }));
-
-        // 4. Populate group dropdown
+        // Show them all initially
         populateGroupDropdown(allInvitations);
-
-        // 5. Show ALL invitations immediately
         renderInvitations(allInvitations);
 
-      } catch (error) {
-        console.error("Error fetching or parsing data:", error);
+      } catch (err) {
+        console.error("Error fetching or parsing JSON:", err);
       }
     }
 
     // Create the group dropdown options
     function populateGroupDropdown(dataArray) {
       const groupSelect = document.getElementById("groupSelect");
-
-      // Get unique groups (sorted)
-      const uniqueGroups = [...new Set(dataArray.map(item => item.group))].sort();
-
-      // Clear out old options
       groupSelect.innerHTML = "";
 
+      // Collect unique group values
+      const uniqueGroups = [...new Set(dataArray.map(inv => inv.group))].sort();
+
       // "All Groups" option
-      const allOption = document.createElement("option");
-      allOption.value = "";
-      allOption.textContent = "All Groups";
-      groupSelect.appendChild(allOption);
+      const allOpt = document.createElement("option");
+      allOpt.value = "";
+      allOpt.textContent = "All Groups";
+      groupSelect.appendChild(allOpt);
 
       // Add each unique group
-      uniqueGroups.forEach(groupName => {
+      uniqueGroups.forEach(gr => {
         const opt = document.createElement("option");
-        opt.value = groupName;
-        opt.textContent = groupName;
+        opt.value = gr;
+        opt.textContent = gr;
         groupSelect.appendChild(opt);
       });
     }
 
-    // 6. Handle search+filter logic
+    // Filter by name + group
     function handleSearchAndFilter() {
-      const searchTerm = document.getElementById("searchBox").value.toLowerCase();
+      const searchValue = document.getElementById("searchBox").value.toLowerCase();
       const selectedGroup = document.getElementById("groupSelect").value;
 
-      // Filter the allInvitations array
+      // Filter
       const filtered = allInvitations.filter(inv => {
-        const matchesName = inv.name.toLowerCase().includes(searchTerm);
-        const matchesGroup = selectedGroup === "" || inv.group === selectedGroup;
-        return matchesName && matchesGroup;
+        const matchName = inv.name.toLowerCase().includes(searchValue);
+        const matchGroup = !selectedGroup || inv.group === selectedGroup; 
+        return matchName && matchGroup;
       });
 
       renderInvitations(filtered);
     }
 
-    // 7. Render invitations in the container
+    // Display the invitations
     function renderInvitations(dataArray) {
       const container = document.getElementById("invitationsContainer");
       container.innerHTML = "";
 
       dataArray.forEach(item => {
-        const card = document.createElement("div");
-        card.classList.add("invitation");
+        const div = document.createElement("div");
+        div.classList.add("invitation");
 
+        // Display name (optionally show group or sheet)
         const nameEl = document.createElement("div");
         nameEl.classList.add("invite-name");
-        nameEl.textContent = item.group 
-          ? `${item.name} (${item.group})`
-          : item.name;
+        // Example: Name (Group) [Sheet]
+        nameEl.textContent = `${item.name} (${item.group}) [${item.sheet}]`;
+        // Feel free to adjust the formatting to your needs:
+        // e.g., just item.name or item.name + " (" + item.sheet + ")"
 
+        // Invitation message
         const msgEl = document.createElement("pre");
         msgEl.classList.add("invitation-message");
         msgEl.textContent = item.message;
 
+        // Copy button
         const copyBtn = document.createElement("button");
         copyBtn.classList.add("copy-btn");
         copyBtn.textContent = "Copy Message";
-        copyBtn.addEventListener("click", () => {
-          copyToClipboard(item.message);
-        });
+        copyBtn.addEventListener("click", () => copyToClipboard(item.message));
 
-        card.appendChild(nameEl);
-        card.appendChild(msgEl);
-        card.appendChild(copyBtn);
-        container.appendChild(card);
+        div.appendChild(nameEl);
+        div.appendChild(msgEl);
+        div.appendChild(copyBtn);
+        container.appendChild(div);
       });
     }
 
-    // 8. Copy text with line breaks
+    // Copy multiline text (with line breaks)
     function copyToClipboard(text) {
       const textArea = document.createElement("textarea");
       textArea.style.position = "fixed";
