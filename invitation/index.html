@@ -2,26 +2,40 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Wedding Invitations (Multiple Sheets)</title>
+  <title>Wedding Invitations (Responsive + Loading)</title>
   <style>
+    /* 
+      1. Full-page blue gradient background
+      2. White container with slight transparency
+      3. Elegant, responsive styling
+    */
     body {
-      margin: 0; 
+      margin: 0;
       padding: 0;
       font-family: "Open Sans", sans-serif;
       background: linear-gradient(to right, #6190E8, #A7BFE8);
+      min-height: 100vh; /* ensure body covers full screen height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
     .container {
+      width: 90%;
       max-width: 800px;
-      margin: 2rem auto;
       background: rgba(255, 255, 255, 0.9);
       border-radius: 8px;
       padding: 2rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      margin: 2rem auto; /* for spacing above/below on taller screens */
     }
+
     h1 {
       text-align: center;
       color: #333;
     }
+
+    /* Filters Section (search & group dropdown) */
     .filters {
       display: flex;
       flex-wrap: wrap;
@@ -39,7 +53,11 @@
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 4px;
+      flex: 1 1 auto; /* allow them to grow/shrink on small screens */
+      min-width: 150px;
     }
+
+    /* Invitations */
     .invitation {
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -70,12 +88,53 @@
     .copy-btn:hover {
       background-color: #5178c8;
     }
+
+    /* Loading spinner (hidden by default) */
+    #loader {
+      display: none; /* shown via JS when fetching */
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    /* Basic spinner styling */
+    .spinner {
+      border: 6px solid #f3f3f3; /* Light grey */
+      border-top: 6px solid #6190E8; /* Blue */
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive: ensure container doesn't overflow on small screens */
+    @media (max-width: 600px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Main container -->
   <div class="container">
+
+    <!-- Loading indicator -->
+    <div id="loader">
+      <div class="spinner"></div>
+      <p>Loading invitations...</p>
+    </div>
+
     <h1>Wedding Invitations</h1>
 
+    <!-- Filters Section -->
     <div class="filters">
       <label for="searchBox">Search by name:</label>
       <input
@@ -91,15 +150,17 @@
       </select>
     </div>
 
+    <!-- Container for invitations -->
     <div id="invitationsContainer"></div>
+
   </div>
 
   <script>
-    // Replace this with your JSON endpoint (Apps Script URL, etc.)
+    // 1. Replace this with your JSON or TSV/CSV endpoint.
+    //    Or your Google Apps Script URL that returns JSON.
     const JSON_URL = "https://script.google.com/macros/s/AKfycbz3nwQ0sVPGiBdN7oswuLtzlnTpqVMCdC34SlFnEUKlTf-6jzipb3ups3TYIDsXBV0/exec";
 
     // We'll store all flattened data here.
-    // Each object: { name, group, message, sheet }
     let allInvitations = [];
 
     window.addEventListener("DOMContentLoaded", () => {
@@ -107,47 +168,42 @@
     });
 
     async function fetchData() {
+      // Show loader
+      document.getElementById("loader").style.display = "block";
+
       try {
         const response = await fetch(JSON_URL);
         const data = await response.json();
-        // data might look like:
-        // {
-        //   "UNPAD": [{name:..., group:..., invitation_message:...}, ...],
-        //   "78": [{name:..., group:..., invitation_message:...}, ...],
-        //   ...
-        // }
 
-        // Flatten all sheets into one array
-        // We'll also store the sheet name in each item as "sheet"
+        // Flatten or handle data as needed
+        // Example if data has multiple sheet keys:
         let combined = [];
         for (let sheetName in data) {
-          const rows = data[sheetName]; // array for that sheet
-          rows.forEach(item => {
+          data[sheetName].forEach(item => {
             combined.push({
-              // Map your fields to consistent property names
+              // matching your keys
               name: item.name || "",
-              // Convert group to string in case it's numeric
               group: item.group != null ? String(item.group) : "",
               message: item.invitation_message || "",
-              // Also store the sheet name, if you want to see which sheet it came from
               sheet: sheetName
             });
           });
         }
-
-        // Assign to the global array
         allInvitations = combined;
 
-        // Show them all initially
+        // Populate group dropdown and render
         populateGroupDropdown(allInvitations);
         renderInvitations(allInvitations);
 
       } catch (err) {
-        console.error("Error fetching or parsing JSON:", err);
+        console.error("Error fetching data:", err);
+        alert("Error fetching data: " + err);
+      } finally {
+        // Hide loader after fetch completes (success or error)
+        document.getElementById("loader").style.display = "none";
       }
     }
 
-    // Create the group dropdown options
     function populateGroupDropdown(dataArray) {
       const groupSelect = document.getElementById("groupSelect");
       groupSelect.innerHTML = "";
@@ -170,22 +226,19 @@
       });
     }
 
-    // Filter by name + group
     function handleSearchAndFilter() {
       const searchValue = document.getElementById("searchBox").value.toLowerCase();
       const selectedGroup = document.getElementById("groupSelect").value;
 
-      // Filter
       const filtered = allInvitations.filter(inv => {
         const matchName = inv.name.toLowerCase().includes(searchValue);
-        const matchGroup = !selectedGroup || inv.group === selectedGroup; 
+        const matchGroup = !selectedGroup || inv.group === selectedGroup;
         return matchName && matchGroup;
       });
 
       renderInvitations(filtered);
     }
 
-    // Display the invitations
     function renderInvitations(dataArray) {
       const container = document.getElementById("invitationsContainer");
       container.innerHTML = "";
@@ -194,15 +247,12 @@
         const div = document.createElement("div");
         div.classList.add("invitation");
 
-        // Display name (optionally show group or sheet)
+        // Name
         const nameEl = document.createElement("div");
         nameEl.classList.add("invite-name");
-        // Example: Name (Group) [Sheet]
         nameEl.textContent = `${item.name} (${item.group}) [${item.sheet}]`;
-        // Feel free to adjust the formatting to your needs:
-        // e.g., just item.name or item.name + " (" + item.sheet + ")"
 
-        // Invitation message
+        // Message
         const msgEl = document.createElement("pre");
         msgEl.classList.add("invitation-message");
         msgEl.textContent = item.message;
