@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Downloader WebApp</title>
+  <!-- Include jsPDF (for magazine PDF generation) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    integrity="sha512-0VvQOrgeXnwS3K+uMdtY8WmZLz5SCwrsFXedblj+UHB+YB71oxRrLq2xALZvK5cnWVoXJ8c/80Y+T2nR7rXBag=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    /* Basic Reset & Styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      width: 90%;
+      padding: 20px;
+      margin: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    select, input[type="date"], input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .download-btn {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .download-btn:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    .illustration {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .status {
+      margin-top: 10px;
+      color: #333;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="illustration">
+      <!-- A simple SVG illustration -->
+      <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19h16"></path>
+        <path d="M4 5h16"></path>
+        <path d="M4 12h16"></path>
+      </svg>
+    </div>
+    <h1>Downloader WebApp</h1>
+    <div class="form-group">
+      <label for="typeSelect">Select Type</label>
+      <select id="typeSelect">
+        <option value="newspaper">Newspaper</option>
+        <option value="magazine">Magazine</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="publicationSelect">Select Publication</label>
+      <select id="publicationSelect">
+        <!-- Options will be filled dynamically -->
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="dateInput">Select Date</label>
+      <input type="date" id="dateInput" />
+    </div>
+    <!-- Time input is only needed for newspapers -->
+    <div class="form-group" id="timeGroup" style="display: none;">
+      <label for="timeInput">Time (HHmm)</label>
+      <input type="text" id="timeInput" placeholder="e.g. 1013" />
+    </div>
+    <button class="download-btn" id="downloadBtn">Download</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    /* Configurations for publications.
+       For newspapers, we use a URL pattern with placeholders.
+       For magazines, we specify the “id”, starting page, and max pages.
+    */
+    const config = {
+      newspaper: {
+        kompas: {
+          name: "Kompas Newspaper",
+          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
+          defaultTime: "1013"
+        },
+        pikiran_rakyat: {
+          name: "Pikiran Rakyat Newspaper",
+          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
+          defaultTime: "1020"
+        },
+        wall_street_journal: {
+          name: "Wall Street Journal",
+          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
+          defaultTime: "1028"
+        },
+        washington_post: {
+          name: "Washington Post",
+          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
+          defaultTime: "1043"
+        },
+        financial_times: {
+          name: "Financial Times",
+          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
+          defaultTime: "1035"
+        }
+      },
+      magazine: {
+        the_economist: {
+          name: "The Economist",
+          id: "4037",
+          startPage: 1,  // adjust if needed
+          maxPages: 150
+        },
+        tempo: {
+          name: "TEMPO",
+          id: "4036",
+          startPage: 3,  // based on sample (e.g. .../large/3.jpg)
+          maxPages: 150
+        },
+        time: {
+          name: "TIME",
+          id: "4071",
+          startPage: 2,  // based on sample
+          maxPages: 150
+        },
+        guardian: {
+          name: "Guardian",
+          id: "4074",
+          startPage: 1,
+          maxPages: 150
+        },
+        bloomberg: {
+          name: "Bloomberg",
+          id: "4041",
+          startPage: 1,
+          maxPages: 150
+        }
+      }
+    };
+
+    // Grab DOM elements
+    const typeSelect = document.getElementById("typeSelect");
+    const publicationSelect = document.getElementById("publicationSelect");
+    const dateInput = document.getElementById("dateInput");
+    const timeGroup = document.getElementById("timeGroup");
+    const timeInput = document.getElementById("timeInput");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const statusDiv = document.getElementById("status");
+
+    // Populate publication list based on the selected type
+    function populatePublications() {
+      const type = typeSelect.value;
+      publicationSelect.innerHTML = "";
+      let pubs = config[type];
+      for (const key in pubs) {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = pubs[key].name;
+        publicationSelect.appendChild(option);
+      }
+      // Show/hide the time input based on type
+      if (type === "newspaper") {
+        timeGroup.style.display = "block";
+        // Set the default time for the first publication
+        const firstPub = pubs[publicationSelect.value];
+        timeInput.value = firstPub.defaultTime || "";
+      } else {
+        timeGroup.style.display = "none";
+      }
+    }
+
+    // Update time input when the selected newspaper changes
+    publicationSelect.addEventListener("change", function() {
+      if (typeSelect.value === "newspaper") {
+        const pubKey = publicationSelect.value;
+        const pubConfig = config.newspaper[pubKey];
+        timeInput.value = pubConfig.defaultTime || "";
+      }
+    });
+
+    // Repopulate publications when type changes
+    typeSelect.addEventListener("change", populatePublications);
+
+    // Initial population on page load
+    populatePublications();
+
+    // Helper: pad numbers with leading zero if needed
+    function pad(num) {
+      return num.toString().padStart(2, "0");
+    }
+
+    // Construct a newspaper URL by replacing placeholders with the date and time values.
+    function constructNewspaperURL(pubConfig, dateStr, time) {
+      const dateObj = new Date(dateStr);
+      const YYYY = dateObj.getFullYear();
+      const MM = pad(dateObj.getMonth() + 1);
+      const DD = pad(dateObj.getDate());
+      return pubConfig.urlPattern
+        .replace("{YYYY}", YYYY)
+        .replace("{MM}", MM)
+        .replace("{DD}", DD)
+        .replace("{time}", time);
+    }
+
+    // Construct the magazine image URL for a given page.
+    // The URL pattern is:
+    // https://epaper.dotsolution.net/assets/file_media/{id}/{YYYY}/{MM}/{DD}/large/{page}.jpg
+    function constructMagazineURL(pubConfig, dateStr, page) {
+      const dateObj = new Date(dateStr);
+      const YYYY = dateObj.getFullYear();
+      const MM = pad(dateObj.getMonth() + 1);
+      const DD = pad(dateObj.getDate());
+      return `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${YYYY}/${MM}/${DD}/large/${page}.jpg`;
+    }
+
+    // A helper to trigger a download given a URL and filename.
+    function downloadFile(url, filename) {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Fetch an image and return a Data URL (useful for embedding into PDF)
+    function fetchImageData(url) {
+      return fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Image not found");
+          }
+          return response.blob();
+        })
+        .then(blob => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        }));
+    }
+
+    // Download button event handler.
+    downloadBtn.addEventListener("click", async function() {
+      statusDiv.textContent = "";
+      const type = typeSelect.value;
+      const pubKey = publicationSelect.value;
+      const dateStr = dateInput.value;
+      if (!dateStr) {
+        statusDiv.textContent = "Please select a date.";
+        return;
+      }
+
+      if (type === "newspaper") {
+        // For newspapers, construct the PDF URL and trigger download.
+        const pubConfig = config.newspaper[pubKey];
+        const time = timeInput.value || pubConfig.defaultTime;
+        const url = constructNewspaperURL(pubConfig, dateStr, time);
+        statusDiv.textContent = "Downloading newspaper PDF...";
+        downloadFile(url, `${pubConfig.name}-${dateStr}.pdf`);
+        statusDiv.textContent = "Download started.";
+      } else if (type === "magazine") {
+        // For magazines, call the Vercel API endpoint
+        statusDiv.textContent = "Fetching magazine pages, please wait...";
+        
+        try {
+          const response = await fetch('https://newspaperapp-izmilkbzm-squilliams-projects.vercel.app/api/magazine', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              pubKey,
+              dateStr
+            })
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to generate PDF');
+          }
+
+          // Get the PDF blob from the response
+          const pdfBlob = await response.blob();
+          const url = URL.createObjectURL(pdfBlob);
+          
+          // Trigger download
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${config.magazine[pubKey].name}-${dateStr}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          statusDiv.textContent = "Magazine PDF downloaded successfully.";
+        } catch (error) {
+          console.error('Error:', error);
+          statusDiv.textContent = `Error: ${error.message}`;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
