@@ -36,3 +36,21 @@ markdown: kramdown
 
 sass:
   style: compressed
+
+# SEO Settings
+title: Bimo Tyasono | Voice Artist & Software Engineer
+description: Professional voice over artist, content creator, and software engineer based in Jakarta
+keywords: voice over, content creator, software engineer, tiktok, jakarta
+author: Bimo Tyasono
+twitter:
+  username: squilliams
+social:
+  name: Bimo Tyasono
+  links:
+    - https://www.twitter.com/squilliams
+    - https://www.youtube.com/c/BimoTyasono
+    - https://www.tiktok.com/@squillliams
+    - https://www.linkedin.com/in/bimo-tyasono
+
+# Analytics
+google_analytics: YOUR_GA_ID

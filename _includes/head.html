@@ -21,4 +21,16 @@
 		margin: 3%;
 	}
 	</style>
+<!-- Preload critical assets -->
+<link rel="preload" href="/assets/css/main.css" as="style">
+<link rel="preload" href="/assets/js/jquery.min.js" as="script">
+
+<!-- Optimize font loading -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Meta tags for better sharing -->
+<meta property="og:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
+<meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+<meta property="og:image" content="{{ site.url }}/assets/images/banner.jpg">
 </head>
