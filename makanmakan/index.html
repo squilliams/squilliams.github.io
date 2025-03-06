@@ -6,12 +6,18 @@
     <title>Roda Makanan Indonesia</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         'playfair': ['Playfair Display', 'serif'],
+                    },
+                    keyframes: {
+                        shimmer: {
+                          '100%': { transform: 'translateX(100%)' }
+                        }
                     }
                 }
             }
@@ -102,8 +108,18 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
     <div class="max-w-md w-full mx-auto bg-white/95 backdrop-blur rounded-2xl shadow-xl p-8 space-y-8 transform hover:scale-[1.01] transition-all duration-300">
-        <h1 class="text-4xl font-bold text-center text-gray-800 font-playfair">Mau Makan Apa?</h1>
+        <div class="flex items-center justify-between">
+            <h1 class="text-4xl font-bold text-gray-800 font-playfair">Mau Makan Apa?</h1>
+            <div class="text-sm text-gray-500">Press Space to Spin</div>
+        </div>
         <p class="text-center text-gray-600 text-lg">Putar roda untuk menemukan makanan Indonesia yang lezat!</p>
+        
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="hidden relative overflow-hidden">
+            <div class="h-2 bg-gray-200 rounded-full">
+                <div class="h-full bg-gradient-to-r from-red-500 via-red-300 to-red-500 rounded-full animate-[shimmer_2s_infinite]"></div>
+            </div>
+        </div>
         
         <div class="slot-container transform hover:scale-[1.02] transition-all duration-300">
             <div class="slot-window">

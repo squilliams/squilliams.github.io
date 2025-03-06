@@ -1,21 +1,197 @@
 const foods = [
-    { name: 'Nasi Goreng', emoji: '🍚' },
-    { name: 'Rendang', emoji: '🥘' },
-    { name: 'Sate Ayam', emoji: '🍖' },
-    { name: 'Gado-gado', emoji: '🥗' },
-    { name: 'Soto Ayam', emoji: '🍜' },
-    { name: 'Bakso', emoji: '🍲' },
-    { name: 'Mie Goreng', emoji: '🍝' },
-    { name: 'Martabak', emoji: '🥞' },
-    { name: 'Sop Buntut', emoji: '🍖' },
-    { name: 'Bebek Goreng', emoji: '🍗' },
-    { name: 'Nasi Uduk', emoji: '🍚' },
-    { name: 'Sate Padang', emoji: '🍖' },
-    { name: 'Soto Betawi', emoji: '🥘' },
-    { name: 'Ayam Goreng', emoji: '🍗' },
-    { name: 'Nasi Campur', emoji: '🍱' },
-    { name: 'Pecel Lele', emoji: '🐟' }
+    // Rice
+    { name: 'Nasi Goreng', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Uduk', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Campur', emoji: '🍱', category: 'Rice' },
+    { name: 'Nasi Kuning', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Liwet', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Bakar', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Kebuli', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Pecel', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Tumpeng', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Ulam', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Langgi', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Gandul', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Bogana', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Jamblang', emoji: '🍚', category: 'Rice' },
+    { name: 'Nasi Lengko', emoji: '🍚', category: 'Rice' },
+
+    // Meat
+    { name: 'Rendang', emoji: '🥘', category: 'Meat' },
+    { name: 'Sate Ayam', emoji: '🍖', category: 'Meat' },
+    { name: 'Bebek Goreng', emoji: '🍗', category: 'Meat' },
+    { name: 'Sate Padang', emoji: '🍖', category: 'Meat' },
+    { name: 'Ayam Goreng', emoji: '🍗', category: 'Meat' },
+    { name: 'Opor Ayam', emoji: '🍗', category: 'Meat' },
+    { name: 'Ayam Bakar', emoji: '🍗', category: 'Meat' },
+    { name: 'Kambing Guling', emoji: '🍖', category: 'Meat' },
+    { name: 'Sate Kambing', emoji: '🍖', category: 'Meat' },
+    { name: 'Sate Maranggi', emoji: '🍖', category: 'Meat' },
+    { name: 'Ayam Betutu', emoji: '🍗', category: 'Meat' },
+    { name: 'Ayam Taliwang', emoji: '🍗', category: 'Meat' },
+    { name: 'Ayam Pop', emoji: '🍗', category: 'Meat' },
+    { name: 'Bebek Betutu', emoji: '🍗', category: 'Meat' },
+    { name: 'Sate Lilit Ayam', emoji: '🍖', category: 'Meat' },
+    { name: 'Dendeng Balado', emoji: '🥩', category: 'Meat' },
+
+    // Vegetable
+    { name: 'Gado-gado', emoji: '🥗', category: 'Vegetable' },
+    { name: 'Gudeg', emoji: '🍲', category: 'Vegetable' },
+    { name: 'Rujak Cingur', emoji: '🥗', category: 'Vegetable' },
+    { name: 'Ketoprak', emoji: '🥜', category: 'Vegetable' },
+    { name: 'Urap', emoji: '🥗', category: 'Vegetable' },
+    { name: 'Pecel', emoji: '🥗', category: 'Vegetable' },
+    { name: 'Karedok', emoji: '🥗', category: 'Vegetable' },
+    { name: 'Sayur Asem', emoji: '🥬', category: 'Vegetable' },
+    { name: 'Sayur Lodeh', emoji: '🥬', category: 'Vegetable' },
+    { name: 'Plecing Kangkung', emoji: '🥬', category: 'Vegetable' },
+    { name: 'Terong Balado', emoji: '🍆', category: 'Vegetable' },
+    { name: 'Sayur Bening', emoji: '🥬', category: 'Vegetable' },
+    { name: 'Lalapan', emoji: '🥬', category: 'Vegetable' },
+    { name: 'Tumis Kangkung', emoji: '🥬', category: 'Vegetable' },
+
+    // Soup
+    { name: 'Soto Ayam', emoji: '🍜', category: 'Soup' },
+    { name: 'Bakso', emoji: '🍲', category: 'Soup' },
+    { name: 'Sop Buntut', emoji: '🍖', category: 'Soup' },
+    { name: 'Soto Betawi', emoji: '🥘', category: 'Soup' },
+    { name: 'Rawon', emoji: '🥘', category: 'Soup' },
+    { name: 'Soto Banjar', emoji: '🍜', category: 'Soup' },
+    { name: 'Sop Konro', emoji: '🍲', category: 'Soup' },
+    { name: 'Sop Kaki Kambing', emoji: '🍲', category: 'Soup' },
+    { name: 'Tongseng', emoji: '🥘', category: 'Soup' },
+    { name: 'Sup Iga', emoji: '🍖', category: 'Soup' },
+    { name: 'Coto Makassar', emoji: '🥘', category: 'Soup' },
+    { name: 'Soto Kudus', emoji: '🍜', category: 'Soup' },
+    { name: 'Soto Lamongan', emoji: '🍜', category: 'Soup' },
+    { name: 'Sop Saudara', emoji: '🥘', category: 'Soup' },
+    { name: 'Sop Kambing', emoji: '🍲', category: 'Soup' },
+    { name: 'Sop Ayam', emoji: '🍲', category: 'Soup' },
+
+    // Noodle
+    { name: 'Mie Goreng', emoji: '🍝', category: 'Noodle' },
+    { name: 'Mie Aceh', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Kocok', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Celor', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Rebus', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Ayam', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Bangka', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Kopyok', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Cakalang', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Gomak', emoji: '🍜', category: 'Noodle' },
+    { name: 'Mie Tek-Tek', emoji: '🍜', category: 'Noodle' },
+
+    // Snack
+    { name: 'Martabak', emoji: '🥞', category: 'Snack' },
+    { name: 'Pisang Goreng', emoji: '🍌', category: 'Snack' },
+    { name: 'Kue Putu', emoji: '🍡', category: 'Snack' },
+    { name: 'Lemper', emoji: '🍙', category: 'Snack' },
+    { name: 'Risoles', emoji: '🥟', category: 'Snack' },
+    { name: 'Bakwan', emoji: '🥮', category: 'Snack' },
+    { name: 'Klepon', emoji: '🍡', category: 'Snack' },
+    { name: 'Onde-Onde', emoji: '🍡', category: 'Snack' },
+    { name: 'Serabi', emoji: '🥞', category: 'Snack' },
+    { name: 'Dadar Gulung', emoji: '🥞', category: 'Snack' },
+    { name: 'Kue Lumpur', emoji: '🥮', category: 'Snack' },
+
+    // Fish
+    { name: 'Pecel Lele', emoji: '🐟', category: 'Fish' },
+    { name: 'Pempek', emoji: '🍥', category: 'Fish' },
+    { name: 'Sate Lilit', emoji: '🍖', category: 'Fish' },
+    { name: 'Ikan Bakar', emoji: '🐟', category: 'Fish' },
+    { name: 'Ikan Goreng', emoji: '🐟', category: 'Fish' },
+    { name: 'Bandeng Presto', emoji: '🐟', category: 'Fish' },
+    { name: 'Asam Pedas Ikan', emoji: '🐟', category: 'Fish' },
+    { name: 'Ikan Asin', emoji: '🐟', category: 'Fish' },
+    { name: 'Cakalang Fufu', emoji: '🐟', category: 'Fish' },
+    { name: 'Ikan Kuah Kuning', emoji: '🐟', category: 'Fish' },
+    { name: 'Ikan Bawal Bakar', emoji: '🐟', category: 'Fish' }
 ];
+
+// Add sound effects
+const spinSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3');
+const winSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+
+// Store history in localStorage
+let history = JSON.parse(localStorage.getItem('foodHistory') || '[]');
+
+// Create category filter with multi-select support
+let selectedCategories = new Set(['All']);
+const categories = ['All', ...new Set(foods.map(food => food.category))];
+const filterContainer = document.createElement('div');
+filterContainer.className = 'flex flex-wrap gap-2 justify-center mb-4';
+categories.forEach(category => {
+    const button = document.createElement('button');
+    button.className = `px-4 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 ${category === 'All' ? 'bg-red-500 text-white' : 'bg-white text-red-500 border-2 border-red-500'}`;
+    button.textContent = category;
+    button.onclick = () => {
+        if (category === 'All') {
+            selectedCategories.clear();
+            selectedCategories.add('All');
+            categories.forEach(cat => {
+                const btn = filterContainer.querySelector(`button[data-category="${cat}"]`);
+                if (btn) {
+                    btn.className = `px-4 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 ${cat === 'All' ? 'bg-red-500 text-white' : 'bg-white text-red-500 border-2 border-red-500'}`;
+                }
+            });
+        } else {
+            selectedCategories.delete('All');
+            if (selectedCategories.has(category)) {
+                selectedCategories.delete(category);
+                if (selectedCategories.size === 0) {
+                    selectedCategories.add('All');
+                    categories.forEach(cat => {
+                        const btn = filterContainer.querySelector(`button[data-category="${cat}"]`);
+                        if (btn) {
+                            btn.className = `px-4 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 ${cat === 'All' ? 'bg-red-500 text-white' : 'bg-white text-red-500 border-2 border-red-500'}`;
+                        }
+                    });
+                }
+            } else {
+                selectedCategories.add(category);
+            }
+        }
+        button.className = `px-4 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 ${selectedCategories.has(category) ? 'bg-red-500 text-white' : 'bg-white text-red-500 border-2 border-red-500'}`;
+        filterFoods();
+    };
+    button.setAttribute('data-category', category);
+    filterContainer.appendChild(button);
+});
+document.querySelector('.slot-container').parentElement.insertBefore(filterContainer, document.querySelector('.slot-container'));
+
+// Filter foods function
+let filteredFoods = [...foods];
+function filterFoods() {
+    if (selectedCategories.has('All')) {
+        filteredFoods = [...foods];
+    } else {
+        filteredFoods = foods.filter(food => selectedCategories.has(food.category));
+    }
+    createSlotItems();
+}
+
+// Add history display
+const historyContainer = document.createElement('div');
+historyContainer.className = 'mt-8 p-4 bg-white/80 backdrop-blur rounded-xl shadow-lg';
+historyContainer.innerHTML = `
+    <h3 class="text-xl font-bold mb-4 text-gray-800">Riwayat Makanan</h3>
+    <div id="historyList" class="space-y-2"></div>
+`;
+document.querySelector('.max-w-md').appendChild(historyContainer);
+
+function updateHistory(food) {
+    history.unshift({ food, timestamp: new Date().toLocaleString() });
+    if (history.length > 5) history.pop();
+    localStorage.setItem('foodHistory', JSON.stringify(history));
+    
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML = history.map(item => `
+        <div class="flex items-center justify-between p-2 bg-white/60 rounded-lg">
+            <span>${item.food.emoji} ${item.food.name}</span>
+            <span class="text-sm text-gray-500">${item.timestamp}</span>
+        </div>
+    `).join('');
+}
 
 const resultModal = document.getElementById('resultModal');
 const modalResult = document.getElementById('modalResult');
@@ -32,7 +208,7 @@ const createSlotItems = () => {
     slot.innerHTML = '';
     // Create 3 sets of items for continuous scrolling
     for (let i = 0; i < 3; i++) {
-        foods.forEach((food) => {
+        filteredFoods.forEach((food) => {
             const item = document.createElement('div');
             item.className = 'slot-item';
             item.innerHTML = `${food.emoji} ${food.name}`;
@@ -55,12 +231,15 @@ let isSpinning = false;
 spinButton.addEventListener('click', () => {
     if (isSpinning) return;
     
+    spinSound.currentTime = 0;
+    spinSound.play();
+    
     isSpinning = true;
     spinButton.disabled = true;
     resultDiv.classList.add('hidden');
     
     const itemHeight = 60; // Height of each slot item
-    const totalItems = foods.length;
+    const totalItems = filteredFoods.length;
     const randomIndex = Math.floor(Math.random() * totalItems);
     const baseScroll = totalItems * itemHeight * 2; // Two full sets for more spinning
     const randomOffset = randomIndex * itemHeight;
@@ -79,7 +258,7 @@ spinButton.addEventListener('click', () => {
     
     setTimeout(() => {
         isSpinning = false;
-        const selectedFood = foods[randomIndex];
+        const selectedFood = filteredFoods[randomIndex];
         modalResult.textContent = `Kamu sebaiknya makan ${selectedFood.name}!`;
         
         // Set the emoji in the modal
@@ -116,7 +295,14 @@ spinButton.addEventListener('click', () => {
         
         // Set the slot content to show only the selected food
         const slotContent = slotClone.querySelector('.slot-items');
-        slotContent.innerHTML = `<div class="slot-item" style="transform: translateY(0)">${selectedFood.emoji} ${selectedFood.name}</div>`;
+        slotContent.style.position = 'relative';
+        slotContent.style.top = '0';
+        slotContent.style.transform = 'none';
+        slotContent.innerHTML = `
+            <div class="slot-item" style="height: 60px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: #333;">
+                ${selectedFood.emoji} ${selectedFood.name}
+            </div>
+        `;
         slotContent.style.transform = 'translateY(0)';
         slotContent.style.transition = 'none';
         
@@ -133,10 +319,10 @@ spinButton.addEventListener('click', () => {
         // Add website link
         const websiteLink = document.createElement('div');
         websiteLink.style.marginBottom = '40px';
-        websiteLink.style.color = '#ef4444';
+        websiteLink.style.color = '#DE3163';
         websiteLink.style.fontSize = '24px';
         websiteLink.style.fontWeight = 'bold';
-        websiteLink.textContent = 'tyasono.xyz/makanmakan';
+        websiteLink.textContent = '🔗 tyasono.xyz/makanmakan';
 
         // Assemble the container
         imageContainer.appendChild(resultContent);
@@ -237,6 +423,32 @@ spinButton.addEventListener('click', () => {
         
             // Add website link
             const websiteLink = document.createElement('div');
+            websiteLink.style.backgroundImage = "url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ef4444\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"; // Add background pattern
+            imageContainer.style.backgroundAttachment = 'fixed';
+
+            // Add decorative food illustrations
+            const illustrations = document.createElement('div');
+            illustrations.style.position = 'absolute';
+            illustrations.style.inset = '0';
+            illustrations.style.pointerEvents = 'none';
+            illustrations.style.zIndex = '0';
+            illustrations.innerHTML = `
+                <div style="position: absolute; top: -24px; left: -24px; font-size: 64px; transform: rotate(-15deg); opacity: 0.2">🍜</div>
+                <div style="position: absolute; bottom: -24px; right: -24px; font-size: 64px; transform: rotate(15deg); opacity: 0.2">🍚</div>
+                <div style="position: absolute; top: 50%; left: -16px; font-size: 48px; opacity: 0.2">🍖</div>
+                <div style="position: absolute; top: 50%; right: -16px; font-size: 48px; opacity: 0.2">🥘</div>
+            `;
+            imageContainer.appendChild(illustrations);
+
+            // Style the website link with glassmorphism effect
+            websiteLink.style.background = 'rgba(255, 255, 255, 0.1)';
+            websiteLink.style.backdropFilter = 'blur(10px)';
+            websiteLink.style.WebkitBackdropFilter = 'blur(10px)';
+            websiteLink.style.padding = '12px 24px';
+            websiteLink.style.borderRadius = '12px';
+            websiteLink.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+            websiteLink.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
+            websiteLink.style.transition = 'all 0.3s ease';
             websiteLink.style.marginBottom = '40px';
             websiteLink.style.color = '#ef4444';
             websiteLink.style.fontSize = '24px';
