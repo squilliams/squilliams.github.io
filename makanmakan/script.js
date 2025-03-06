@@ -73,9 +73,9 @@ spinButton.addEventListener('click', () => {
     // Force reflow
     slot.offsetHeight;
     
-    // Start spinning with easing
+    // Start spinning with easing and ensure perfect centering
     slot.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
-    slot.style.transform = `translateY(-${totalScroll}px)`;
+    slot.style.transform = `translateY(-${totalScroll + (itemHeight/2)}px)`;
     
     setTimeout(() => {
         isSpinning = false;
@@ -97,22 +97,92 @@ spinButton.addEventListener('click', () => {
             url: window.location.href
         };
         
-        // Add share functionality to the share button
-        shareButton.onclick = () => {
-            if (navigator.share) {
-                navigator.share(shareData)
-                    .catch((error) => console.log('Error sharing:', error));
-            } else {
-                alert('Web Share API not supported on this browser');
-            }
-        };
+        // Create a temporary container for the image
+        const imageContainer = document.createElement('div');
+        imageContainer.style.width = '540px';
+        imageContainer.style.height = '960px';
+        imageContainer.style.position = 'fixed';
+        imageContainer.style.left = '-9999px';
+        imageContainer.style.background = '#fff';
+        imageContainer.style.display = 'flex';
+        imageContainer.style.flexDirection = 'column';
+        imageContainer.style.alignItems = 'center';
+        imageContainer.style.justifyContent = 'space-between';
+        imageContainer.style.padding = '40px';
+
+        // Clone the slot machine interface
+        const slotClone = document.querySelector('.slot-container').cloneNode(true);
+        slotClone.style.marginBottom = '30px';
         
-        // Generate sharing content
-        shareData = {
-            title: 'Roda Makanan Indonesia',
-            text: `Hari ini aku dapat rekomendasi makan ${selectedFood.name}! 🍽️`,
-            url: window.location.href
-        };
+        // Set the slot content to show only the selected food
+        const slotContent = slotClone.querySelector('.slot-items');
+        slotContent.innerHTML = `<div class="slot-item" style="transform: translateY(0)">${selectedFood.emoji} ${selectedFood.name}</div>`;
+        slotContent.style.transform = 'translateY(0)';
+        slotContent.style.transition = 'none';
+        
+        // Clone the result content
+        const resultContent = document.createElement('div');
+        resultContent.style.textAlign = 'center';
+        resultContent.style.marginTop = '40px';
+        resultContent.innerHTML = `
+            <h2 style="font-size: 36px; color: #1f2937; font-family: 'Playfair Display', serif; margin-bottom: 20px">Roda Makanan Indonesia</h2>
+            <div style="font-size: 48px; margin-bottom: 20px">${selectedFood.emoji}</div>
+            <p style="font-size: 24px; color: #4b5563; margin-bottom: 40px">${modalResult.textContent}</p>
+        `;
+
+        // Add website link
+        const websiteLink = document.createElement('div');
+        websiteLink.style.marginBottom = '40px';
+        websiteLink.style.color = '#ef4444';
+        websiteLink.style.fontSize = '24px';
+        websiteLink.style.fontWeight = 'bold';
+        websiteLink.textContent = 'tyasono.xyz/makanmakan';
+
+        // Assemble the container
+        imageContainer.appendChild(resultContent);
+        imageContainer.appendChild(slotClone);
+        imageContainer.appendChild(websiteLink);
+        document.body.appendChild(imageContainer);
+
+        // Generate and download the image
+        html2canvas(imageContainer).then(canvas => {
+            // Update share data to include the image
+            shareData.files = [new File([dataURItoBlob(canvas.toDataURL())], 'makanan-rekomendasi.png', { type: 'image/png' })];
+            
+            // Add share button functionality
+            shareButton.onclick = async () => {
+                try {
+                    if (navigator.canShare && navigator.canShare(shareData)) {
+                        await navigator.share(shareData);
+                    } else {
+                        const link = document.createElement('a');
+                        link.download = 'makanan-rekomendasi.png';
+                        link.href = canvas.toDataURL();
+                        link.click();
+                    }
+                } catch (error) {
+                    console.log('Error sharing:', error);
+                    // Fallback to download if sharing fails
+                    const link = document.createElement('a');
+                    link.download = 'makanan-rekomendasi.png';
+                    link.href = canvas.toDataURL();
+                    link.click();
+                }
+            };
+            document.body.removeChild(imageContainer);
+        });
+
+        // Helper function to convert Data URI to Blob
+        function dataURItoBlob(dataURI) {
+            const byteString = atob(dataURI.split(',')[1]);
+            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mimeString });
+        }
         
         // Create share buttons container
         const shareContainer = document.createElement('div');
@@ -149,6 +219,12 @@ spinButton.addEventListener('click', () => {
             const slotClone = document.querySelector('.slot-container').cloneNode(true);
             slotClone.style.marginBottom = '30px';
             
+            // Set the slot content to show only the selected food
+            const slotContent = slotClone.querySelector('.slot-items');
+            slotContent.innerHTML = `<div class="slot-item" style="transform: translateY(0)">${selectedFood.emoji} ${selectedFood.name}</div>`;
+            slotContent.style.transform = 'translateY(0)';
+            slotContent.style.transition = 'none';
+        
             // Clone the result content
             const resultContent = document.createElement('div');
             resultContent.style.textAlign = 'center';
