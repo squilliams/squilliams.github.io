@@ -6,6 +6,7 @@
   <title>Downloader WebApp</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
     /* Basic Reset & Styling */
     body {
@@ -167,14 +168,19 @@
         font-size: 2rem;
       }
     }
+
     .container {
       max-width: 600px;
       width: 90%;
-      padding: 20px;
-      margin: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slideUp 0.6s ease forwards;
     }
     
     .type-radio-group {
@@ -469,9 +475,88 @@
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
+    
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Apply animations to elements */
+    .form-group {
+      animation: slideInUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+
+    .download-btn {
+      animation: fadeIn 0.5s ease 0.5s forwards;
+      opacity: 0;
+    }
+
+    .download-btn:hover {
+      animation: pulse 1s infinite;
+    }
+
+    .utility-btn {
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .utility-btn:hover {
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    select, input[type="date"], input[type="text"] {
+      transition: all 0.3s ease;
+    }
+
+    select:focus, input:focus {
+      transform: translateY(-2px);
+    }
+
+    .toast {
+      animation: slideInUp 0.3s ease;
+    }
+
+    .favorite-item {
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Smooth transition for dark mode */
+    body, .container, h1, label, .schedule-info, 
+    select, input[type="date"], input[type="text"] {
+      transition: all 0.3s ease;
     }
 
     /* Search Filter Styles */
@@ -516,10 +601,135 @@
       color: #888;
       font-size: 1.1rem;
     }
+
+    .select-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .schedule-info {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f5f5f7;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.4;
+      transition: all 0.3s ease;
+    }
+
+    /* Add to your existing styles */
+    .utility-buttons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+  /* Update utility button styles */
+  .utility-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .utility-btn i {
+    font-size: 1.5rem;
+    color: #00796b;
+  }
+
+  body.dark-mode .utility-btn i {
+    color: #fff;
+  }
+
+  .utility-btn:hover {
+    background: rgba(0,0,0,0.1);
+    transform: scale(1.1);
+  }
+
+  body.dark-mode .utility-btn:hover {
+    background: rgba(255,255,255,0.1);
+  }
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #1a1a1a;
+    }
+
+    body.dark-mode .container {
+      background: rgba(30, 30, 30, 0.95);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode h1,
+    body.dark-mode label,
+    body.dark-mode .schedule-info {
+      color: #fff;
+    }
+
+    body.dark-mode select,
+    body.dark-mode input[type="date"],
+    body.dark-mode input[type="text"] {
+      background: #2d2d2d;
+      border-color: #404040;
+      color: #fff;
+    }
+
+    /* Favorites styles */
+    .favorite-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #f5f5f7;
+      margin: 5px 0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode .favorite-item {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .favorites-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1000;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    body.dark-mode .favorites-modal {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
   </style>
   <body>
     <div class="container">
-      <h1>Publication Downloader</h1>
+      <div class="utility-buttons">
+        <button id="darkModeToggle" class="utility-btn">
+          <i class="ph ph-moon"></i>
+        </button>
+        <button id="favoritesToggle" class="utility-btn">
+          <i class="ph ph-star"></i>
+        </button>
+      </div>      <h1>Publication Downloader</h1>
       <div class="form-group type-radio-group">
         <label class="radio-group-label">Select Type</label>
         <div class="radio-container">
@@ -534,6 +744,7 @@
         <select id="publicationSelect">
           <!-- Options will be filled dynamically -->
         </select>
+        <div id="scheduleInfo" class="schedule-info"></div>
       </div>
       <div class="form-group">
         <label for="dateInput">Select Date</label>
@@ -611,20 +822,10 @@
           urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
           defaultTime: "1020"
         },
-        wall_street_journal: {
-          name: "Wall Street Journal",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1028"
-        },
         jawa_pos: {
           name: "Jawa Pos",
           urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
           defaultTime: "1031"
-        },
-        washington_post: {
-          name: "Washington Post",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1043"
         },
         bisnis_indonesia: {
           name: "Bisnis Indonesia",
@@ -640,6 +841,11 @@
           name: "Media Indonesia",
           urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
           defaultTime: "1017"
+        },
+        the_jakarta_post: {
+          name: "The Jakarta Post",
+          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
+          defaultTime: "1029"
         },
         kontan: {
           name: "Kontan",
@@ -883,8 +1089,39 @@ function downloadFile(url, filename) {
       const type = document.querySelector('input[name="type"]:checked').value;
       const select = publicationSelect;
       select.style.opacity = '0';
-      
+
+      const schedules = {
+        kompas: "Published every day morning WIB",
+        jawa_pos: "Published every day morning WIB",
+        bisnis_indonesia: "Published every day morning WIB",
+        media_indonesia: "Published every day morning WIB",
+        pikiran_rakyat: "Published every day morning WIB (excl. Sunday)",
+        neraca: "Published every day morning WIB (excl. Sunday)",
+        kontan: "Published every day morning WIB (excl. Sunday)",
+        the_jakarta_post: "Published every day morning WIB (excl. Sunday)",
+        financial_times: "Published D+2 morning WIB (excl. Sunday)",
+        washington_post: "Published D+2 morning WIB (excl. Sunday)",
+        guardian: "Published D+1 morning WIB (excl. Sunday)",
+        time: "Published biweekly every Monday Morning WIB",
+        tempo: "Published weekly every Monday Morning WIB",
+        bloomberg: "Published monthly every first Monday",
+        the_economist: "Published weekly every Saturday, available Monday Morning WIB"
+      };
+
+      const scheduleInfo = document.getElementById('scheduleInfo');
+
+      select.addEventListener('change', () => {
+        const selectedPub = select.value;
+        scheduleInfo.textContent = schedules[selectedPub] || '';
+      });
+
+      select.addEventListener('mouseout', () => {
+        tooltip.style.opacity = '0';
+        tooltip.style.visibility = 'hidden';
+      });
+
       setTimeout(() => {
+        
         select.innerHTML = "";
         let pubs = config[type];
         for (const key in pubs) {
@@ -893,6 +1130,9 @@ function downloadFile(url, filename) {
           option.textContent = pubs[key].name;
           select.appendChild(option);
         }
+        
+        // Show initial schedule info
+        scheduleInfo.textContent = schedules[select.value] || '';
         
         if (type === "newspaper") {
           timeGroup.style.display = "block";
@@ -1061,6 +1301,88 @@ function downloadFile(url, filename) {
         `).join('')}
       `;
     }
+
+    // Add after your existing script content
+    // Dark mode functionality
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+    
+    // Load saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      body.classList.add('dark-mode');
+      darkModeToggle.textContent = '☀️';
+    }
+    
+    darkModeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      const icon = darkModeToggle.querySelector('i');
+      if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+        icon.className = 'ph ph-sun';
+      } else {
+        localStorage.setItem('darkMode', null);
+        icon.className = 'ph ph-moon';
+      }
+    });
+    
+    // Favorites functionality
+    const favoritesToggle = document.getElementById('favoritesToggle');
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    
+    function toggleFavorite(type, pubKey, pubName) {
+      const favorite = { type, pubKey, pubName };
+      const index = favorites.findIndex(f => f.type === type && f.pubKey === pubKey);
+      
+      if (index === -1) {
+        favorites.push(favorite);
+        showToast(`Added ${pubName} to favorites`, 'success');
+      } else {
+        favorites.splice(index, 1);
+        showToast(`Removed ${pubName} from favorites`, 'success');
+      }
+      
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+    
+    favoritesToggle.addEventListener('click', () => {
+      const modal = document.createElement('div');
+      modal.className = 'favorites-modal';
+      modal.style.display = 'block';
+      
+      modal.innerHTML = `
+        <h3>Favorites</h3>
+        ${favorites.length ? favorites.map(f => `
+          <div class="favorite-item">
+            <span>${f.pubName}</span>
+            <button onclick="toggleFavorite('${f.type}', '${f.pubKey}', '${f.pubName}')">❌</button>
+          </div>
+        `).join('') : '<p>No favorites yet</p>'}
+        <button onclick="this.parentElement.remove()">Close</button>
+      `;
+      
+      document.body.appendChild(modal);
+    });
+    
+    // Add favorite button to publication select
+    publicationSelect.addEventListener('change', () => {
+      const type = document.querySelector('input[name="type"]:checked').value;
+      const pubKey = publicationSelect.value;
+      const pubName = publicationSelect.options[publicationSelect.selectedIndex].text;
+      const isFavorite = favorites.some(f => f.type === type && f.pubKey === pubKey);
+      
+      const favoriteBtn = document.createElement('button');
+      favoriteBtn.className = 'utility-btn';
+      favoriteBtn.innerHTML = `<i class="ph ${isFavorite ? 'ph-star-fill' : 'ph-star'}"></i>`;
+      favoriteBtn.onclick = () => toggleFavorite(type, pubKey, pubName);
+      favoriteBtn.textContent = isFavorite ? '⭐' : '☆';
+      favoriteBtn.onclick = () => toggleFavorite(type, pubKey, pubName);
+      
+      const existingBtn = publicationSelect.nextElementSibling;
+      if (existingBtn && existingBtn.classList.contains('utility-btn')) {
+        existingBtn.remove();
+      }
+      publicationSelect.parentNode.insertBefore(favoriteBtn, publicationSelect.nextSibling);
+    });
 </script>
 </body>
 </html>
