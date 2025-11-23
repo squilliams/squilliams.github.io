@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
   <style>
     /* Basic Reset & Styling */
     body {
@@ -719,6 +721,64 @@
       color: #fff;
     }
 
+    /* Magazine Action Buttons */
+    .magazine-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, #00796b, #004d40);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 121, 107, 0.3);
+    }
+
+    .action-btn i {
+      font-size: 1.2rem;
+    }
+
+    .action-btn:hover {
+      background: linear-gradient(135deg, #004d40, #00251a);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 121, 107, 0.4);
+    }
+
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    .action-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .action-btn.google-drive {
+      background: linear-gradient(135deg, #4285f4, #1a73e8);
+    }
+
+    .action-btn.google-drive:hover {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    }
+
+    body.dark-mode .action-btn {
+      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+    }
+
   </style>
   <body>
     <div class="container">
@@ -936,6 +996,16 @@
               }
             })()">Back to Home</button>
             <h2>${pubConfig.name} - ${dateStr}</h2>
+            <div class="magazine-actions">
+              <button id="downloadPdfBtn" class="action-btn">
+                <i class="ph ph-file-pdf"></i>
+                Download as PDF
+              </button>
+              <button id="saveToDriveBtn" class="action-btn google-drive">
+                <i class="ph ph-google-logo"></i>
+                Save to Google Drive
+              </button>
+            </div>
             <div class="gallery"></div>
             <div class="pagination">
               <button id="prevPage" class="page-btn">&lt; Previous</button>
@@ -1026,13 +1096,200 @@
           closeModal.addEventListener('click', () => {
             modal.style.display = 'none';
           });
-          
+
           modal.addEventListener('click', (e) => {
             if (e.target === modal) {
               modal.style.display = 'none';
             }
           });
-          
+
+          // PDF Download functionality
+          const downloadPdfBtn = container.querySelector('#downloadPdfBtn');
+          const saveToDriveBtn = container.querySelector('#saveToDriveBtn');
+
+          downloadPdfBtn.addEventListener('click', async () => {
+            try {
+              downloadPdfBtn.disabled = true;
+              downloadPdfBtn.innerHTML = '<i class="ph ph-spinner"></i> Generating PDF...';
+              statusDiv.textContent = 'Generating PDF... This may take a few moments.';
+
+              const { jsPDF } = window.jspdf;
+              const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+              });
+
+              let pageAdded = false;
+              let successCount = 0;
+
+              for (let i = pubConfig.startPage; i <= pubConfig.maxPages; i++) {
+                const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${i}.jpg`;
+
+                try {
+                  const response = await fetch(largeUrl);
+                  if (!response.ok) {
+                    console.log(`Skipping page ${i} - not found`);
+                    continue;
+                  }
+
+                  const blob = await response.blob();
+                  const imageData = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                  });
+
+                  if (pageAdded) {
+                    pdf.addPage();
+                  }
+
+                  const pageWidth = pdf.internal.pageSize.getWidth();
+                  const pageHeight = pdf.internal.pageSize.getHeight();
+
+                  pdf.addImage(imageData, 'JPEG', 0, 0, pageWidth, pageHeight);
+                  pageAdded = true;
+                  successCount++;
+
+                  statusDiv.textContent = `Processing page ${successCount}...`;
+                } catch (error) {
+                  console.log(`Error loading page ${i}:`, error);
+                }
+              }
+
+              if (successCount === 0) {
+                throw new Error('No pages found to generate PDF');
+              }
+
+              pdf.save(`${pubConfig.name}-${dateStr}.pdf`);
+              statusDiv.textContent = `PDF generated successfully with ${successCount} pages!`;
+              showToast(`PDF downloaded with ${successCount} pages`, 'success');
+
+              downloadPdfBtn.disabled = false;
+              downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
+            } catch (error) {
+              console.error('Error generating PDF:', error);
+              statusDiv.textContent = `Error: ${error.message}`;
+              showToast('Failed to generate PDF', 'error');
+              downloadPdfBtn.disabled = false;
+              downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
+            }
+          });
+
+          // Google Drive save functionality
+          saveToDriveBtn.addEventListener('click', async () => {
+            try {
+              saveToDriveBtn.disabled = true;
+              saveToDriveBtn.innerHTML = '<i class="ph ph-spinner"></i> Preparing...';
+              statusDiv.textContent = 'Generating PDF for Google Drive...';
+
+              const { jsPDF } = window.jspdf;
+              const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+              });
+
+              let pageAdded = false;
+              let successCount = 0;
+
+              for (let i = pubConfig.startPage; i <= pubConfig.maxPages; i++) {
+                const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${i}.jpg`;
+
+                try {
+                  const response = await fetch(largeUrl);
+                  if (!response.ok) continue;
+
+                  const blob = await response.blob();
+                  const imageData = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                  });
+
+                  if (pageAdded) {
+                    pdf.addPage();
+                  }
+
+                  const pageWidth = pdf.internal.pageSize.getWidth();
+                  const pageHeight = pdf.internal.pageSize.getHeight();
+
+                  pdf.addImage(imageData, 'JPEG', 0, 0, pageWidth, pageHeight);
+                  pageAdded = true;
+                  successCount++;
+
+                  statusDiv.textContent = `Processing page ${successCount} for Google Drive...`;
+                } catch (error) {
+                  console.log(`Error loading page ${i}:`, error);
+                }
+              }
+
+              if (successCount === 0) {
+                throw new Error('No pages found to generate PDF');
+              }
+
+              // Get PDF as blob
+              const pdfBlob = pdf.output('blob');
+              const fileName = `${pubConfig.name}-${dateStr}.pdf`;
+
+              // Initialize Google Drive API
+              statusDiv.textContent = 'Connecting to Google Drive...';
+
+              gapi.load('auth2', () => {
+                gapi.auth2.init({
+                  client_id: 'YOUR_CLIENT_ID.apps.googleusercontent.com', // User needs to replace this
+                  scope: 'https://www.googleapis.com/auth/drive.file'
+                }).then(() => {
+                  const auth2 = gapi.auth2.getAuthInstance();
+
+                  auth2.signIn().then(() => {
+                    const accessToken = auth2.currentUser.get().getAuthResponse().access_token;
+
+                    statusDiv.textContent = 'Uploading to Google Drive...';
+
+                    const metadata = {
+                      name: fileName,
+                      mimeType: 'application/pdf'
+                    };
+
+                    const form = new FormData();
+                    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                    form.append('file', pdfBlob);
+
+                    fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                      method: 'POST',
+                      headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+                      body: form
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                      statusDiv.textContent = `Successfully saved to Google Drive!`;
+                      showToast('PDF saved to Google Drive successfully!', 'success');
+                      saveToDriveBtn.disabled = false;
+                      saveToDriveBtn.innerHTML = '<i class="ph ph-google-logo"></i> Save to Google Drive';
+                    })
+                    .catch(error => {
+                      throw error;
+                    });
+                  }).catch(error => {
+                    throw new Error('Google sign-in cancelled or failed');
+                  });
+                }).catch(error => {
+                  throw new Error('Failed to initialize Google Drive API');
+                });
+              });
+
+            } catch (error) {
+              console.error('Error saving to Google Drive:', error);
+              statusDiv.textContent = `Error: ${error.message}`;
+              showToast(error.message || 'Failed to save to Google Drive', 'error');
+              saveToDriveBtn.disabled = false;
+              saveToDriveBtn.innerHTML = '<i class="ph ph-google-logo"></i> Save to Google Drive';
+            }
+          });
+
         } catch (error) {
           console.error('Error:', error);
           statusDiv.textContent = `Error: ${error.message}`;
