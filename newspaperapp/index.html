@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     /* Basic Reset & Styling */
     body {
@@ -719,6 +720,50 @@
       color: #fff;
     }
 
+    /* Magazine PDF Download Button */
+    .pdf-download-btn {
+      background: linear-gradient(135deg, #00796b, #004d40);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 121, 107, 0.3);
+      margin: 20px auto;
+      max-width: 300px;
+    }
+
+    .pdf-download-btn i {
+      font-size: 1.2rem;
+    }
+
+    .pdf-download-btn:hover {
+      background: linear-gradient(135deg, #004d40, #00251a);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 121, 107, 0.4);
+    }
+
+    .pdf-download-btn:active {
+      transform: translateY(0);
+    }
+
+    .pdf-download-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    body.dark-mode .pdf-download-btn {
+      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+    }
+
   </style>
   <body>
     <div class="container">
@@ -936,6 +981,10 @@
               }
             })()">Back to Home</button>
             <h2>${pubConfig.name} - ${dateStr}</h2>
+            <button id="downloadPdfBtn" class="pdf-download-btn">
+              <i class="ph ph-file-pdf"></i>
+              Download as PDF
+            </button>
             <div class="gallery"></div>
             <div class="pagination">
               <button id="prevPage" class="page-btn">&lt; Previous</button>
@@ -1026,13 +1075,86 @@
           closeModal.addEventListener('click', () => {
             modal.style.display = 'none';
           });
-          
+
           modal.addEventListener('click', (e) => {
             if (e.target === modal) {
               modal.style.display = 'none';
             }
           });
-          
+
+          // PDF Download functionality
+          const downloadPdfBtn = container.querySelector('#downloadPdfBtn');
+
+          downloadPdfBtn.addEventListener('click', async () => {
+            try {
+              downloadPdfBtn.disabled = true;
+              downloadPdfBtn.innerHTML = '<i class="ph ph-spinner"></i> Generating PDF...';
+              statusDiv.textContent = 'Generating PDF... This may take a few moments.';
+
+              const { jsPDF } = window.jspdf;
+              const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+              });
+
+              let pageAdded = false;
+              let successCount = 0;
+
+              for (let i = pubConfig.startPage; i <= pubConfig.maxPages; i++) {
+                const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${i}.jpg`;
+
+                try {
+                  const response = await fetch(largeUrl);
+                  if (!response.ok) {
+                    console.log(`Skipping page ${i} - not found`);
+                    continue;
+                  }
+
+                  const blob = await response.blob();
+                  const imageData = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                  });
+
+                  if (pageAdded) {
+                    pdf.addPage();
+                  }
+
+                  const pageWidth = pdf.internal.pageSize.getWidth();
+                  const pageHeight = pdf.internal.pageSize.getHeight();
+
+                  pdf.addImage(imageData, 'JPEG', 0, 0, pageWidth, pageHeight);
+                  pageAdded = true;
+                  successCount++;
+
+                  statusDiv.textContent = `Processing page ${successCount}...`;
+                } catch (error) {
+                  console.log(`Error loading page ${i}:`, error);
+                }
+              }
+
+              if (successCount === 0) {
+                throw new Error('No pages found to generate PDF');
+              }
+
+              pdf.save(`${pubConfig.name}-${dateStr}.pdf`);
+              statusDiv.textContent = `PDF generated successfully with ${successCount} pages!`;
+              showToast(`PDF downloaded with ${successCount} pages`, 'success');
+
+              downloadPdfBtn.disabled = false;
+              downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
+            } catch (error) {
+              console.error('Error generating PDF:', error);
+              statusDiv.textContent = `Error: ${error.message}`;
+              showToast('Failed to generate PDF', 'error');
+              downloadPdfBtn.disabled = false;
+              downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
+            }
+          });
+
         } catch (error) {
           console.error('Error:', error);
           statusDiv.textContent = `Error: ${error.message}`;
