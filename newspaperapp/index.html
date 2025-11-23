@@ -1089,67 +1089,58 @@
             try {
               downloadPdfBtn.disabled = true;
               downloadPdfBtn.innerHTML = '<i class="ph ph-spinner"></i> Generating PDF...';
-              statusDiv.textContent = 'Generating PDF... This may take a few moments.';
+              statusDiv.textContent = 'Preparing to generate PDF...';
 
-              const { jsPDF } = window.jspdf;
-              const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
+              // Backend API URL - Update this after deploying to Render.com
+              const API_URL = 'https://your-service-url.onrender.com';  // TODO: Replace with your Render.com URL
+
+              statusDiv.textContent = 'Connecting to PDF generation service...';
+
+              // Call backend API to generate PDF
+              const response = await fetch(`${API_URL}/generate-pdf`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  magazineId: pubConfig.id,
+                  date: dateStr,
+                  magazineName: pubConfig.name
+                })
               });
 
-              let pageAdded = false;
-              let successCount = 0;
-
-              for (let i = pubConfig.startPage; i <= pubConfig.maxPages; i++) {
-                const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${i}.jpg`;
-
-                try {
-                  const response = await fetch(largeUrl);
-                  if (!response.ok) {
-                    console.log(`Skipping page ${i} - not found`);
-                    continue;
-                  }
-
-                  const blob = await response.blob();
-                  const imageData = await new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
-                  });
-
-                  if (pageAdded) {
-                    pdf.addPage();
-                  }
-
-                  const pageWidth = pdf.internal.pageSize.getWidth();
-                  const pageHeight = pdf.internal.pageSize.getHeight();
-
-                  pdf.addImage(imageData, 'JPEG', 0, 0, pageWidth, pageHeight);
-                  pageAdded = true;
-                  successCount++;
-
-                  statusDiv.textContent = `Processing page ${successCount}...`;
-                } catch (error) {
-                  console.log(`Error loading page ${i}:`, error);
-                }
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to generate PDF');
               }
 
-              if (successCount === 0) {
-                throw new Error('No pages found to generate PDF');
-              }
+              statusDiv.textContent = 'Downloading PDF...';
 
-              pdf.save(`${pubConfig.name}-${dateStr}.pdf`);
-              statusDiv.textContent = `PDF generated successfully with ${successCount} pages!`;
-              showToast(`PDF downloaded with ${successCount} pages`, 'success');
+              // Get PDF blob from response
+              const blob = await response.blob();
+
+              // Create download link
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `${pubConfig.name}-${dateStr}.pdf`;
+              document.body.appendChild(a);
+              a.click();
+
+              // Cleanup
+              window.URL.revokeObjectURL(url);
+              document.body.removeChild(a);
+
+              statusDiv.textContent = `PDF downloaded successfully!`;
+              showToast('PDF downloaded successfully!', 'success');
 
               downloadPdfBtn.disabled = false;
               downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
+
             } catch (error) {
               console.error('Error generating PDF:', error);
               statusDiv.textContent = `Error: ${error.message}`;
-              showToast('Failed to generate PDF', 'error');
+              showToast('Failed to generate PDF: ' + error.message, 'error');
               downloadPdfBtn.disabled = false;
               downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
             }
