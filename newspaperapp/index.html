@@ -1089,35 +1089,87 @@
             try {
               downloadPdfBtn.disabled = true;
               downloadPdfBtn.innerHTML = '<i class="ph ph-spinner"></i> Generating PDF...';
-              statusDiv.textContent = 'Generating PDF... This may take a few moments.';
+              statusDiv.textContent = 'Preparing to generate PDF...';
+
+              // Check if jsPDF is available
+              if (!window.jspdf) {
+                throw new Error('PDF library not loaded. Please refresh the page.');
+              }
 
               const { jsPDF } = window.jspdf;
+
+              // First, find all available pages
+              statusDiv.textContent = 'Finding available pages...';
+              const availablePages = [];
+
+              // Check pages in smaller batches to avoid overwhelming mobile browsers
+              for (let i = pubConfig.startPage; i <= pubConfig.maxPages; i++) {
+                const testUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${i}.jpg`;
+
+                try {
+                  const response = await fetch(testUrl, { method: 'HEAD' });
+                  if (response.ok) {
+                    availablePages.push(i);
+                  }
+                } catch (error) {
+                  // Page doesn't exist, continue
+                  console.log(`Page ${i} not available`);
+                  break; // Stop checking once we hit a missing page
+                }
+              }
+
+              if (availablePages.length === 0) {
+                throw new Error('No pages found for this edition. It may not be available yet.');
+              }
+
+              statusDiv.textContent = `Found ${availablePages.length} pages. Starting PDF generation...`;
+
+              // Initialize PDF
               const pdf = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
-                format: 'a4'
+                format: 'a4',
+                compress: true
               });
 
               let pageAdded = false;
-              let successCount = 0;
 
-              for (let i = pubConfig.startPage; i <= pubConfig.maxPages; i++) {
-                const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${i}.jpg`;
+              // Process images one at a time to avoid memory issues on mobile
+              for (let idx = 0; idx < availablePages.length; idx++) {
+                const pageNum = availablePages[idx];
+                const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${pageNum}.jpg`;
+
+                statusDiv.textContent = `Processing page ${idx + 1} of ${availablePages.length}...`;
 
                 try {
-                  const response = await fetch(largeUrl);
-                  if (!response.ok) {
-                    console.log(`Skipping page ${i} - not found`);
-                    continue;
-                  }
+                  // Load image using Image object for better mobile compatibility
+                  const img = await new Promise((resolve, reject) => {
+                    const image = new Image();
+                    image.crossOrigin = 'Anonymous'; // Handle CORS
 
-                  const blob = await response.blob();
-                  const imageData = await new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsDataURL(blob);
+                    image.onload = () => resolve(image);
+                    image.onerror = (err) => {
+                      console.error(`Failed to load image ${pageNum}:`, err);
+                      reject(new Error(`Failed to load page ${pageNum}`));
+                    };
+
+                    // Add timestamp to avoid cache issues
+                    image.src = largeUrl + '?t=' + Date.now();
                   });
+
+                  // Convert image to canvas then to data URL for better compatibility
+                  const canvas = document.createElement('canvas');
+                  const ctx = canvas.getContext('2d');
+
+                  // Set canvas size to image size
+                  canvas.width = img.width;
+                  canvas.height = img.height;
+
+                  // Draw image on canvas
+                  ctx.drawImage(img, 0, 0);
+
+                  // Get data URL from canvas
+                  const imageData = canvas.toDataURL('image/jpeg', 0.85);
 
                   if (pageAdded) {
                     pdf.addPage();
@@ -1128,28 +1180,42 @@
 
                   pdf.addImage(imageData, 'JPEG', 0, 0, pageWidth, pageHeight);
                   pageAdded = true;
-                  successCount++;
 
-                  statusDiv.textContent = `Processing page ${successCount}...`;
+                  // Clean up
+                  canvas.width = 0;
+                  canvas.height = 0;
+
+                  // Small delay to prevent memory issues on mobile
+                  if ((idx + 1) % 5 === 0) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                  }
+
                 } catch (error) {
-                  console.log(`Error loading page ${i}:`, error);
+                  console.error(`Error processing page ${pageNum}:`, error);
+                  statusDiv.textContent = `Warning: Skipped page ${pageNum} due to error. Continuing...`;
+                  await new Promise(resolve => setTimeout(resolve, 500));
                 }
               }
 
-              if (successCount === 0) {
-                throw new Error('No pages found to generate PDF');
+              if (!pageAdded) {
+                throw new Error('Failed to add any pages to PDF. Please try again.');
               }
 
+              statusDiv.textContent = 'Finalizing PDF...';
+
+              // Save PDF
               pdf.save(`${pubConfig.name}-${dateStr}.pdf`);
-              statusDiv.textContent = `PDF generated successfully with ${successCount} pages!`;
-              showToast(`PDF downloaded with ${successCount} pages`, 'success');
+
+              statusDiv.textContent = `PDF generated successfully with ${availablePages.length} pages!`;
+              showToast(`PDF downloaded with ${availablePages.length} pages`, 'success');
 
               downloadPdfBtn.disabled = false;
               downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
+
             } catch (error) {
               console.error('Error generating PDF:', error);
               statusDiv.textContent = `Error: ${error.message}`;
-              showToast('Failed to generate PDF', 'error');
+              showToast('Failed to generate PDF: ' + error.message, 'error');
               downloadPdfBtn.disabled = false;
               downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
             }
