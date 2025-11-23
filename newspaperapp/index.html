@@ -1091,123 +1091,48 @@
               downloadPdfBtn.innerHTML = '<i class="ph ph-spinner"></i> Generating PDF...';
               statusDiv.textContent = 'Preparing to generate PDF...';
 
-              // Check if jsPDF is available
-              if (!window.jspdf) {
-                throw new Error('PDF library not loaded. Please refresh the page.');
-              }
+              // Backend API URL - Update this after deploying to Render.com
+              const API_URL = 'https://your-service-url.onrender.com';  // TODO: Replace with your Render.com URL
 
-              const { jsPDF } = window.jspdf;
+              statusDiv.textContent = 'Connecting to PDF generation service...';
 
-              // First, find all available pages
-              statusDiv.textContent = 'Finding available pages...';
-              const availablePages = [];
-
-              // Check pages in smaller batches to avoid overwhelming mobile browsers
-              for (let i = pubConfig.startPage; i <= pubConfig.maxPages; i++) {
-                const testUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${i}.jpg`;
-
-                try {
-                  const response = await fetch(testUrl, { method: 'HEAD' });
-                  if (response.ok) {
-                    availablePages.push(i);
-                  }
-                } catch (error) {
-                  // Page doesn't exist, continue
-                  console.log(`Page ${i} not available`);
-                  break; // Stop checking once we hit a missing page
-                }
-              }
-
-              if (availablePages.length === 0) {
-                throw new Error('No pages found for this edition. It may not be available yet.');
-              }
-
-              statusDiv.textContent = `Found ${availablePages.length} pages. Starting PDF generation...`;
-
-              // Initialize PDF
-              const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4',
-                compress: true
+              // Call backend API to generate PDF
+              const response = await fetch(`${API_URL}/generate-pdf`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  magazineId: pubConfig.id,
+                  date: dateStr,
+                  magazineName: pubConfig.name
+                })
               });
 
-              let pageAdded = false;
-
-              // Process images one at a time to avoid memory issues on mobile
-              for (let idx = 0; idx < availablePages.length; idx++) {
-                const pageNum = availablePages[idx];
-                const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${pageNum}.jpg`;
-
-                statusDiv.textContent = `Processing page ${idx + 1} of ${availablePages.length}...`;
-
-                try {
-                  // Load image using Image object for better mobile compatibility
-                  const img = await new Promise((resolve, reject) => {
-                    const image = new Image();
-                    image.crossOrigin = 'Anonymous'; // Handle CORS
-
-                    image.onload = () => resolve(image);
-                    image.onerror = (err) => {
-                      console.error(`Failed to load image ${pageNum}:`, err);
-                      reject(new Error(`Failed to load page ${pageNum}`));
-                    };
-
-                    // Add timestamp to avoid cache issues
-                    image.src = largeUrl + '?t=' + Date.now();
-                  });
-
-                  // Convert image to canvas then to data URL for better compatibility
-                  const canvas = document.createElement('canvas');
-                  const ctx = canvas.getContext('2d');
-
-                  // Set canvas size to image size
-                  canvas.width = img.width;
-                  canvas.height = img.height;
-
-                  // Draw image on canvas
-                  ctx.drawImage(img, 0, 0);
-
-                  // Get data URL from canvas
-                  const imageData = canvas.toDataURL('image/jpeg', 0.85);
-
-                  if (pageAdded) {
-                    pdf.addPage();
-                  }
-
-                  const pageWidth = pdf.internal.pageSize.getWidth();
-                  const pageHeight = pdf.internal.pageSize.getHeight();
-
-                  pdf.addImage(imageData, 'JPEG', 0, 0, pageWidth, pageHeight);
-                  pageAdded = true;
-
-                  // Clean up
-                  canvas.width = 0;
-                  canvas.height = 0;
-
-                  // Small delay to prevent memory issues on mobile
-                  if ((idx + 1) % 5 === 0) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                  }
-
-                } catch (error) {
-                  console.error(`Error processing page ${pageNum}:`, error);
-                  statusDiv.textContent = `Warning: Skipped page ${pageNum} due to error. Continuing...`;
-                  await new Promise(resolve => setTimeout(resolve, 500));
-                }
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to generate PDF');
               }
 
-              if (!pageAdded) {
-                throw new Error('Failed to add any pages to PDF. Please try again.');
-              }
+              statusDiv.textContent = 'Downloading PDF...';
 
-              statusDiv.textContent = 'Finalizing PDF...';
+              // Get PDF blob from response
+              const blob = await response.blob();
 
-              // Save PDF
-              pdf.save(`${pubConfig.name}-${dateStr}.pdf`);
+              // Create download link
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `${pubConfig.name}-${dateStr}.pdf`;
+              document.body.appendChild(a);
+              a.click();
 
-              statusDiv.textContent = `PDF generated successfully with ${availablePages.length} pages!`;
-              showToast(`PDF downloaded with ${availablePages.length} pages`, 'success');
+              // Cleanup
+              window.URL.revokeObjectURL(url);
+              document.body.removeChild(a);
+
+              statusDiv.textContent = `PDF downloaded successfully!`;
+              showToast('PDF downloaded successfully!', 'success');
 
               downloadPdfBtn.disabled = false;
               downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
