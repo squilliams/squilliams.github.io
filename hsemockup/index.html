@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HSE Golden Rules – Emergency Management</title>
+  <meta name="description" content="Interactive HSE Golden Rules mockup focused on Emergency Management with animations and professional wording." />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root{
+      --gold:#FFCD00;
+      --green:#009E62;
+      --lime:#95b849;
+      --ink:#0f172a;
+      --slate:#1f2937;
+      --muted:#64748b;
+      --bg:#0b1320;
+      --card:#0f1b2e;
+      --white:#ffffff;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --grid-gap: 18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      color: var(--white);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(255,205,0,.12), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(0,158,98,.12), transparent 60%),
+        linear-gradient(180deg, #0a1223 0%, #060b16 100%);
+      overflow-x:hidden;
+      line-height: 1.4;
+    }
+    a{color:var(--gold);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{width:min(1100px,90vw);margin-inline:auto}
+
+    /* Nav */
+    .nav{
+      position:sticky; top:0; z-index:100;
+      backdrop-filter: blur(10px);
+      background: color-mix(in oklab, #0a1223 80%, #000 20% / 60%);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav .inner{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px
+    }
+    .brand .dot{width:10px;height:10px;border-radius:50%;
+      background: conic-gradient(from 90deg, var(--gold), var(--lime), var(--green));
+      box-shadow: 0 0 0 4px rgba(255,255,255,.06) inset;
+    }
+    .nav a.btn{
+      padding:10px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.14);
+      transition:.2s; font-weight:600;
+    }
+    .nav a.btn:hover{background:rgba(255,255,255,.06)}
+    .btn i{margin-right:8px}
+
+    /* Hero */
+    .hero{
+      position:relative; overflow:hidden;
+      isolation:isolate;
+    }
+    .hero .container{padding:80px 0 56px}
+    .eyebrow{color:var(--lime); font-weight:700; text-transform:uppercase; letter-spacing: .12em}
+    h1{
+      font-size: clamp(36px, 6vw, 64px);
+      line-height: 1.02; margin: 14px 0 12px;
+      background: linear-gradient(180deg, #fff, #cbd5e1 60%, #94a3b8);
+      -webkit-background-clip:text; background-clip:text; color: transparent;
+    }
+    .lead{font-size:clamp(16px,2.2vw,20px); color:#cbd5e1; max-width: 75ch}
+    .cta{
+      margin-top:22px; display:flex; gap:12px; flex-wrap:wrap
+    }
+    .button{
+      background:linear-gradient(135deg,var(--gold),#ffd940);
+      color:#1f2937; border:none; padding:12px 18px; border-radius:999px;
+      font-weight:800; letter-spacing:.2px; box-shadow: var(--shadow);
+      cursor:pointer; transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .button:hover{transform:translateY(-1px)}
+    .button.alt{
+      background: linear-gradient(135deg, var(--green), #00b377);
+      color:#fff;
+    }
+    .button i{margin-right:8px}
+    .orbits{
+      position:absolute; inset: -20% -10% auto -10%; height: 90vh; pointer-events:none; z-index:-1;
+      background:
+        radial-gradient(600px 600px at 30% 30%, rgba(255,205,0,.15), transparent 60%),
+        radial-gradient(600px 600px at 70% 30%, rgba(0,158,98,.18), transparent 60%);
+      mask:
+        radial-gradient(1200px 600px at 50% 100%, #000 40%, transparent 80%);
+      animation: floatBg 18s ease-in-out infinite;
+    }
+    @keyframes floatBg{
+      0%,100%{transform: translateY(0)}
+      50%{transform: translateY(-10px)}
+    }
+
+    /* Sections scaffolding */
+    section{padding: 56px 0; position: relative}
+    .section-title{
+      font-size: clamp(22px, 3vw, 32px);
+      margin: 0 0 18px; color:#e2e8f0; font-weight:800;
+    }
+    .muted{color:#9fb0c5}
+
+    /* Emergency – cards */
+    .grid{
+      display:grid; grid-template-columns: repeat( auto-fit, minmax(260px, 1fr) );
+      gap: var(--grid-gap);
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: 18px 16px 16px;
+      box-shadow: var(--shadow);
+      transform: translateY(6px);
+      opacity:.0;
+      transition:.5s transform cubic-bezier(.2,.8,.2,1), .6s opacity;
+    }
+    .card.show{transform: translateY(0); opacity:1}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px; font-weight:700; letter-spacing:.2px;
+      font-size:12px; text-transform:uppercase; padding:6px 9px; border-radius:999px;
+      background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+    }
+    .chip i{display:inline-block; width:8px; height:8px; border-radius:50%}
+    .chip .fa-solid{font-size:12px}
+    .chip.gold i{background:var(--gold)}
+    .chip.green i{background:var(--green)}
+    .chip.lime i{background:var(--lime)}
+    .card h3{margin:12px 0 6px}
+    .card p{margin:0; color:#cbd5e1}
+    .card .hint{font-size:12px; color:#9fb0c5; margin-top:10px}
+
+    .flow{
+      margin-top: 18px;
+      border-left: 3px dashed rgba(255,255,255,.16);
+      padding-left: 18px;
+    }
+    .step{
+      position: relative; margin: 14px 0; padding: 12px 12px 12px 16px;
+      background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-sm);
+      transition: .25s;
+    }
+    .step::before{
+      content:''; position:absolute; left:-28px; top:18px; width:14px; height:14px; border-radius:50%;
+      border: 3px solid var(--green); background: var(--bg); box-shadow:0 0 0 4px rgba(0,158,98,.2);
+    }
+    .step:hover{transform: translateX(4px); background: rgba(255,255,255,.06)}
+    .step strong{color:#e2e8f0}
+
+    /* Interactive checklist */
+    .checklist{display:grid; gap:10px; margin-top:10px}
+    .check{
+      display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08); padding:10px 12px; border-radius: 12px;
+      cursor:pointer; transition:.2s;
+    }
+    .check input{appearance:none; width:18px; height:18px; border-radius: 4px; border:2px solid #cbd5e1; position:relative}
+    .check input:checked{background: conic-gradient(var(--gold), var(--lime), var(--green)); border-color:transparent}
+    .check input:checked::after{content:'✓'; position:absolute; inset:0; display:grid; place-items:center; color:#000; font-weight:900; font-size:12px}
+    .check.done{background: linear-gradient(90deg, rgba(0,158,98,.15), transparent 70%)}
+
+    /* Coming soon tiles */
+    .tiles{
+      display:grid; grid-template-columns: repeat( auto-fit, minmax(220px,1fr) ); gap: var(--grid-gap);
+    }
+    .tile{
+      position:relative; border-radius: var(--radius); overflow:hidden; border:1px solid rgba(255,255,255,.08);
+      background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      aspect-ratio: 4/3; display:grid; place-items:center; text-align:center;
+      transition:.3s transform ease;
+    }
+    .tile:hover{transform: translateY(-4px)}
+    .tile h4{margin:0; color:#e2e8f0}
+    .badge{
+      position:absolute; top:10px; right:10px; padding:6px 10px; border-radius:999px;
+      font-weight:800; background: linear-gradient(135deg, var(--gold), #ffe775); color:#111827;
+      filter: drop-shadow(0 4px 12px rgba(255,205,0,.3));
+    }
+    .tile .fa-solid{position:absolute; bottom:14px; left:14px; font-size:64px; opacity:.18; color:#fff}
+    .tile::after{
+      content:'Coming Soon'; position:absolute; inset:auto 0 0 0; padding:10px; font-weight:700;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.55));
+      color:#fff; letter-spacing:.4px;
+    }
+
+    /* Footer */
+    footer{padding: 32px 0; color:#94a3b8; font-size:14px; border-top:1px solid rgba(255,255,255,.08)}
+    .credits{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+
+    /* Utilities */
+    .sr{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0}
+    .row{display:flex; gap:var(--grid-gap); flex-wrap:wrap}
+    .row .col{flex:1; min-width:260px}
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container inner">
+      <div class="brand" aria-label="HSE Golden Rules">
+        <span class="dot" aria-hidden="true"></span>
+        <i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+        <span>HSE Golden Rules</span>
+      </div>
+      <div class="links">
+        <a class="btn" href="#em"><i class="fa-solid fa-fire-extinguisher" aria-hidden="true"></i>Emergency Management</a>
+        <a class="btn" href="#others"><i class="fa-solid fa-list-check" aria-hidden="true"></i>Other Rules</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" role="banner">
+    <div class="orbits" aria-hidden="true"></div>
+    <div class="container">
+      <div class="eyebrow">Golden Rule Focus</div>
+      <h1>Emergency Management</h1>
+      <p class="lead">Emergency management is the coordinated set of measures that prepare, respond, and restore operations during incidents that threaten people, assets, or the environment. The goal is simple: protect life first, then stabilize the situation, and enable a safe recovery.</p>
+      <div class="cta">
+        <a href="#em" class="button"><i class="fa-solid fa-compass" aria-hidden="true"></i>Explore Guidance</a>
+        <button class="button alt" id="toggleHighContrast" aria-pressed="false"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>Toggle High‑Contrast</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+    <section id="em" class="container">
+      <h2 class="section-title">Core Practices for Emergency Readiness</h2>
+      <p class="muted">These principles help everyone act quickly and consistently in an emergency. Each card expands on what good looks like in day‑to‑day work.</p>
+      <div class="grid" id="cards">
+        <article class="card" tabindex="0" aria-label="Share clear information">
+          <span class="chip gold"><i></i><span class="fa-solid fa-bullhorn" aria-hidden="true"></span> Communicate Clearly</span>
+          <h3>Provide precise, factual information</h3>
+          <p>When reporting an incident, state what happened, where, when, and who is affected. Share only verified details and avoid speculation to prevent confusion.</p>
+          <p class="hint">Why it matters: clear information accelerates the right response.</p>
+        </article>
+
+        <article class="card" tabindex="0" aria-label="Call the right help">
+          <span class="chip green"><i></i><span class="fa-solid fa-phone-volume" aria-hidden="true"></span> Call & Confirm</span>
+          <h3>Contact emergency services and site responders</h3>
+          <p>Know the emergency numbers for your location and confirm whether trained responders are available. Brief the operator to identify a fire, medical, or other emergency.</p>
+          <div class="flow">
+            <div class="step"><strong>1.</strong> Dial the local emergency number and state your location.</div>
+            <div class="step"><strong>2.</strong> Describe the incident type, hazards, and any casualties.</div>
+            <div class="step"><strong>3.</strong> Stay on the line until told to hang up.</div>
+          </div>
+        </article>
+
+        <article class="card" tabindex="0" aria-label="Know the collection point">
+          <span class="chip lime"><i></i><span class="fa-solid fa-route" aria-hidden="true"></span> Know Your Route</span>
+          <h3>Use the shortest route to the assembly area</h3>
+          <p>Familiarize yourself with the nearest assembly point and evacuation map for your work area. If visiting, ask the host for the site plan.</p>
+          <p class="hint">Practice makes this second nature during a real event.</p>
+        </article>
+
+        <article class="card" tabindex="0" aria-label="Check emergency equipment">
+          <span class="chip green"><i></i><span class="fa-solid fa-kit-medical" aria-hidden="true"></span> Equipment Ready</span>
+          <h3>Ensure fire and first‑aid equipment is available</h3>
+          <p>Locate extinguishers, hose reels, hydrants, and first‑aid kits. Ensure seals are intact, pressure gauges are in the green, and access is unobstructed.</p>
+        </article>
+
+        <article class="card" tabindex="0" aria-label="Know the emergency plan">
+          <span class="chip gold"><i></i><span class="fa-solid fa-map" aria-hidden="true"></span> Plan Awareness</span>
+          <h3>Know and follow the site emergency plan</h3>
+          <p>Before starting any activity, review the emergency plan and identify your escape routes and communication channels for the area.</p>
+        </article>
+
+        <article class="card" tabindex="0" aria-label="Keep routes clear">
+          <span class="chip lime"><i></i><span class="fa-solid fa-person-walking-arrow-right" aria-hidden="true"></span> Keep Routes Clear</span>
+          <h3>Maintain clean, signed, and unobstructed exits</h3>
+          <p>Never store materials in transit corridors. Keep doors unlocked where required and ensure exit signage and lighting are functional.</p>
+        </article>
+      </div>
+
+      <div class="row" style="margin-top:22px">
+        <div class="col">
+          <h3 class="section-title">Personal Readiness Checklist</h3>
+          <div class="checklist" id="checklist">
+            <label class="check"><input type="checkbox" /> I know the assembly point nearest to my work area.</label>
+            <label class="check"><input type="checkbox" /> I have the site emergency number saved on my phone.</label>
+            <label class="check"><input type="checkbox" /> I can locate a fire extinguisher and a first‑aid kit.</label>
+            <label class="check"><input type="checkbox" /> My primary and secondary escape routes are clear.</label>
+            <label class="check"><input type="checkbox" /> I have read today’s task‑specific emergency notes.</label>
+          </div>
+        </div>
+        <div class="col">
+          <h3 class="section-title">Immediate Actions</h3>
+          <div class="flow" aria-label="Immediate actions">
+            <div class="step"><strong>Assess</strong> the scene from a safe distance. Do not take unnecessary risk.</div>
+            <div class="step"><strong>Alert</strong> emergency services and the site team. Share clear, concise facts.</div>
+            <div class="step"><strong>Assist</strong> only if trained and it is safe to do so.</div>
+            <div class="step"><strong>Assemble</strong> at the designated point and await instructions.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="others" class="container">
+      <h2 class="section-title">Other HSE Golden Rules</h2>
+      <p class="muted">These topics are part of the broader HSE Golden Rules framework. Detailed guidance is coming soon.</p>
+      <div class="tiles">
+        <div class="tile" role="group" aria-label="Work at Height">
+          <span class="badge">Work at Height</span>
+          <i class="fa-solid fa-up-long" aria-hidden="true"></i>
+          <h4>Prevent falls — plan, protect, inspect</h4>
+        </div>
+        <div class="tile" role="group" aria-label="Load Handling">
+          <span class="badge">Load Handling</span>
+          <i class="fa-solid fa-boxes-stacked" aria-hidden="true"></i>
+          <h4>Lift safely — assess, rig, exclude</h4>
+        </div>
+        <div class="tile" role="group" aria-label="Excavation Safety">
+          <span class="badge">Excavation Safety</span>
+          <i class="fa-solid fa-person-digging" aria-hidden="true"></i>
+          <h4>Dig smart — locate services, shore, monitor</h4>
+        </div>
+        <div class="tile" role="group" aria-label="Housekeeping">
+          <span class="badge">Housekeeping</span>
+          <i class="fa-solid fa-broom" aria-hidden="true"></i>
+          <h4>Keep it tidy — remove clutter, prevent slips</h4>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container credits">
+      <span>© Company • HSE Golden Rules Mockup</span>
+      <span aria-hidden="true">•</span>
+      <span>Palette: Gold <span style="color:var(--gold)">●</span> Lime <span style="color:var(--lime)">●</span> Green <span style="color:var(--green)">●</span></span>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll-reveal cards
+    const observer = new IntersectionObserver((entries) => {
+      for(const e of entries){
+        if(e.isIntersecting){ e.target.classList.add('show'); observer.unobserve(e.target) }
+      }
+    }, {threshold:.18});
+    for(const c of document.querySelectorAll('.card')) observer.observe(c);
+
+    // Checklist interactions
+    const checklist = document.getElementById('checklist');
+    checklist.addEventListener('change', (e)=>{
+      const item = e.target.closest('.check');
+      if(!item) return;
+      item.classList.toggle('done', e.target.checked);
+    });
+
+    // High contrast toggle for accessibility
+    const toggle = document.getElementById('toggleHighContrast');
+    toggle.addEventListener('click', ()=>{
+      const on = document.body.classList.toggle('hi');
+      toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if(on){
+        document.documentElement.style.setProperty('--bg', '#000');
+        document.body.style.background = '#000';
+      }else{
+        document.body.style.background = '';
+      }
+    });
+  </script>
+</body>
+</html>
