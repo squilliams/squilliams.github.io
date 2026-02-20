@@ -116,6 +116,93 @@
     }
     .muted{color:#9fb0c5}
 
+    .quiz-section{padding-top:40px}
+    .quiz-shell{
+      display:flex; gap:32px; align-items:center; flex-wrap:wrap;
+    }
+    .mascot-wrap{
+      flex:1; min-width:260px; text-align:center;
+    }
+    .mascot{
+      width:230px; max-width:70%; margin:0 auto 12px;
+      border-radius:50%; padding:10px;
+      background: radial-gradient(circle at 20% 0, rgba(255,205,0,.32), transparent 60%), #020617;
+      box-shadow: 0 18px 45px rgba(0,0,0,.65);
+      transform-origin:50% 80%;
+      animation: bob 4s ease-in-out infinite;
+    }
+    .mascot img{width:100%; display:block; border-radius:50%}
+    .mascot-caption{
+      font-size:14px; color:#cbd5e1;
+    }
+    .quiz-card{
+      flex:1.2; min-width:280px;
+      background: linear-gradient(145deg, rgba(15,23,42,.96), rgba(15,23,42,.85));
+      border-radius: var(--radius);
+      padding:18px 18px 16px;
+      border:1px solid rgba(148,163,184,.4);
+      box-shadow: var(--shadow);
+    }
+    .quiz-pill{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(15,118,110,.12); border:1px solid rgba(34,197,94,.45);
+      color:#bbf7d0;
+      margin-bottom:8px;
+    }
+    .quiz-pill .fa-solid{font-size:13px}
+    .quiz-meta{font-size:13px; color:#9fb0c5; margin:0 0 6px}
+    .quiz-card h3{margin:4px 0 12px; font-size:20px}
+    .options{display:grid; gap:8px}
+    .option-btn{
+      width:100%; text-align:left;
+      padding:9px 11px; border-radius:10px;
+      border:1px solid rgba(148,163,184,.55);
+      background:rgba(15,23,42,.7);
+      color:#e5e7eb; font-size:14px;
+      display:flex; align-items:flex-start; gap:8px;
+      cursor:pointer; transition:.18s transform ease, .18s background ease, .18s border-color ease;
+    }
+    .option-btn span.index{
+      width:22px; height:22px; border-radius:999px;
+      display:grid; place-items:center;
+      border:1px solid rgba(148,163,184,.8);
+      font-size:12px;
+    }
+    .option-btn:hover{transform: translateY(-1px); background:rgba(15,23,42,.9)}
+    .option-btn.correct{
+      border-color:var(--green);
+      background: rgba(0,158,98,.18);
+    }
+    .option-btn.wrong{
+      border-color:#f97316;
+      background: rgba(248,113,113,.18);
+    }
+    .quiz-feedback{
+      min-height:24px; margin:10px 0 4px;
+      font-size:13px; color:#e5e7eb;
+    }
+    .quiz-footer{
+      display:flex; justify-content:space-between; align-items:center; margin-top:4px;
+    }
+    .quiz-progress{
+      display:flex; gap:4px;
+    }
+    .quiz-dot{
+      width:8px; height:8px; border-radius:999px;
+      background:rgba(148,163,184,.5);
+    }
+    .quiz-dot.active{background:var(--gold)}
+    .button.small{
+      padding:8px 13px; font-size:13px; box-shadow:none;
+    }
+    @keyframes bob{
+      0%,100%{transform:translateY(0) rotate(0deg)}
+      25%{transform:translateY(-4px) rotate(-1deg)}
+      75%{transform:translateY(-2px) rotate(1deg)}
+    }
+
     /* Emergency – cards */
     .grid{
       display:grid; grid-template-columns: repeat( auto-fit, minmax(260px, 1fr) );
@@ -219,6 +306,7 @@
         <span>HSE Golden Rules</span>
       </div>
       <div class="links">
+        <a class="btn" href="#quiz"><i class="fa-solid fa-circle-question" aria-hidden="true"></i>Quiz</a>
         <a class="btn" href="#em"><i class="fa-solid fa-fire-extinguisher" aria-hidden="true"></i>Emergency Management</a>
         <a class="btn" href="#others"><i class="fa-solid fa-list-check" aria-hidden="true"></i>Other Rules</a>
       </div>
@@ -239,6 +327,31 @@
   </header>
 
   <main id="content">
+    <section id="quiz" class="container quiz-section">
+      <div class="quiz-shell">
+        <div class="mascot-wrap">
+          <figure class="mascot">
+            <img src="hse-mascot.jpeg" alt="Friendly safety mascot encouraging safe emergency behaviour" />
+          </figure>
+          <p class="mascot-caption">Not so dumb ways to stay safe: learn fast, act smart, stay ready.</p>
+        </div>
+        <div class="quiz-card" aria-live="polite">
+          <div class="quiz-pill">
+            <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+            <span>Quick Safety Quiz</span>
+          </div>
+          <p class="quiz-meta"><span id="quizIndex"></span> of <span id="quizTotal"></span> • Emergency Management</p>
+          <h3 id="quizQuestion"></h3>
+          <div class="options" id="quizOptions"></div>
+          <p class="quiz-feedback" id="quizFeedback"></p>
+          <div class="quiz-footer">
+            <div class="quiz-progress" id="quizProgress"></div>
+            <button type="button" class="button alt small" id="quizNext"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i>Next scenario</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="em" class="container">
       <h2 class="section-title">Core Practices for Emergency Readiness</h2>
       <p class="muted">These principles help everyone act quickly and consistently in an emergency. Each card expands on what good looks like in day‑to‑day work.</p>
@@ -375,6 +488,140 @@
         document.body.style.background = '';
       }
     });
+
+    const quizData = [
+      {
+        question: "The fire alarm sounds while you are working at your desk. What is your best first response?",
+        options: [
+          "Collect your personal items and continue working until you see smoke.",
+          "Move calmly to the nearest safe exit and go to the assembly area.",
+          "Wait to see if anyone else starts to evacuate before you decide."
+        ],
+        correctIndex: 1,
+        explanation: "Evacuate immediately via the nearest safe route and assemble so everyone can be accounted for."
+      },
+      {
+        question: "Before starting work in a new area, which action strengthens emergency readiness the most?",
+        options: [
+          "Memorise the Wi‑Fi password in case you need to send emails.",
+          "Check where the assembly point, alarms, and emergency numbers are posted.",
+          "Ask a colleague to call you if something serious happens."
+        ],
+        correctIndex: 1,
+        explanation: "Knowing alarms, exits, and emergency contacts ensures you can react quickly if an incident occurs."
+      },
+      {
+        question: "You call the site emergency number. What information should you give first?",
+        options: [
+          "A detailed description of your job role and department.",
+          "The number of people in the building at that moment.",
+          "Your exact location and the type of emergency you are reporting."
+        ],
+        correctIndex: 2,
+        explanation: "Stating location and emergency type helps responders reach the right place with suitable resources."
+      },
+      {
+        question: "On your way to the exit you see boxes blocking an escape route. What should you do?",
+        options: [
+          "Ignore them and assume security will move them later.",
+          "Report the obstruction and arrange for the route to be cleared immediately.",
+          "Step over the boxes; they are not a concern during routine work."
+        ],
+        correctIndex: 1,
+        explanation: "Escape routes must remain clear at all times so evacuation is safe and fast."
+      }
+    ];
+
+    const quizQuestion = document.getElementById('quizQuestion');
+    const quizOptions = document.getElementById('quizOptions');
+    const quizFeedback = document.getElementById('quizFeedback');
+    const quizIndexEl = document.getElementById('quizIndex');
+    const quizTotalEl = document.getElementById('quizTotal');
+    const quizNext = document.getElementById('quizNext');
+    const quizProgress = document.getElementById('quizProgress');
+
+    let quizIndex = 0;
+    let autoSlide;
+
+    function buildProgressDots() {
+      quizProgress.innerHTML = '';
+      quizData.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'quiz-dot' + (idx === quizIndex ? ' active' : '');
+        quizProgress.appendChild(dot);
+      });
+    }
+
+    function showQuestion(index) {
+      const item = quizData[index];
+      quizQuestion.textContent = item.question;
+      quizOptions.innerHTML = '';
+      item.options.forEach((text, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        btn.dataset.index = idx;
+        const badge = document.createElement('span');
+        badge.className = 'index';
+        badge.textContent = String.fromCharCode(65 + idx);
+        const label = document.createElement('span');
+        label.textContent = text;
+        btn.appendChild(badge);
+        btn.appendChild(label);
+        quizOptions.appendChild(btn);
+      });
+      quizIndexEl.textContent = index + 1;
+      quizTotalEl.textContent = quizData.length;
+      quizFeedback.textContent = '';
+      buildProgressDots();
+    }
+
+    function clearAutoSlide() {
+      if (autoSlide) {
+        clearInterval(autoSlide);
+        autoSlide = null;
+      }
+    }
+
+    function startAutoSlide() {
+      clearAutoSlide();
+      autoSlide = setInterval(() => {
+        quizIndex = (quizIndex + 1) % quizData.length;
+        showQuestion(quizIndex);
+      }, 12000);
+    }
+
+    quizOptions.addEventListener('click', (event) => {
+      const target = event.target.closest('.option-btn');
+      if (!target) return;
+      const selected = Number(target.dataset.index);
+      const correct = quizData[quizIndex].correctIndex;
+      const buttons = quizOptions.querySelectorAll('.option-btn');
+      buttons.forEach(btn => {
+        const idx = Number(btn.dataset.index);
+        btn.disabled = true;
+        if (idx === correct) {
+          btn.classList.add('correct');
+        } else if (idx === selected) {
+          btn.classList.add('wrong');
+        }
+      });
+      if (selected === correct) {
+        quizFeedback.textContent = "Correct – " + quizData[quizIndex].explanation;
+      } else {
+        quizFeedback.textContent = "Good try – " + quizData[quizIndex].explanation;
+      }
+      startAutoSlide();
+    });
+
+    quizNext.addEventListener('click', () => {
+      quizIndex = (quizIndex + 1) % quizData.length;
+      showQuestion(quizIndex);
+      startAutoSlide();
+    });
+
+    showQuestion(quizIndex);
+    startAutoSlide();
   </script>
 </body>
 </html>
