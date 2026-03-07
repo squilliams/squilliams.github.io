@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasih THR Berapa? | Panduan THR Lebaran</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8FBC8F;
+            --primary-light: #B5EAD7;
+            --accent: #F4C430;
+            --background: #FFF8E7;
+            --text: #2D2D2D;
+            --card: #FFFFFF;
+            --border: #E8E4D6;
+            --shadow: rgba(45, 45, 45, 0.1);
+            --pelit: #FF9B85;
+            --royal: #9D7DE0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-top: 24px;
+        }
+        
+        h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+        
+        .hero {
+            display: flex;
+            justify-content: center;
+            margin: 24px 0;
+            position: relative;
+            height: 120px;
+        }
+        
+        .money-emoji {
+            font-size: 3rem;
+            position: absolute;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .money-emoji:nth-child(1) { animation-delay: 0s; left: 15%; }
+        .money-emoji:nth-child(2) { animation-delay: 0.5s; left: 30%; }
+        .money-emoji:nth-child(3) { animation-delay: 1s; left: 45%; }
+        .money-emoji:nth-child(4) { animation-delay: 1.5s; left: 60%; }
+        .money-emoji:nth-child(5) { animation-delay: 2s; left: 75%; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .section {
+            background-color: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        h2 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .step {
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .step-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            user-select: none;
+        }
+
+        .step-header h2 {
+            margin-bottom: 0;
+            flex-grow: 1;
+        }
+
+        .step-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: var(--primary);
+        }
+
+        .step.collapsed .step-icon {
+            transform: rotate(-90deg);
+        }
+
+        .step-content {
+            max-height: 2000px;
+            opacity: 1;
+            transition: all 0.3s ease-in-out;
+            padding-top: 10px;
+        }
+
+        .step.collapsed .step-content {
+            max-height: 0;
+            opacity: 0;
+            padding-top: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .city-selector {
+            display: flex;
+            overflow-x: auto;
+            gap: 16px;
+            padding: 10px 4px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 16px;
+        }
+        
+        .city-selector::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .city-option {
+            min-width: 200px;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            background-color: white;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+        
+        .city-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+        
+        .city-option.selected {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(143, 188, 143, 0.3);
+        }
+
+        .city-scroll-hint {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 12px;
+        }
+
+        .city-scroll-hint i {
+            animation: bounce-x 2s infinite;
+        }
+
+        @keyframes bounce-x {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+        
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .mode-card {
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            background-color: white;
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .mode-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 6px 12px rgba(244, 196, 48, 0.2);
+        }
+        
+        .mode-card.pelit.selected {
+            border-color: var(--pelit);
+            box-shadow: 0 6px 12px rgba(255, 155, 133, 0.2);
+        }
+        
+        .mode-card.royal.selected {
+            border-color: var(--royal);
+            box-shadow: 0 6px 12px rgba(157, 125, 224, 0.2);
+        }
+        
+        .mode-emoji {
+            font-size: 2.5rem;
+        }
+        
+        .mode-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .mode-multiplier {
+            font-weight: 500;
+            color: var(--text);
+            background-color: var(--background);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        
+        .budget-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .budget-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        input, select {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            background-color: white;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .budget-amount {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .recipients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .recipient-category {
+            background-color: var(--background);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .category-name {
+            font-weight: 600;
+        }
+        
+        .category-base {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .category-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        
+        .counter-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background-color: white;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .counter-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .counter-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .calculate-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 32px auto;
+            display: block;
+            box-shadow: 0 4px 8px rgba(143, 188, 143, 0.3);
+        }
+        
+        .calculate-btn:hover {
+            background-color: #7CA87C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(143, 188, 143, 0.4);
+        }
+        
+        .results-section {
+            display: none;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .total-thr {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2rem;
+            color: var(--accent);
+            font-weight: 800;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .results-table th, .results-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .results-table th {
+            background-color: var(--background);
+            font-weight: 600;
+        }
+        
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .amount-cell {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .total-row {
+            background-color: var(--background);
+            font-weight: 700;
+        }
+        
+        .share-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 32px;
+            gap: 16px;
+        }
+
+        .share-buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            background-color: var(--primary-light);
+            color: var(--text);
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+        
+        .share-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .share-btn.whatsapp { background-color: #25D366; color: white; }
+        .share-btn.x-twitter { background-color: #000000; color: white; }
+        .share-btn.instagram { background-color: #E4405F; color: white; }
+        .share-btn.copy { background-color: #6c757d; color: white; }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--card);
+            margin: 20px auto;
+            padding: 24px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        #shareCanvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 16px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .share-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .share-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .disclaimer {
+            margin-top: 32px;
+            padding: 16px;
+            background-color: var(--background);
+            border-radius: 12px;
+            text-align: center;
+            font-style: italic;
+            font-size: 0.9rem;
+            color: #666;
+            border-left: 4px solid var(--accent);
+        }
+
+        footer {
+            margin-top: 48px;
+            padding: 24px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            width: 100%;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .social-links {
+            margin-top: 8px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .faq-btn-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .faq-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .faq-btn:hover {
+            transform: scale(1.1);
+            background-color: #7CA87C;
+        }
+
+        .faq-content {
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .faq-content h3 {
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .faq-content p {
+            margin-bottom: 16px;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .city-flag {
+            font-size: 1.5rem;
+        }
+        
+        .reset-btn {
+            background-color: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .reset-btn:hover {
+            background-color: var(--border);
+        }
+        
+        @media (max-width: 768px) {
+            .city-selector, .mode-selector, .recipients-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .results-table {
+                font-size: 0.9rem;
+            }
+            
+            .results-table th, .results-table td {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kasih THR berapa? 🧧</h1>
+            <div class="tagline">Hitung mau kasih berapa THR, jangan sampai ada yang ngambek!</div>
+            <div class="hero">
+                <div class="money-emoji">💵</div>
+                <div class="money-emoji">💰</div>
+                <div class="money-emoji">💴</div>
+                <div class="money-emoji">💶</div>
+                <div class="money-emoji">💷</div>
+            </div>
+        </header>
+        
+        <main>
+            <section class="section step" id="step1">
+                <div class="step-header">
+                    <h2>📍 Step 1: Pilih Kota</h2>
+                    <span class="step-icon">▼</span>
+                </div>
+                <div class="step-content">
+                    <p>Pilih kota tempatmu memberikan THR. Nilai akan disesuaikan dengan biaya hidup.</p>
+                    <p style="font-style: italic; font-size: 0.9rem; color: #999;">Berdasarkan UMP 2024 dan data biaya hidup BPS sebagai proxy PPP antar kota, dinormalisasi ke Jakarta = 1.00:</p>
+                    <div class="city-selector" id="citySelector">
+                        <!-- City options will be populated by JavaScript -->
+                    </div>
+                    <div class="city-scroll-hint">
+                        <span><i>↔️</i> Geser untuk lihat kota lain</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section step" id="step2">
+                <div class="step-header">
+                    <h2>👑 Step 2: Pilih Mode THR-mu</h2>
+                    <span class="step-icon">▼</span>
+                </div>
+                <div class="step-content">
+                    <p>Pilih gaya memberi THR yang sesuai dengan karakter dan budgetmu.</p>
+                    <div class="mode-selector">
+                        <div class="mode-card default selected" data-mode="default">
+                            <div class="mode-emoji">😊</div>
+                            <div class="mode-title">Default</div>
+                            <div class="mode-multiplier">1.0×</div>
+                            <div style="font-size: 0.9rem; color: #666;">Seperti pada umumnya</div>
+                        </div>
+                        <div class="mode-card pelit" data-mode="pelit">
+                            <div class="mode-emoji">😅</div>
+                            <div class="mode-title">Pelit</div>
+                            <div class="mode-multiplier">0.6×</div>
+                            <div style="font-size: 0.9rem; color: #666;">"Cicilan masih banyak, hemat dulu"</div>
+                        </div>
+                        <div class="mode-card royal" data-mode="royal">
+                            <div class="mode-emoji">🤑</div>
+                            <div class="mode-title">Royal</div>
+                            <div class="mode-multiplier">1.5×</div>
+                            <div style="font-size: 0.9rem; color: #666;">"Rejeki sudah ditakar, tidak akan tertukar!"</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section step collapsed" id="step3">
+                <div class="step-header">
+                    <h2>💰 Step 3: Atur Budget Total (Opsional)</h2>
+                    <span class="step-icon">▼</span>
+                </div>
+                <div class="step-content">
+                    <p>Masukkan total anggaran THR-mu, kalkulator akan menyesuaikan nominal.</p>
+                    <div class="budget-section">
+                        <div class="budget-input">
+                            <span>Budget THR-mu:</span>
+                            <input type="number" id="totalBudget" placeholder="Contoh: 500000" min="0" step="10000">
+                            <span class="budget-amount" id="budgetFormatted">Rp 0</span>
+                        </div>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            Kosongkan kalau gak nge-set budget.
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section step" id="step4">
+                <div class="step-header">
+                    <h2>👨‍👩‍👧‍👦 Step 4: Isi Jumlah Penerima THR</h2>
+                    <span class="step-icon">▼</span>
+                </div>
+                <div class="step-content">
+                    <p>Masukkan jumlah orang yang akan menerima THR dari setiap kategori.</p>
+                    <div class="recipients-grid" id="recipientsGrid">
+                        <!-- Recipient categories will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+            
+            <button class="calculate-btn" id="calculateBtn">Hitung THR-ku! 🧮</button>
+            
+            <section class="section results-section" id="resultsSection">
+                <div class="results-header">
+                    <h2>Hasil Perhitungan THR-mu</h2>
+                    <div class="total-thr" id="totalTHR">Rp 0</div>
+                </div>
+                
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Kategori Penerima</th>
+                            <th>Jumlah</th>
+                            <th>THR per Orang</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        <!-- Results will be populated by JavaScript -->
+                    </tbody>
+                </table>
+                
+                <div class="share-section">
+                    <h3>Bagikan Hasilmu!</h3>
+                    <div class="share-buttons-container">
+                        <button class="share-btn" id="shareBtn">
+                            🖼️ Buat Gambar Share
+                        </button>
+                        <button class="share-btn copy" id="copyTextBtn">
+                            📋 Salin Teks
+                        </button>
+                    </div>
+                    <button class="reset-btn" id="resetBtn">
+                        🔄 Hitung Lagi
+                    </button>
+                </div>
+
+                <!-- Modal for sharing image -->
+                <div id="shareModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-modal" id="closeModal">&times;</span>
+                        <h2 style="font-size: 1.2rem; margin-bottom: 10px;">Gambar Shareable THR-mu</h2>
+                        <p style="font-size: 0.8rem; color: #666; margin-bottom: 15px;">Klik kanan/tahan gambar untuk simpan, atau pilih tombol di bawah.</p>
+                        <canvas id="shareCanvas" width="1080" height="1920" style="display:none;"></canvas>
+                        <img id="sharePreview" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px;">
+                        
+                        <div class="share-actions">
+                            <button class="share-btn whatsapp" id="shareWA">
+                                🟢 WhatsApp
+                            </button>
+                            <button class="share-btn x-twitter" id="shareX">
+                                𝕏 Twitter
+                            </button>
+                            <button class="share-btn instagram" id="shareIG">
+                                📸 IG Story
+                            </button>
+                            <button class="share-btn" id="downloadImg">
+                                📥 Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="disclaimer">
+                    Standar ini tidak mengikat secara hukum, tapi mengikat secara moral 😄
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Bimo Tyasono. All rights reserved.</p>
+            <p><a href="https://tyasono.xyz" target="_blank">tyasono.xyz</a></p>
+            <div class="social-links">
+                <a href="https://instagram.com/squillliams" target="_blank">Instagram</a>
+                <a href="https://x.com/squilliams" target="_blank">X (Twitter)</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- FAQ Floating Button -->
+    <div class="faq-btn-container">
+        <button class="faq-btn" id="faqBtn" title="FAQ & Feedback">?</button>
+    </div>
+
+    <!-- FAQ Modal -->
+    <div id="faqModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeFaq">&times;</span>
+            <div class="faq-content">
+                <h3>Apa ini? 🤔</h3>
+                <p>Kalkulator ini dibuat hanya untuk seru-seruan! Nominal yang muncul didasarkan pada tren postingan media sosial yang sering beredar di Indonesia menjelang Lebaran.</p>
+                
+                <h3>Apakah ini akurat? ⚖️</h3>
+                <p>Tidak ada standar resmi untuk THR kerabat. Angka di sini disesuaikan dengan biaya hidup kota pilihanmu dan mode (Pelit/Default/Royal) yang kamu pilih sendiri.</p>
+                
+                <h3>Feedback & Kontak ✉️</h3>
+                <p>Punya saran atau masukan? Hubungi saya melalui website utama di <a href="https://tyasono.xyz" target="_blank">tyasono.xyz</a> atau mention saya di media sosial:</p>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a href="https://instagram.com/squillliams" target="_blank" class="share-btn instagram" style="padding: 8px 16px; font-size: 0.8rem;">Instagram</a>
+                    <a href="https://x.com/squilliams" target="_blank" class="share-btn x-twitter" style="padding: 8px 16px; font-size: 0.8rem;">𝕏 Twitter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data dari BPS dan struktur THR
+        const cityFactors = {
+            "Jakarta": { factor: 1.00, flag: "🏙️", cost: "Rp 14,88 jt" },
+            "Bekasi/Depok": { factor: 0.95, flag: "🏘️", cost: "Rp 12,35-14,34 jt" },
+            "Surabaya": { factor: 0.85, flag: "🌉", cost: "Rp 11-12 jt" },
+            "Bandung": { factor: 0.80, flag: "🌋", cost: "Rp 10-11 jt" },
+            "Batam": { factor: 0.78, flag: "🏝️", cost: "Rp 10 jt" },
+            "Balikpapan": { factor: 0.72, flag: "🛢️", cost: "Rp 9 jt" },
+            "Makassar": { factor: 0.68, flag: "⛵", cost: "Rp 8-9 jt" },
+            "Semarang": { factor: 0.65, flag: "🕌", cost: "Rp 8 jt" },
+            "Manado": { factor: 0.65, flag: "🐠", cost: "Rp 7-8 jt" },
+            "Pekanbaru": { factor: 0.63, flag: "🌴", cost: "Rp 7-8 jt" },
+            "Medan": { factor: 0.60, flag: "🌅", cost: "Rp 7 jt" },
+            "Yogyakarta": { factor: 0.58, flag: "🏯", cost: "Rp 6-7 jt" },
+            "Kota Kecil": { factor: 0.50, flag: "🏡", cost: "Rp 5-6 jt" }
+        };
+
+        const baseRates = {
+            "anak_sendiri": { name: "Anak Sendiri", base: 50000, category: "Keluarga Dekat" },
+            "keponakan_dekat": { name: "Keponakan (Bawa Hantaran)", base: 25000, category: "Keluarga Dekat" },
+            "keponakan_biasa": { name: "Keponakan (Biasa)", base: 20000, category: "Keluarga Dekat" },
+            "saudara_dekat": { name: "Anak Saudara Dekat", base: 15000, category: "Keluarga Dekat" },
+            "saudara_jauh": { name: "Anak Saudara Jauh", base: 10000, category: "Keluarga Jauh" },
+            "tetangga_dekat": { name: "Anak Tetangga Se-RT", base: 10000, category: "Tetangga" },
+            "tetangga_jauh": { name: "Anak Tetangga Lain", base: 5000, category: "Tetangga" },
+            "tidak_dikenal": { name: "Yang Datang Tak Dikenal", base: 2000, category: "Lainnya" }
+        };
+
+        const modeMultipliers = {
+            "default": 1.0,
+            "pelit": 0.6,
+            "royal": 1.5
+        };
+
+        // State aplikasi
+        let selectedCity = "Jakarta";
+        let selectedMode = "default";
+        let totalBudget = 0;
+        let recipientCounts = {};
+        
+        // Inisialisasi jumlah penerima
+        Object.keys(baseRates).forEach(key => {
+            recipientCounts[key] = 0;
+        });
+
+        // Format mata uang Rupiah
+        function formatRupiah(amount) {
+            return `Rp ${amount.toLocaleString('id-ID')}`;
+        }
+
+        // Render pilihan kota
+        function renderCityOptions() {
+            const container = document.getElementById('citySelector');
+            container.innerHTML = '';
+            
+            Object.keys(cityFactors).forEach(city => {
+                const cityData = cityFactors[city];
+                const option = document.createElement('div');
+                option.className = `city-option ${city === selectedCity ? 'selected' : ''}`;
+                option.dataset.city = city;
+                option.innerHTML = `
+                    <span class="city-flag" style="font-size: 2.5rem;">${cityData.flag}</span>
+                    <div style="flex-grow: 1;">
+                        <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 4px;">${city}</div>
+                        <div style="font-size: 0.85rem; color: #666;">${cityData.cost}/bln</div>
+                    </div>
+                    <div style="font-weight: 800; color: var(--primary); font-size: 1.1rem; background: var(--background); padding: 4px 12px; border-radius: 20px;">${cityData.factor.toFixed(2)}×</div>
+                `;
+                
+                option.addEventListener('click', () => {
+                    selectedCity = city;
+                    document.querySelectorAll('.city-option').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                });
+                
+                container.appendChild(option);
+            });
+        }
+
+        // Render kategori penerima
+        function renderRecipientCategories() {
+            const container = document.getElementById('recipientsGrid');
+            container.innerHTML = '';
+            
+            Object.keys(baseRates).forEach(key => {
+                const rate = baseRates[key];
+                const category = document.createElement('div');
+                category.className = 'recipient-category';
+                category.innerHTML = `
+                    <div class="category-header">
+                        <div class="category-name">${rate.name}</div>
+                        <div class="category-base">Base: ${formatRupiah(rate.base)}</div>
+                    </div>
+                    <div class="category-controls">
+                        <button class="counter-btn minus" data-key="${key}">-</button>
+                        <span class="counter-value" id="count-${key}">${recipientCounts[key]}</span>
+                        <button class="counter-btn plus" data-key="${key}">+</button>
+                    </div>
+                `;
+                
+                container.appendChild(category);
+            });
+            
+            // Tambahkan event listeners untuk tombol + dan -
+            document.querySelectorAll('.counter-btn.plus').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    recipientCounts[key]++;
+                    document.getElementById(`count-${key}`).textContent = recipientCounts[key];
+                });
+            });
+            
+            document.querySelectorAll('.counter-btn.minus').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    if (recipientCounts[key] > 0) {
+                        recipientCounts[key]--;
+                        document.getElementById(`count-${key}`).textContent = recipientCounts[key];
+                    }
+                });
+            });
+        }
+
+        // Hitung THR
+        function calculateTHR() {
+            const cityFactor = cityFactors[selectedCity].factor;
+            const modeMultiplier = modeMultipliers[selectedMode];
+            const budget = document.getElementById('totalBudget').value ? parseInt(document.getElementById('totalBudget').value) : 0;
+            
+            let results = [];
+            let total = 0;
+            
+            // Hitung THR untuk setiap kategori
+            Object.keys(baseRates).forEach(key => {
+                const rate = baseRates[key];
+                const count = recipientCounts[key];
+                
+                if (count > 0) {
+                    // Hitung THR per orang
+                    let thrPerPerson = Math.round(rate.base * cityFactor * modeMultiplier / 1000) * 1000;
+                    
+                    // Jika budget diatur, kita perlu menyesuaikan
+                    let subtotal = thrPerPerson * count;
+                    results.push({
+                        name: rate.name,
+                        count: count,
+                        thrPerPerson: thrPerPerson,
+                        subtotal: subtotal,
+                        category: rate.category
+                    });
+                    total += subtotal;
+                }
+            });
+            
+            // Jika budget diatur dan total tidak sama dengan budget, sesuaikan proporsional
+            if (budget > 0 && total > 0 && total !== budget) {
+                const adjustmentFactor = budget / total;
+                
+                results = results.map(item => {
+                    const adjustedThrPerPerson = Math.round(item.thrPerPerson * adjustmentFactor / 1000) * 1000;
+                    const adjustedSubtotal = adjustedThrPerPerson * item.count;
+                    
+                    return {
+                        ...item,
+                        thrPerPerson: adjustedThrPerPerson,
+                        subtotal: adjustedSubtotal
+                    };
+                });
+                
+                // Recalculate total after rounding
+                total = results.reduce((sum, item) => sum + item.subtotal, 0);
+                
+                // If still exceeds budget due to rounding, subtract from the largest category
+                if (total > budget) {
+                    const diff = total - budget;
+                    const maxItem = results.reduce((prev, current) => (prev.subtotal > current.subtotal) ? prev : current);
+                    maxItem.subtotal -= diff;
+                    total = budget;
+                }
+            }
+            
+            return { results, total };
+        }
+
+        // Tampilkan hasil
+        function showResults() {
+            const { results, total } = calculateTHR();
+            const resultsBody = document.getElementById('resultsBody');
+            const totalTHRElement = document.getElementById('totalTHR');
+            
+            // Kosongkan tabel hasil
+            resultsBody.innerHTML = '';
+            
+            // Tampilkan hasil per kategori
+            results.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.count} orang</td>
+                    <td class="amount-cell">${formatRupiah(item.thrPerPerson)}</td>
+                    <td class="amount-cell">${formatRupiah(item.subtotal)}</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+            
+            // Baris total
+            const totalRow = document.createElement('tr');
+            totalRow.className = 'total-row';
+            totalRow.innerHTML = `
+                <td colspan="3"><strong>Total THR</strong></td>
+                <td class="amount-cell"><strong>${formatRupiah(total)}</strong></td>
+            `;
+            resultsBody.appendChild(totalRow);
+            
+            // Update total
+            totalTHRElement.textContent = formatRupiah(total);
+            
+            // Tampilkan bagian hasil
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Scroll ke hasil
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            
+            // Buat efek confetti
+            createConfetti();
+        }
+
+        // Buat efek confetti
+        function createConfetti() {
+            const colors = ['#F4C430', '#8FBC8F', '#B5EAD7', '#FF9B85', '#9D7DE0'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                
+                document.body.appendChild(confetti);
+                
+                // Animasi confetti
+                const animation = confetti.animate([
+                    { opacity: 1, transform: 'translateY(-100vh) rotate(0deg)' },
+                    { opacity: 1, transform: `translateY(${Math.random() * 100 + 100}vh) rotate(${Math.random() * 360}deg)` }
+                ], {
+                    duration: Math.random() * 2000 + 1000,
+                    easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)'
+                });
+                
+                // Hapus confetti setelah animasi selesai
+                animation.onfinish = () => confetti.remove();
+            }
+        }
+
+        // Reset kalkulator
+        function resetCalculator() {
+            selectedCity = "Jakarta";
+            selectedMode = "default";
+            totalBudget = 0;
+            
+            Object.keys(baseRates).forEach(key => {
+                recipientCounts[key] = 0;
+            });
+            
+            document.getElementById('totalBudget').value = '';
+            document.getElementById('budgetFormatted').textContent = 'Rp 0';
+            document.getElementById('resultsSection').style.display = 'none';
+            
+            renderCityOptions();
+            renderRecipientCategories();
+            
+            // Reset mode selector
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector('.mode-card.default').classList.add('selected');
+            
+            // Scroll ke atas
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inisialisasi aplikasi
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup collapsible steps
+            document.querySelectorAll('.step-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const step = header.parentElement;
+                    step.classList.toggle('collapsed');
+                });
+            });
+
+            // Render pilihan kota dan kategori
+            renderCityOptions();
+            renderRecipientCategories();
+            
+            // Event listener untuk mode selector
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.mode-card').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    card.classList.add('selected');
+                    selectedMode = card.dataset.mode;
+                });
+            });
+            
+            // Event listener untuk budget input
+            document.getElementById('totalBudget').addEventListener('input', (e) => {
+                const value = e.target.value ? parseInt(e.target.value) : 0;
+                document.getElementById('budgetFormatted').textContent = formatRupiah(value);
+            });
+            
+            // Event listener untuk tombol hitung
+            document.getElementById('calculateBtn').addEventListener('click', showResults);
+            
+            // Event listener untuk tombol reset
+            document.getElementById('resetBtn').addEventListener('click', resetCalculator);
+            
+            // Event listener untuk tombol share
+            document.getElementById('shareBtn').addEventListener('click', () => {
+                generateShareImage();
+                document.getElementById('shareModal').style.display = 'block';
+            });
+
+            // Event listener untuk modal
+            document.getElementById('closeModal').addEventListener('click', () => {
+                document.getElementById('shareModal').style.display = 'none';
+            });
+
+            // FAQ Modal logic
+            const faqBtn = document.getElementById('faqBtn');
+            const faqModal = document.getElementById('faqModal');
+            const closeFaq = document.getElementById('closeFaq');
+
+            faqBtn.onclick = () => faqModal.style.display = 'block';
+            closeFaq.onclick = () => faqModal.style.display = 'none';
+
+            window.onclick = (event) => {
+                if (event.target == document.getElementById('shareModal')) {
+                    document.getElementById('shareModal').style.display = 'none';
+                }
+                if (event.target == faqModal) {
+                    faqModal.style.display = 'none';
+                }
+            };
+
+            // Copy text button
+            document.getElementById('copyTextBtn').addEventListener('click', () => {
+                const { total } = calculateTHR();
+                const text = `Saya baru hitung THR Lebaran pakai kalkulator "Kasih THR Berapa?"! Total saya akan ngasih: ${formatRupiah(total)}. Coba hitung kamu ngasih THR berapa di sini! https://tyasono.xyz/thr/`;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Teks berhasil disalin!');
+                });
+            });
+
+            // Share actions
+            async function shareFile(file, title, text, url) {
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: title,
+                            text: text,
+                            url: url
+                        });
+                        return true;
+                    } catch (err) {
+                        console.error('Share failed:', err);
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            async function getCanvasFile() {
+                const canvas = document.getElementById('shareCanvas');
+                return new Promise(resolve => {
+                    canvas.toBlob(blob => {
+                        resolve(new File([blob], 'thr-lebaran.png', { type: 'image/png' }));
+                    }, 'image/png');
+                });
+            }
+
+            document.getElementById('shareWA').addEventListener('click', async () => {
+                const { total } = calculateTHR();
+                const text = `Saya baru hitung THR Lebaran pakai kalkulator "Kasih THR Berapa?"! Total saya akan ngasih: ${formatRupiah(total)}. Coba hitung kamu ngasih THR berapa di sini! https://tyasono.xyz/thr/`;
+                const file = await getCanvasFile();
+                
+                const shared = await shareFile(file, 'THR Lebaran', text, 'https://tyasono.xyz/thr/');
+                if (!shared) {
+                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`);
+                }
+            });
+
+            document.getElementById('shareX').addEventListener('click', async () => {
+                const { total } = calculateTHR();
+                const text = `Saya baru hitung THR Lebaran pakai kalkulator "Kasih THR Berapa?"! Total saya akan ngasih: ${formatRupiah(total)}. Coba hitung kamu ngasih THR berapa di sini!`;
+                const file = await getCanvasFile();
+                
+                const shared = await shareFile(file, 'THR Lebaran', text, 'https://tyasono.xyz/thr/');
+                if (!shared) {
+                    const url = encodeURIComponent('https://tyasono.xyz/thr/');
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}`);
+                }
+            });
+
+            document.getElementById('shareIG').addEventListener('click', async () => {
+                const file = await getCanvasFile();
+                const shared = await shareFile(file, 'THR Lebaran', '', 'https://tyasono.xyz/thr/');
+                if (!shared) {
+                    alert('Simpan gambar (download) lalu bagikan ke Instagram Story Anda!');
+                    document.getElementById('downloadImg').click();
+                }
+            });
+
+            document.getElementById('downloadImg').addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.download = 'thr-lebaran.png';
+                link.href = document.getElementById('sharePreview').src;
+                link.click();
+            });
+
+            // Format budget saat halaman dimuat
+            document.getElementById('budgetFormatted').textContent = 'Rp 0';
+        });
+
+        // Helper to draw rounded rectangle
+        function drawRoundedRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Generate share image for 9:16 format (1080x1920)
+        function generateShareImage() {
+            const canvas = document.getElementById('shareCanvas');
+            const ctx = canvas.getContext('2d');
+            const { results, total } = calculateTHR();
+            
+            // Background
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1920);
+            gradient.addColorStop(0, '#8FBC8F'); // Primary
+            gradient.addColorStop(1, '#B5EAD7'); // Primary Light
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1080, 1920);
+
+            // Add some decorations (circles/money emoji)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            for (let i = 0; i < 20; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random() * 1080, Math.random() * 1920, Math.random() * 100 + 50, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // White Card
+            ctx.fillStyle = '#FFFFFF';
+            drawRoundedRect(ctx, 80, 200, 920, 1520, 40);
+
+            // Header Text
+            ctx.fillStyle = '#2D2D2D';
+            ctx.textAlign = 'center';
+            ctx.font = '800 60px Nunito, Poppins, sans-serif';
+            ctx.fillText('KASIH THR BERAPA?', 540, 350);
+            
+            ctx.font = '600 35px Poppins, sans-serif';
+            ctx.fillStyle = '#8FBC8F';
+            ctx.fillText('Panduan THR Lebaran 🧧', 540, 410);
+
+            // Total Amount
+            ctx.fillStyle = '#2D2D2D';
+            ctx.font = '600 40px Poppins, sans-serif';
+            ctx.fillText('Total Budget THR Saya:', 540, 550);
+            
+            ctx.fillStyle = '#F4C430'; // Accent color
+            ctx.font = '800 120px Nunito, Poppins, sans-serif';
+            ctx.fillText(formatRupiah(total), 540, 680);
+
+            // City and Mode info
+            ctx.fillStyle = '#f9f9f9';
+            drawRoundedRect(ctx, 150, 750, 780, 120, 20);
+            
+            ctx.fillStyle = '#2D2D2D';
+            ctx.font = '600 30px Poppins, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(`📍 Kota: ${selectedCity}`, 200, 825);
+            ctx.textAlign = 'right';
+            const modeName = document.querySelector(`.mode-card[data-mode="${selectedMode}"] .mode-title`).innerText;
+            ctx.fillText(`👑 Mode: ${modeName}`, 880, 825);
+
+            // Breakdown
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#2D2D2D';
+            ctx.font = '700 40px Nunito, sans-serif';
+            ctx.fillText('Rincian Pembagian:', 150, 950);
+
+            let yPos = 1030;
+            results.forEach((item, index) => {
+                if (index < 7) { // Limit to fit on card
+                    ctx.font = '500 32px Poppins, sans-serif';
+                    ctx.fillStyle = '#666';
+                    ctx.fillText(`${item.name} (${item.count} org)`, 150, yPos);
+                    
+                    ctx.textAlign = 'right';
+                    ctx.fillStyle = '#8FBC8F';
+                    ctx.font = '600 32px Poppins, sans-serif';
+                    ctx.fillText(formatRupiah(item.subtotal), 930, yPos);
+                    
+                    // Draw a thin line
+                    ctx.strokeStyle = '#eee';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(150, yPos + 25);
+                    ctx.lineTo(930, yPos + 25);
+                    ctx.stroke();
+                    
+                    ctx.textAlign = 'left';
+                    yPos += 80;
+                }
+            });
+
+            // Footer
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#2D2D2D';
+            ctx.font = '700 35px Nunito, sans-serif';
+            ctx.fillText('Hitung THR-mu di:', 540, 1630);
+            
+            ctx.fillStyle = '#8FBC8F';
+            ctx.font = '700 40px Poppins, sans-serif';
+            ctx.fillText('tyasono.xyz/thr', 540, 1685);
+
+            // Set the preview image
+            const dataUrl = canvas.toDataURL('image/png');
+            document.getElementById('sharePreview').src = dataUrl;
+        }
+    </script>
+</body>
+</html>
