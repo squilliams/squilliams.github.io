@@ -1,0 +1,339 @@
+
+<div style="display:flex;justify-content:center;padding:1rem 0;background:var(--color-background-tertiary);min-height:700px">
+<div style="width:340px;background:#fff;border-radius:36px;overflow:hidden;border:8px solid #1a1a1a;box-shadow:0 0 0 2px #333;font-family:var(--font-sans);position:relative">
+
+<div style="background:#e8294a;padding:10px 16px 0;color:#fff">
+  <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:500;margin-bottom:10px;padding:0 4px">
+    <span>9:41</span><span style="letter-spacing:1px">GarmentIQ</span><span>4G ●</span>
+  </div>
+  <div style="display:flex;border-bottom:2px solid rgba(255,255,255,0.2)">
+    <div id="tab1" onclick="showTab(1)" style="flex:1;text-align:center;padding:10px 4px 8px;font-size:12px;font-weight:500;cursor:pointer;border-bottom:2px solid #fff;margin-bottom:-2px;color:#fff">1 · Scan</div>
+    <div id="tab2" onclick="showTab(2)" style="flex:1;text-align:center;padding:10px 4px 8px;font-size:12px;font-weight:500;cursor:pointer;color:rgba(255,255,255,0.6)">2 · Grade</div>
+    <div id="tab3" onclick="showTab(3)" style="flex:1;text-align:center;padding:10px 4px 8px;font-size:12px;font-weight:500;cursor:pointer;color:rgba(255,255,255,0.6)">3 · Points</div>
+  </div>
+</div>
+
+<div style="background:#e8294a;padding:14px 16px 18px;color:#fff">
+  <div style="font-size:18px;font-weight:700">Your Clothing Items</div>
+  <div style="font-size:12px;opacity:0.85;margin-top:2px">Scan · Grade · Earn · Recycle</div>
+</div>
+
+<div id="scrollArea" style="height:480px;overflow-y:auto;background:#f5f5f0">
+
+<div id="page1">
+  <div style="margin:12px;background:#fffbea;border:1px solid #f0d080;border-radius:12px;padding:12px">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+      <span style="font-size:14px">♻</span>
+      <span style="font-size:12px;font-weight:600;color:#b08000">Eco Alert</span>
+      <span style="background:#e8294a;color:#fff;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px">Feature</span>
+    </div>
+    <div style="font-size:12px;color:#7a6000;line-height:1.5">Grade A earns <b>50 pts</b> · Grade B earns <b>30 pts</b> · Grade C earns <b>15 pts</b> · <i>No item goes to waste.</i></div>
+  </div>
+  <div id="uploadArea" style="margin:12px;background:#fff;border-radius:12px;border:1.5px dashed #ccc;padding:24px;text-align:center;cursor:pointer" onclick="document.getElementById('fileInput').click()">
+    <div style="font-size:32px;margin-bottom:8px">📷</div>
+    <div style="font-size:14px;font-weight:600;color:#333">Scan a clothing item</div>
+    <div style="font-size:12px;color:#888;margin-top:4px">Tap to upload a photo</div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleUpload(event)">
+  </div>
+  <div id="itemList"></div>
+  <div style="margin:12px;background:#eaf3ff;border-left:3px solid #2979e8;border-radius:0 10px 10px 0;padding:12px">
+    <div style="font-size:13px;font-weight:600;color:#1a55b0;margin-bottom:4px">Why grade clothing?</div>
+    <div style="font-size:12px;color:#2a4a90;line-height:1.5">Grading ensures items go to the right place — resale, upcycling, or responsible disposal. Earn points redeemable for discounts on sustainable brands.</div>
+  </div>
+</div>
+
+<div id="page2" style="display:none;padding:12px">
+  <div id="gradeDetail"></div>
+</div>
+
+<div id="page3" style="display:none;padding:12px">
+
+  <div style="background:#fff;border-radius:12px;border:0.5px solid #ddd;padding:16px;text-align:center;margin-bottom:12px">
+    <div style="font-size:11px;color:#888;margin-bottom:4px">TOTAL POINTS EARNED</div>
+    <div id="totalPts" style="font-size:36px;font-weight:700;color:#e8294a">0</div>
+    <div style="font-size:12px;color:#888;margin-top:2px">across all scanned items</div>
+  </div>
+
+  <div id="pointsList" style="margin-bottom:12px"></div>
+
+  <div style="background:#fff;border-radius:12px;border:0.5px solid #ddd;overflow:hidden;margin-bottom:12px">
+    <div style="background:#1a8a3a;padding:12px 14px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:16px">🤝</span>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff">Donate Your Points</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.8)">Turn points into real-world impact</div>
+      </div>
+    </div>
+
+    <div style="padding:14px">
+      <div style="font-size:12px;color:#555;margin-bottom:10px;line-height:1.5">Choose an organisation to donate your points to. 100 pts = 50 Euros contribution to their cause.</div>
+
+      <div style="position:relative;margin-bottom:12px">
+        <div id="dropdownTrigger" onclick="toggleDropdown()" style="background:#f8f8f5;border:1px solid #ddd;border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+          <div id="selectedOrg" style="font-size:13px;color:#444">Select an Organisation:</div>
+          <span id="dropArrow" style="font-size:12px;color:#888;transition:transform 0.2s">▼</span>
+        </div>
+
+        <div id="orgDropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #ddd;border-radius:10px;overflow:hidden;z-index:10;box-shadow:0 4px 16px rgba(0,0,0,0.12)">
+          <div style="max-height:200px;overflow-y:auto">
+          </div>
+        </div>
+      </div>
+
+      <div id="orgInfo" style="display:none;background:#f0fbf4;border-radius:10px;padding:10px;margin-bottom:12px;border:0.5px solid #a8e0bc">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div id="orgEmoji" style="font-size:24px;flex-shrink:0"></div>
+          <div>
+            <div id="orgName" style="font-size:13px;font-weight:600;color:#1a6b3a"></div>
+            <div id="orgDesc" style="font-size:11px;color:#2a7a45;margin-top:2px;line-height:1.5"></div>
+            <div id="orgImpact" style="font-size:11px;color:#1a8a3a;font-weight:600;margin-top:4px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <div style="font-size:12px;color:#555;margin-bottom:6px;font-weight:500">Points to Donate</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="range" id="donateSlider" min="0" max="0" value="0" step="10" oninput="updateDonateAmount()" style="flex:1">
+          <div style="background:#eafbf1;border-radius:8px;padding:4px 10px;min-width:52px;text-align:center">
+            <span id="donateVal" style="font-size:13px;font-weight:700;color:#1a8a3a">0</span>
+            <span style="font-size:10px;color:#1a8a3a"> pts</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px">
+          <span style="font-size:10px;color:#aaa">0 pts</span>
+          <span id="maxPtsLabel" style="font-size:10px;color:#aaa">0 pts available</span>
+        </div>
+      </div>
+
+      <div id="donateEquiv" style="font-size:12px;color:#1a7a45;text-align:center;margin-bottom:12px;min-height:16px"></div>
+
+      <button id="donateBtn" onclick="donate()" style="width:100%;background:#1a8a3a;color:#fff;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;opacity:0.4" disabled>Donate Points</button>
+
+      <div id="donateSuccess" style="display:none;background:#eafbf1;border-radius:10px;padding:12px;margin-top:10px;text-align:center">
+        <div style="font-size:22px;margin-bottom:4px">🎉</div>
+        <div style="font-size:13px;font-weight:600;color:#1a6b3a" id="successMsg"></div>
+        <div style="font-size:11px;color:#2a7a45;margin-top:2px">Thank you for making a difference!</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#eaf3ff;border-radius:12px;padding:12px">
+    <div style="font-size:13px;font-weight:600;color:#1a55b0;margin-bottom:4px">Redeem for discounts</div>
+    <div style="font-size:12px;color:#2a4a90;line-height:1.5">100 pts = 50 Euros off your next purchase at partner eco-brands. Keep recycling to level up!</div>
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const orgs = [
+ { 
+  id:1,
+  name:'Humana - HIV/AIDS and Tuberculosis prevention program in Mozambique',
+  emoji:'',
+  category:'Circular Fashion & Social Impact',
+  desc:'Collects, sorts, and resells used clothing to reduce waste and fund global humanitarian and development projects, promoting sustainability and social inclusion.',
+  impact:'100 pts → supports clothing reuse + funds social projects'
+},
+
+{ 
+  id:2,
+  name:'Humana - Primary Education',
+  emoji:'',
+  category:'Circular Fashion & Social Impact',
+  desc:'Collects, sorts, and resells used clothing to reduce waste and fund global humanitarian and development projects, promoting sustainability and social inclusion.',
+  impact:'100 pts → supports clothing reuse + funds social projects'
+}
+];
+
+const items = [];
+let analyzing = false;
+let selectedOrgId = null;
+let donatedPoints = 0;
+
+const gradeInfo = {
+  A:{label:'Excellent',color:'#1a8a3a',bg:'#eafbf1',pts:50,desc:'Near new condition. Ready for resale.'},
+  B:{label:'Good',color:'#1a6bb5',bg:'#e6f1ff',pts:30,desc:'Minor wear. Suitable for donation or resale.'},
+  C:{label:'Fair',color:'#c47a00',bg:'#fff8e1',pts:15,desc:'Visible wear. Good for upcycling or repurpose.'},
+  D:{label:'Poor',color:'#c0392b',bg:'#fff0f0',pts:5,desc:'Heavy wear. Directed to responsible disposal.'}
+};
+
+const categoryIcons = {'shirt':'👕','t-shirt':'👕','top':'👕','jacket':'🧥','coat':'🧥','dress':'👗','pants':'👖','jeans':'👖','skirt':'👗','shoes':'👟','hat':'🧢','sweater':'🧣','hoodie':'🧥','clothing':'👕','other':'🧺'};
+function getCatIcon(cat){const k=Object.keys(categoryIcons).find(k=>cat.toLowerCase().includes(k));return k?categoryIcons[k]:'🧺';}
+
+function totalEarned(){return items.reduce((s,it)=>s+(gradeInfo[it.grade]?.pts||0),0);}
+function availablePts(){return Math.max(0,totalEarned()-donatedPoints);}
+
+function buildDropdown(){
+  const inner = document.querySelector('#orgDropdown > div');
+  inner.innerHTML = orgs.map(o=>`
+    <div onclick="selectOrg(${o.id})" style="padding:10px 12px;cursor:pointer;border-bottom:0.5px solid #f0f0f0;display:flex;align-items:center;gap:10px" onmouseover="this.style.background='#f8f8f5'" onmouseout="this.style.background='#fff'">
+      <span style="font-size:18px;flex-shrink:0">${o.emoji}</span>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#222">${o.name}</div>
+        <div style="font-size:10px;color:#888">${o.category} · ${o.impact}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleDropdown(){
+  const dd = document.getElementById('orgDropdown');
+  const arrow = document.getElementById('dropArrow');
+  const open = dd.style.display==='none';
+  dd.style.display = open?'block':'none';
+  arrow.style.transform = open?'rotate(180deg)':'';
+}
+
+function selectOrg(id){
+  selectedOrgId = id;
+  const o = orgs.find(x=>x.id===id);
+  document.getElementById('selectedOrg').textContent = o.name;
+  document.getElementById('selectedOrg').style.color = '#222';
+  document.getElementById('orgDropdown').style.display='none';
+  document.getElementById('dropArrow').style.transform='';
+  document.getElementById('orgEmoji').textContent = o.emoji;
+  document.getElementById('orgName').textContent = o.name+' · '+o.category;
+  document.getElementById('orgDesc').textContent = o.desc;
+  document.getElementById('orgImpact').textContent = o.impact;
+  document.getElementById('orgInfo').style.display='block';
+  const avail = availablePts();
+  const slider = document.getElementById('donateSlider');
+  slider.max = avail;
+  slider.value = Math.min(parseInt(slider.value)||0, avail);
+  document.getElementById('maxPtsLabel').textContent = avail+' pts available';
+  updateDonateAmount();
+  document.getElementById('donateSuccess').style.display='none';
+}
+
+function updateDonateAmount(){
+  const v = parseInt(document.getElementById('donateSlider').value)||0;
+  document.getElementById('donateVal').textContent = v;
+  const equiv = Math.floor(v/100);
+  document.getElementById('donateEquiv').textContent = v>0 ? `= Euros${v/2} contribution to ${orgs.find(x=>x.id===selectedOrgId)?.name||'the organisation'}` : '';
+  const btn = document.getElementById('donateBtn');
+  btn.disabled = !(v>0 && selectedOrgId);
+  btn.style.opacity = (v>0 && selectedOrgId)?'1':'0.4';
+}
+
+function donate(){
+  const v = parseInt(document.getElementById('donateSlider').value)||0;
+  if(!v||!selectedOrgId) return;
+  const o = orgs.find(x=>x.id===selectedOrgId);
+  donatedPoints += v;
+  document.getElementById('totalPts').textContent = totalEarned();
+  document.getElementById('successMsg').textContent = `${v} pts donated to ${o.name}!`;
+  document.getElementById('donateSuccess').style.display='block';
+  document.getElementById('donateSlider').value=0;
+  document.getElementById('donateSlider').max=availablePts();
+  document.getElementById('maxPtsLabel').textContent=availablePts()+' pts available';
+  updateDonateAmount();
+  renderItems();
+}
+
+function showTab(n){
+  [1,2,3].forEach(i=>{
+    const t=document.getElementById('tab'+i);
+    const p=document.getElementById('page'+i);
+    if(p)p.style.display=i===n?'block':'none';
+    t.style.color=i===n?'#fff':'rgba(255,255,255,0.6)';
+    t.style.borderBottom=i===n?'2px solid #fff':'none';
+    t.style.marginBottom=i===n?'-2px':'0';
+  });
+  if(n===3)updatePoints();
+}
+
+function updatePoints(){
+  const tot=totalEarned();
+  document.getElementById('totalPts').textContent=tot;
+  const slider=document.getElementById('donateSlider');
+  slider.max=availablePts();
+  document.getElementById('maxPtsLabel').textContent=availablePts()+' pts available';
+  const pl=document.getElementById('pointsList');
+  pl.innerHTML=items.length?items.map(it=>{
+    const g=gradeInfo[it.grade]||gradeInfo['C'];
+    return `<div style="background:#fff;border-radius:10px;border:0.5px solid #e0e0e0;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div><div style="font-size:13px;font-weight:600;color:#222">${it.name}</div><div style="font-size:11px;color:#888">Grade ${it.grade} · ${g.label}</div></div>
+      <div style="font-size:15px;font-weight:700;color:#e8294a">+${g.pts}</div>
+    </div>`;
+  }).join(''):'<div style="text-align:center;color:#aaa;font-size:13px;padding:24px">No items scanned yet</div>';
+}
+
+function renderItems(){
+  const list=document.getElementById('itemList');
+  if(!items.length){list.innerHTML='';return;}
+  list.innerHTML=items.map((item,i)=>{
+    const g=gradeInfo[item.grade]||gradeInfo['C'];
+    return `<div onclick="openDetail(${i})" style="margin:0 12px 10px;background:#fff;border-radius:12px;border:0.5px solid #e0e0e0;padding:12px;display:flex;gap:12px;cursor:pointer">
+      <div style="width:64px;height:64px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#f0f0e8;display:flex;align-items:center;justify-content:center">
+        ${item.dataUrl?`<img src="${item.dataUrl}" style="width:100%;height:100%;object-fit:cover">`:`<span style="font-size:28px">${getCatIcon(item.category)}</span>`}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+        <div style="font-size:11px;color:#888;margin:2px 0">${item.category}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+          <span style="background:${g.bg};color:${g.color};font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px">Grade ${item.grade}</span>
+          <span style="font-size:11px;color:#666">⭐ ${g.pts} pts · ${g.label}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openDetail(i){
+  const item=items[i];const g=gradeInfo[item.grade]||gradeInfo['C'];
+  document.getElementById('gradeDetail').innerHTML=`
+    <div style="background:#fff;border-radius:12px;border:0.5px solid #ddd;overflow:hidden;margin-bottom:12px">
+      ${item.dataUrl?`<img src="${item.dataUrl}" style="width:100%;height:180px;object-fit:cover">`:`<div style="height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;background:#f5f5f0">${getCatIcon(item.category)}</div>`}
+      <div style="padding:14px">
+        <div style="font-size:16px;font-weight:700;color:#222">${item.name}</div>
+        <div style="font-size:12px;color:#888;margin:2px 0 10px">${item.category}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+          <div style="background:${g.bg};border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:10px;color:${g.color};margin-bottom:2px">CONDITION GRADE</div>
+            <div style="font-size:28px;font-weight:700;color:${g.color}">${item.grade}</div>
+            <div style="font-size:11px;color:${g.color}">${g.label}</div>
+          </div>
+          <div style="background:#fff8ee;border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:10px;color:#b06000;margin-bottom:2px">POINTS EARNED</div>
+            <div style="font-size:28px;font-weight:700;color:#e07800">${g.pts}</div>
+            <div style="font-size:11px;color:#b06000">recycling pts</div>
+          </div>
+        </div>
+        <div style="background:#f8f8f5;border-radius:10px;padding:10px;margin-bottom:10px">
+          <div style="font-size:12px;font-weight:600;color:#444;margin-bottom:4px">AI Analysis</div>
+          <div style="font-size:12px;color:#555;line-height:1.6">${item.analysis}</div>
+        </div>
+        <div style="background:${g.bg};border-radius:10px;padding:10px">
+          <div style="font-size:12px;font-weight:600;color:${g.color};margin-bottom:3px">Recommended path</div>
+          <div style="font-size:12px;color:${g.color}">${g.desc}</div>
+        </div>
+      </div>
+    </div>`;
+  showTab(2);
+}
+
+async function handleUpload(e){
+  const file=e.target.files[0];if(!file||analyzing)return;
+  analyzing=true;
+  const ua=document.getElementById('uploadArea');
+  ua.innerHTML='<div style="font-size:24px;margin-bottom:8px">⏳</div><div style="font-size:13px;color:#888">Analysing your item...</div>';
+  const dataUrl=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(file);});
+  const base64=dataUrl.split(',')[1];const mediaType=file.type||'image/jpeg';
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mediaType,data:base64}},{type:'text',text:`You are a clothing recycling grader. Analyse this clothing item image and respond with ONLY a JSON object (no markdown, no extra text): {"name":"<specific item name>","category":"<Jacket|T-Shirt|Dress|Pants|Shoes|Accessories|Other>","grade":"<A|B|C|D>","analysis":"<2-3 sentence description of condition, wear, and why this grade>"}`}]}]})});
+    const data=await resp.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'';
+    let parsed;try{parsed=JSON.parse(text.replace(/```json|```/g,''));}catch(e2){parsed=null;}
+    if(parsed&&parsed.grade){items.push({...parsed,dataUrl});renderItems();}
+    else{items.push({name:'Unknown Item',category:'Clothing',grade:'C',analysis:'Could not fully analyse. Assigned default grade.',dataUrl});renderItems();}
+  }catch(err){items.push({name:'Unknown Item',category:'Clothing',grade:'C',analysis:'Analysis failed. Assigned default grade.',dataUrl});renderItems();}
+  ua.innerHTML=`<div style="font-size:28px;margin-bottom:8px">📷</div><div style="font-size:13px;font-weight:600;color:#333">Scan another item</div><div style="font-size:11px;color:#888;margin-top:3px">Tap to upload</div><input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleUpload(event)">`;
+  document.getElementById('uploadArea').onclick=()=>document.getElementById('fileInput').click();
+  analyzing=false;e.target.value='';
+}
+
+buildDropdown();
+</script>
