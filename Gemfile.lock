@@ -76,10 +76,9 @@ PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
-  bundler (~> 2.1)
   forty_jekyll_theme!
   jekyll (~> 4.0)
   webrick (~> 1.8)
 
 BUNDLED WITH
-   2.1.4
+   2.4.22
