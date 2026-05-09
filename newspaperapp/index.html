@@ -3,943 +3,931 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Downloader WebApp</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <title>Publication Downloader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    /* Basic Reset & Styling */
+    :root {
+      --bg: #d7ece7;
+      --surface: #ffffff;
+      --surface-soft: #f4f8f7;
+      --text: #12332d;
+      --muted: #4a6a63;
+      --accent: #0a7f70;
+      --accent-strong: #055b50;
+      --danger: #b3261e;
+      --shadow: 0 14px 34px rgba(16, 50, 44, 0.16);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --border: 1px solid rgba(9, 67, 58, 0.16);
+    }
+
+    body.dark-mode {
+      --bg: #0f1917;
+      --surface: #1a2623;
+      --surface-soft: #1f302c;
+      --text: #f0fbf8;
+      --muted: #b8d1ca;
+      --accent: #22b7a5;
+      --accent-strong: #2cd5c0;
+      --danger: #ff8177;
+      --shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+      --border: 1px solid rgba(111, 181, 170, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-color: #e0f2f1;
       margin: 0;
-      padding: 0;
+      min-height: 100vh;
+      font-family: 'Source Sans 3', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #e9f7f4 0, transparent 45%), var(--bg);
+      color: var(--text);
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-      justify-content: center; /* Add this */
-      align-items: center;     /* Add this */
+      align-items: center;
+      padding: 28px 16px 22px;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    body.dark-mode {
+      background: radial-gradient(circle at 20% 20%, #163530 0, transparent 48%), var(--bg);
     }
 
     .container {
-      max-width: 600px;
-      width: 90%;
-      padding: 30px;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      transform: perspective(1000px) rotateX(2deg);
-      transition: transform 0.3s ease;
-    }
-
-    .container:hover {
-      transform: perspective(1000px) rotateX(0);
+      width: min(700px, 100%);
+      background: var(--surface);
+      border-radius: calc(var(--radius) + 8px);
+      box-shadow: var(--shadow);
+      border: var(--border);
+      padding: 28px 24px;
+      position: relative;
     }
 
     h1 {
       font-family: 'Playfair Display', serif;
       text-align: center;
-      color: #00796b;
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      margin: 4px 0 22px;
+      color: var(--accent);
+      letter-spacing: 0.2px;
+      font-size: clamp(1.8rem, 2.8vw, 2.35rem);
     }
 
-    .type-selector {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 25px;
-    }
-
-    .form-group {
-      margin-bottom: 25px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-
-    #timeGroup {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-
-    #timeInput {
-      width: 100%;
-      max-width: 400px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    #timeGroup label {
-      align-self: center;
-      margin-bottom: 8px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #00796b;
-      font-weight: 500;
-      align-self: flex-start;
-    }
-
-    select, input[type="date"], input[type="text"] {
-      width: 100%;
-      max-width: 400px;
-      padding: 12px;
-      font-size: 1rem;
-      border: 2px solid #e0f2f1;
-      border-radius: 8px;
-      background: white;
-      transition: all 0.3s ease;
-    }
-
-    select:focus, input:focus {
-      outline: none;
-      border-color: #00796b;
-      box-shadow: 0 0 0 3px rgba(0,121,107,0.1);
-    }
-    
-    .download-btn {
-      background-color: #007AFF;
-      color: white;
-      border: none;
-      padding: 15px 25px;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      width: 100%;
-      max-width: 400px;
-      margin: 0 auto;
-      display: block;
-      -webkit-tap-highlight-color: transparent;
-      box-shadow: 0 2px 6px rgba(0, 122, 255, 0.2);
-    }
-
-    .download-btn:hover {
-      background-color: #0063CC;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 122, 255, 0.3);
-    }
-
-    .download-btn:active {
-      transform: translateY(1px);
-      background-color: #0051A8;
-      box-shadow: 0 1px 4px rgba(0, 122, 255, 0.2);
-    }
-
-    .download-btn:disabled {
-      background-color: #B4D2FF;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .footer {
-      text-align: center;
-      padding: 20px;
-      margin-top: auto;
-    }
-
-    .footer a {
-      color: #00796b;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .footer a:hover {
-      color: #00695c;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        width: 95%;
-        padding: 20px;
-        margin: 20px auto;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-    }
-
-    .container {
-      max-width: 600px;
-      width: 90%;
-      padding: 30px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
-      transform: translateY(20px);
-      opacity: 0;
-      animation: slideUp 0.6s ease forwards;
-    }
-    
-    .type-radio-group {
-      margin-bottom: 25px;
-    }
-
-    .radio-group-label {
-      color: #00796b;
-      font-weight: 500;
-      margin-bottom: 12px;
-    }
-
-    .radio-container {
-      display: flex;
-      gap: 20px;
-      background: #f5f5f7;
-      padding: 8px;
-      border-radius: 12px;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .radio-container input[type="radio"] {
-      display: none;
-    }
-
-    .radio-container label {
-      padding: 10px 20px;
-      background: transparent;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      color: #666;
-      font-weight: 500;
-      text-align: center;
-      position: relative;
-      border: 1px solid transparent;
-    }
-
-    .radio-container input[type="radio"]:checked + label {
-      background: white;
-      color: #00796b;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      border: 1px solid rgba(0,0,0,0.1);
-      transform: translateY(-1px);
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #555;
-    }
-    select, input[type="date"], input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .download-btn {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s, background-color 0.2s;
-      display: block;
-      width: 100%;
-      margin-top: 10px;
-    }
-    .download-btn:hover {
-      background-color: #0056b3;
-      transform: scale(1.05);
-    }
-    .illustration {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .status {
-      margin-top: 10px;
-      color: #333;
-      text-align: center;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 16px;
-      padding: 16px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .thumbnail {
-      position: relative;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    
-    .thumbnail:hover {
-      transform: scale(1.05);
-    }
-    
-    .thumbnail img {
-      width: 100%;
-      height: auto;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .page-number {
+    .utility-buttons {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: rgba(0,0,0,0.6);
-      color: white;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 12px;
-    }
-    
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.9);
-      z-index: 1000;
-      padding: 20px;
-    }
-    
-    .modal img {
-      max-width: 100%;
-      max-height: 90vh;
-      margin: auto;
-      display: block;
-    }
-    
-    .close-modal {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      color: white;
-      font-size: 30px;
-      cursor: pointer;
-    }
-    /* Add these styles in your existing <style> section */
-        .pagination {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 1rem;
-          margin: 2rem 0;
-        }
-    
-        .page-btn {
-          padding: 0.5rem 1rem;
-          background-color: #007bff;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-    
-        .page-btn:disabled {
-          background-color: #ccc;
-          cursor: not-allowed;
-        }
-    
-        #pageInfo {
-          font-size: 1rem;
-          color: #666;
-        }
-        /* Shortcuts Modal Styles */
-    .shortcuts-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.8);
+      top: 14px;
+      right: 14px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    }
-
-    .shortcuts-content {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-    }
-
-    .shortcuts-content h2 {
-      color: #00796b;
-      margin-bottom: 20px;
-    }
-
-    .shortcuts-content ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .shortcuts-content li {
-      margin: 10px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    kbd {
-      background: #f5f5f5;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 2px 6px;
-      font-family: monospace;
-      font-size: 14px;
-    }
-
-    /* Toast Notification Styles */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 12px 24px;
-      border-radius: 8px;
-      color: white;
-      font-weight: 500;
-      opacity: 0;
-      transform: translateY(100%);
-      transition: all 0.3s ease;
-      z-index: 1000;
-    }
-
-    .toast.success {
-      background: #00796b;
-    }
-
-    .toast.error {
-      background: #d32f2f;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Download History Styles */
-    .download-history {
-      margin-top: 30px;
-      padding: 20px;
-      background: #f5f5f7;
-      border-radius: 12px;
-    }
-
-    .history-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .history-item:last-child {
-      border-bottom: none;
-    }
-
-    /* Loading State Styles */
-    .loading {
-      position: relative;
-      pointer-events: none;
-    }
-
-    .loading::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 20px;
-      height: 20px;
-      margin: -10px 0 0 -10px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    
-    @keyframes slideUp {
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideInUp {
-      from {
-        transform: translateY(20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    /* Apply animations to elements */
-    .form-group {
-      animation: slideInUp 0.5s ease forwards;
-      opacity: 0;
-    }
-
-    .form-group:nth-child(1) { animation-delay: 0.1s; }
-    .form-group:nth-child(2) { animation-delay: 0.2s; }
-    .form-group:nth-child(3) { animation-delay: 0.3s; }
-    .form-group:nth-child(4) { animation-delay: 0.4s; }
-
-    .download-btn {
-      animation: fadeIn 0.5s ease 0.5s forwards;
-      opacity: 0;
-    }
-
-    .download-btn:hover {
-      animation: pulse 1s infinite;
+      gap: 8px;
     }
 
     .utility-btn {
-      transition: transform 0.3s ease, background-color 0.3s ease;
+      border: var(--border);
+      background: var(--surface-soft);
+      color: var(--accent);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
     }
 
     .utility-btn:hover {
-      transform: rotate(15deg) scale(1.1);
+      transform: translateY(-1px);
+      background: rgba(10, 127, 112, 0.12);
     }
 
-    select, input[type="date"], input[type="text"] {
-      transition: all 0.3s ease;
-    }
-
-    select:focus, input:focus {
-      transform: translateY(-2px);
-    }
-
-    .toast {
-      animation: slideInUp 0.3s ease;
-    }
-
-    .favorite-item {
-      animation: fadeIn 0.3s ease;
-    }
-
-    /* Smooth transition for dark mode */
-    body, .container, h1, label, .schedule-info, 
-    select, input[type="date"], input[type="text"] {
-      transition: all 0.3s ease;
-    }
-
-    /* Search Filter Styles */
-    .search-container {
-      position: relative;
-      margin-bottom: 15px;
-    }
-
-    .search-container input {
-      width: 100%;
-      padding: 10px 15px;
-      padding-left: 35px;
-      border: 2px solid #e0f2f1;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    .search-container::before {
-      content: "🔍";
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #666;
-    }
-
-    .no-content {
-      text-align: center;
-      padding: 40px 20px;
-      background: #f5f5f7;
-      border-radius: 12px;
-      margin: 20px 0;
-    }
-
-    .no-content h3 {
-      color: #666;
-      margin-bottom: 10px;
-      font-size: 1.5rem;
-    }
-
-    .no-content p {
-      color: #888;
+    .utility-btn i {
       font-size: 1.1rem;
     }
 
-    .select-wrapper {
-      position: relative;
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+
+    .type-fieldset {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .type-fieldset legend {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.98rem;
+      padding: 0;
+    }
+
+    label {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.98rem;
+    }
+
+    .radio-container {
+      display: inline-flex;
+      background: var(--surface-soft);
+      border-radius: 12px;
+      border: var(--border);
+      padding: 4px;
+      width: fit-content;
+      gap: 4px;
+    }
+
+    .radio-container input[type="radio"] {
+      position: absolute;
+      opacity: 0.0001;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    .radio-container label {
+      margin: 0;
+      padding: 8px 16px;
+      border-radius: 9px;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 600;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .radio-container input[type="radio"]:checked + label {
+      background: var(--surface);
+      color: var(--accent);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .radio-container input[type="radio"]:focus-visible + label {
+      outline: 3px solid rgba(10, 127, 112, 0.4);
+      outline-offset: 2px;
+    }
+
+    select,
+    input[type="date"],
+    input[type="text"],
+    input[type="number"] {
       width: 100%;
-      max-width: 400px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      font-size: 1rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus,
+    input:focus {
+      outline: none;
+      border-color: rgba(10, 127, 112, 0.7);
+      box-shadow: 0 0 0 3px rgba(10, 127, 112, 0.14);
+    }
+
+    .publication-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .publication-row select {
+      flex: 1;
+    }
+
+    .favorite-toggle {
+      width: 44px;
+      min-width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: var(--border);
+      background: var(--surface-soft);
+      color: #f5a524;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .favorite-toggle:hover {
+      transform: translateY(-1px);
     }
 
     .schedule-info {
       margin-top: 8px;
-      padding: 8px 12px;
-      background: #f5f5f7;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      color: #666;
-      line-height: 1.4;
-      transition: all 0.3s ease;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--surface-soft);
+      border: var(--border);
+      color: var(--muted);
+      line-height: 1.35;
+      font-size: 0.95rem;
     }
 
-    /* Add to your existing styles */
-    .utility-buttons {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      gap: 10px;
+    .field-help {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.3;
     }
 
-  /* Update utility button styles */
-  .utility-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .utility-btn i {
-    font-size: 1.5rem;
-    color: #00796b;
-  }
-
-  body.dark-mode .utility-btn i {
-    color: #fff;
-  }
-
-  .utility-btn:hover {
-    background: rgba(0,0,0,0.1);
-    transform: scale(1.1);
-  }
-
-  body.dark-mode .utility-btn:hover {
-    background: rgba(255,255,255,0.1);
-  }
-    /* Dark mode styles */
-    body.dark-mode {
-      background-color: #1a1a1a;
-    }
-
-    body.dark-mode .container {
-      background: rgba(30, 30, 30, 0.95);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    body.dark-mode h1,
-    body.dark-mode label,
-    body.dark-mode .schedule-info {
-      color: #fff;
-    }
-
-    body.dark-mode select,
-    body.dark-mode input[type="date"],
-    body.dark-mode input[type="text"] {
-      background: #2d2d2d;
-      border-color: #404040;
-      color: #fff;
-    }
-
-    /* Favorites styles */
-    .favorite-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px;
-      background: #f5f5f7;
-      margin: 5px 0;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-
-    body.dark-mode .favorite-item {
-      background: #2d2d2d;
-      color: #fff;
-    }
-
-    .favorites-modal {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      z-index: 1000;
-      max-width: 400px;
-      width: 90%;
-    }
-
-    body.dark-mode .favorites-modal {
-      background: #1a1a1a;
-      color: #fff;
-    }
-
-    /* Magazine PDF Download Button */
-    .pdf-download-btn {
-      background: linear-gradient(135deg, #00796b, #004d40);
-      color: white;
+    .download-btn,
+    .reader-btn,
+    .page-btn,
+    .mode-btn,
+    .zoom-btn {
       border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(0, 121, 107, 0.3);
-      margin: 20px auto;
-      max-width: 300px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
     }
 
-    .pdf-download-btn i {
-      font-size: 1.2rem;
+    .download-btn,
+    .reader-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 13px 16px;
+      background: linear-gradient(145deg, var(--accent), var(--accent-strong));
+      color: #fff;
+      font-size: 1.02rem;
+      box-shadow: 0 10px 18px rgba(7, 92, 79, 0.28);
     }
 
-    .pdf-download-btn:hover {
-      background: linear-gradient(135deg, #004d40, #00251a);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 121, 107, 0.4);
+    .download-btn:hover,
+    .reader-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(7, 92, 79, 0.34);
     }
 
-    .pdf-download-btn:active {
-      transform: translateY(0);
-    }
-
-    .pdf-download-btn:disabled {
-      background: #ccc;
+    .download-btn:disabled,
+    .reader-btn:disabled,
+    .page-btn:disabled,
+    .mode-btn:disabled,
+    .zoom-btn:disabled {
+      opacity: 0.58;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
     }
 
-    body.dark-mode .pdf-download-btn {
-      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+    .status {
+      margin-top: 12px;
+      min-height: 1.2em;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 500;
     }
 
+    .reader-shell {
+      width: min(1200px, 100%);
+      margin-top: 18px;
+      background: var(--surface);
+      border-radius: calc(var(--radius) + 8px);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .reader-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .reader-title h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: var(--text);
+    }
+
+    .reader-title p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .reader-header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .reader-header .reader-btn {
+      margin: 0;
+      width: auto;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 15px rgba(7, 92, 79, 0.22);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reader-toolbar {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      border: var(--border);
+      background: var(--surface-soft);
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 10px;
+      z-index: 4;
+    }
+
+    .mode-group,
+    .gallery-controls,
+    .focus-controls,
+    .focus-page-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn,
+    .page-btn,
+    .zoom-btn {
+      background: var(--surface);
+      border: var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+    }
+
+    .mode-btn.active,
+    .fit-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .api-hint {
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: var(--border);
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .api-hint.warning {
+      border-color: rgba(179, 38, 30, 0.38);
+      color: var(--danger);
+      background: rgba(179, 38, 30, 0.08);
+    }
+
+    .gallery-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .thumb-card {
+      border: var(--border);
+      border-radius: 12px;
+      padding: 9px;
+      background: var(--surface-soft);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .thumb-btn {
+      border: none;
+      padding: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #d2e3de;
+      display: block;
+    }
+
+    .thumb-btn img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+    }
+
+    .thumb-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .gallery-pagination {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .focus-view {
+      margin-top: 12px;
+    }
+
+    .focus-stage {
+      border: var(--border);
+      background: #0e1614;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 280px;
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .focus-stage img {
+      transform-origin: top center;
+      transition: transform 0.15s ease;
+      border-radius: 4px;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    .focus-stage img.fit-width {
+      width: 100%;
+      max-width: 900px;
+      height: auto;
+    }
+
+    .focus-stage img.fit-height {
+      width: auto;
+      height: min(76vh, 860px);
+      max-width: none;
+    }
+
+    .focus-stage img.fit-none {
+      width: auto;
+      height: auto;
+      max-width: none;
+    }
+
+    .focus-footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .focus-footer input[type="number"] {
+      width: 90px;
+      padding: 7px 9px;
+    }
+
+    .empty-state {
+      margin-top: 14px;
+      border: var(--border);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      padding: 34px 18px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 1200;
+      color: #fff;
+      border-radius: 10px;
+      padding: 12px 15px;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
+      transform: translateY(26px);
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .toast.success {
+      background: #077f69;
+    }
+
+    .toast.error {
+      background: #b3261e;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .favorites-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1300;
+    }
+
+    .favorites-content {
+      width: min(440px, 100%);
+      background: var(--surface);
+      border: var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .favorites-content h3 {
+      margin: 0 0 12px;
+    }
+
+    .favorite-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 10px;
+      border-radius: 10px;
+      background: var(--surface-soft);
+      border: var(--border);
+      margin-bottom: 8px;
+    }
+
+    .favorite-remove {
+      border: none;
+      border-radius: 8px;
+      padding: 6px 8px;
+      background: rgba(179, 38, 30, 0.15);
+      color: var(--danger);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .utility-btn:focus-visible,
+    .favorite-toggle:focus-visible,
+    .download-btn:focus-visible,
+    .reader-btn:focus-visible,
+    .page-btn:focus-visible,
+    .mode-btn:focus-visible,
+    .zoom-btn:focus-visible,
+    .thumb-btn:focus-visible,
+    .favorite-remove:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: 3px solid rgba(10, 127, 112, 0.45);
+      outline-offset: 2px;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 920px) {
+      .reader-header {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+
+      .reader-header-actions {
+        justify-content: space-between;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 18px 10px 16px;
+      }
+
+      .container {
+        padding: 22px 14px;
+      }
+
+      .reader-shell {
+        padding: 12px;
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .focus-stage img.fit-height {
+        height: min(62vh, 700px);
+      }
+
+      .reader-toolbar {
+        position: static;
+      }
+
+      .utility-buttons {
+        top: 10px;
+        right: 10px;
+      }
+    }
   </style>
-  <body>
-    <div class="container">
-      <div class="utility-buttons">
-        <button id="darkModeToggle" class="utility-btn">
-          <i class="ph ph-moon"></i>
+</head>
+<body>
+  <div class="container" id="homeContainer">
+    <div class="utility-buttons">
+      <button id="darkModeToggle" class="utility-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
+        <i class="ph ph-moon"></i>
+      </button>
+      <button id="favoritesToggle" class="utility-btn" title="Favorites" aria-label="Open favorites">
+        <i class="ph ph-star"></i>
+      </button>
+    </div>
+
+    <h1>Publication Downloader</h1>
+
+    <div class="form-group">
+      <fieldset class="type-fieldset">
+      <legend>Select Type</legend>
+      <div class="radio-container" role="radiogroup" aria-label="Publication type">
+        <input type="radio" id="newspaperType" name="type" value="newspaper" checked>
+        <label for="newspaperType">Newspaper</label>
+        <input type="radio" id="magazineType" name="type" value="magazine">
+        <label for="magazineType">Magazine</label>
+      </div>
+      </fieldset>
+    </div>
+
+    <div class="form-group">
+      <label for="publicationSelect">Publication</label>
+      <div class="publication-row">
+        <select id="publicationSelect"></select>
+        <button id="favoriteCurrentBtn" class="favorite-toggle" title="Favorite this publication" aria-label="Favorite this publication">☆</button>
+      </div>
+      <div id="scheduleInfo" class="schedule-info"></div>
+    </div>
+
+    <div class="form-group">
+      <label for="dateInput">Date</label>
+      <input type="date" id="dateInput" />
+    </div>
+
+    <div class="form-group" id="timeGroup">
+      <label for="timeInput">Edition Code</label>
+      <input type="text" id="timeInput" aria-describedby="timeHelp" placeholder="Auto-filled per publication" />
+      <small class="field-help" id="timeHelp">Auto-generated from the selected newspaper. This field is read-only.</small>
+    </div>
+
+    <button class="download-btn" id="downloadBtn">Download</button>
+    <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <section id="magazineReader" class="reader-shell" hidden>
+    <div class="reader-header">
+      <button id="backToHomeBtn" class="mode-btn" type="button">
+        <i class="ph ph-arrow-left"></i>
+        Back
+      </button>
+
+      <div class="reader-title">
+        <h2 id="readerTitle">Magazine Reader</h2>
+        <p id="readerSubtitle"></p>
+      </div>
+
+      <div class="reader-header-actions">
+        <button id="downloadPdfBtn" class="reader-btn" type="button">
+          <i class="ph ph-file-pdf"></i>
+          Download as PDF
         </button>
-        <button id="favoritesToggle" class="utility-btn">
-          <i class="ph ph-star"></i>
-        </button>
-      </div>      <h1>Publication Downloader</h1>
-      <div class="form-group type-radio-group">
-        <label class="radio-group-label">Select Type</label>
-        <div class="radio-container">
-          <input type="radio" id="newspaperType" name="type" value="newspaper" checked>
-          <label for="newspaperType">Newspaper</label>
-          <input type="radio" id="magazineType" name="type" value="magazine">
-          <label for="magazineType">Magazine</label>
+      </div>
+    </div>
+
+    <div class="reader-toolbar">
+      <div class="mode-group">
+        <button id="galleryModeBtn" class="mode-btn active" type="button">Gallery</button>
+        <button id="focusModeBtn" class="mode-btn" type="button">Reader</button>
+      </div>
+
+      <div id="galleryControls" class="gallery-controls">
+        <button id="galleryPrevBtn" class="page-btn" type="button">Prev</button>
+        <span id="galleryPageInfo">Page 1 of 1</span>
+        <button id="galleryNextBtn" class="page-btn" type="button">Next</button>
+      </div>
+
+      <div id="focusControls" class="focus-controls" hidden>
+        <button id="zoomOutBtn" class="zoom-btn" type="button">-</button>
+        <span id="zoomPercent">100%</span>
+        <button id="zoomInBtn" class="zoom-btn" type="button">+</button>
+        <button id="zoomResetBtn" class="zoom-btn" type="button">100%</button>
+        <button id="fitWidthBtn" class="zoom-btn fit-btn active" type="button">Fit width</button>
+        <button id="fitHeightBtn" class="zoom-btn fit-btn" type="button">Fit height</button>
+        <button id="fitNoneBtn" class="zoom-btn fit-btn" type="button">Actual size</button>
+      </div>
+    </div>
+
+    <div id="pdfApiHint" class="api-hint"></div>
+    <div id="readerStatus" class="status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="galleryView">
+      <div id="galleryGrid" class="gallery-grid"></div>
+      <div class="gallery-pagination">
+        <span id="galleryRangeInfo"></span>
+      </div>
+    </div>
+
+    <div id="focusView" class="focus-view" hidden>
+      <div class="focus-stage" id="focusStage">
+        <img id="focusImage" class="fit-width" alt="Magazine page preview" />
+      </div>
+      <div class="focus-footer">
+        <div class="focus-page-controls">
+          <button id="focusPrevBtn" class="page-btn" type="button">Previous page</button>
+          <span id="focusPageInfo">Page 1 / 1</span>
+          <button id="focusNextBtn" class="page-btn" type="button">Next page</button>
+        </div>
+
+        <div class="focus-page-controls">
+          <label for="pageJumpInput">Go to page</label>
+          <input id="pageJumpInput" type="number" min="1" value="1">
+          <button id="pageJumpBtn" class="page-btn" type="button">Go</button>
         </div>
       </div>
-      <div class="form-group">
-        <label for="publicationSelect">Select Publication</label>
-        <select id="publicationSelect">
-          <!-- Options will be filled dynamically -->
-        </select>
-        <div id="scheduleInfo" class="schedule-info"></div>
-      </div>
-      <div class="form-group">
-        <label for="dateInput">Select Date</label>
-        <input type="date" id="dateInput" />
-      </div>
-      <div class="form-group" id="timeGroup">
-        <label for="timeInput">Code</label>
-        <input type="text" id="timeInput" placeholder="kode unik" />
-      </div>
-      <button class="download-btn" id="downloadBtn">Download</button>
-      <div class="status" id="status"></div>
     </div>
-    <div class="footer">
-      Made with ❤️ by <a href="https://tyasono.xyz" target="_blank">Bimo</a>
-    </div>
+  </section>
 
-    <!-- Move script tag to here -->
-    <script>
-    // Add these at the start of your script section
-    // DOM Elements
-    function showLoading(element) {
-      element.classList.add('loading');
-      element.disabled = true;
-    }
+  <div class="footer">
+    Made with ❤️ by <a href="https://tyasono.xyz" target="_blank" rel="noopener noreferrer">Bimo</a>
+  </div>
 
-    function hideLoading(element) {
-      element.classList.remove('loading');
-      element.disabled = false;
-    }
+  <script>
+    const MAGAZINE_PDF_API_URL = 'https://magazine-pdf-generator.onrender.com';
+    const PDF_API_STORAGE_KEY = 'magazinePdfApiUrl';
+    const DEFAULT_ITEMS_PER_GALLERY_PAGE = 8;
+    const PDF_REQUEST_TIMEOUT_MS = 90000;
+
+    const config = {
+      newspaper: {
+        kompas: { name: 'Kompas', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1013' },
+        pikiran_rakyat: { name: 'Pikiran Rakyat', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1020' },
+        jawa_pos: { name: 'Jawa Pos', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1031' },
+        bisnis_indonesia: { name: 'Bisnis Indonesia', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1002' },
+        neraca: { name: 'Neraca', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1004' },
+        media_indonesia: { name: 'Media Indonesia', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1017' },
+        the_jakarta_post: { name: 'The Jakarta Post', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1029' },
+        kontan: { name: 'Kontan', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1005' },
+        financial_times: { name: 'Financial Times', urlPattern: 'https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf', defaultTime: '1035' }
+      },
+      magazine: {
+        the_economist: { name: 'The Economist', id: '4037', startPage: 1, maxPages: 150 },
+        tempo: { name: 'TEMPO', id: '4036', startPage: 1, maxPages: 150 },
+        time: { name: 'TIME', id: '4071', startPage: 1, maxPages: 150 },
+        guardian: { name: 'Guardian', id: '4074', startPage: 1, maxPages: 150 },
+        bloomberg: { name: 'Bloomberg', id: '4041', startPage: 1, maxPages: 150 }
+      }
+    };
+
+    const schedules = {
+      kompas: 'Published every day morning WIB',
+      jawa_pos: 'Published every day morning WIB',
+      bisnis_indonesia: 'Published every day morning WIB',
+      media_indonesia: 'Published every day morning WIB',
+      pikiran_rakyat: 'Published every day morning WIB (excl. Sunday)',
+      neraca: 'Published every day morning WIB (excl. Sunday)',
+      kontan: 'Published every day morning WIB (excl. Sunday)',
+      the_jakarta_post: 'Published every day morning WIB (excl. Sunday)',
+      financial_times: 'Published D+2 morning WIB (excl. Sunday)',
+      guardian: 'Published D+1 morning WIB (excl. Sunday)',
+      time: 'Published biweekly every Monday morning WIB',
+      tempo: 'Published weekly every Monday morning WIB',
+      bloomberg: 'Published monthly every first Monday',
+      the_economist: 'Published weekly every Saturday, available Monday morning WIB'
+    };
+
+    const state = {
+      selectedType: 'newspaper',
+      magazinePages: [],
+      currentMagazine: null,
+      currentDate: null,
+      galleryPage: 1,
+      readerPageIndex: 0,
+      viewMode: 'gallery',
+      zoom: 1,
+      fitMode: 'width'
+    };
+
+    const dom = {
+      body: document.body,
+      homeContainer: document.getElementById('homeContainer'),
+      status: document.getElementById('status'),
+      downloadBtn: document.getElementById('downloadBtn'),
+      publicationSelect: document.getElementById('publicationSelect'),
+      dateInput: document.getElementById('dateInput'),
+      timeInput: document.getElementById('timeInput'),
+      timeGroup: document.getElementById('timeGroup'),
+      scheduleInfo: document.getElementById('scheduleInfo'),
+      typeRadios: document.querySelectorAll('input[name="type"]'),
+      darkModeToggle: document.getElementById('darkModeToggle'),
+      favoritesToggle: document.getElementById('favoritesToggle'),
+      favoriteCurrentBtn: document.getElementById('favoriteCurrentBtn'),
+      magazineReader: document.getElementById('magazineReader'),
+      backToHomeBtn: document.getElementById('backToHomeBtn'),
+      readerTitle: document.getElementById('readerTitle'),
+      readerSubtitle: document.getElementById('readerSubtitle'),
+      downloadPdfBtn: document.getElementById('downloadPdfBtn'),
+      pdfApiHint: document.getElementById('pdfApiHint'),
+      readerStatus: document.getElementById('readerStatus'),
+      galleryModeBtn: document.getElementById('galleryModeBtn'),
+      focusModeBtn: document.getElementById('focusModeBtn'),
+      galleryControls: document.getElementById('galleryControls'),
+      focusControls: document.getElementById('focusControls'),
+      galleryView: document.getElementById('galleryView'),
+      focusView: document.getElementById('focusView'),
+      galleryGrid: document.getElementById('galleryGrid'),
+      galleryPrevBtn: document.getElementById('galleryPrevBtn'),
+      galleryNextBtn: document.getElementById('galleryNextBtn'),
+      galleryPageInfo: document.getElementById('galleryPageInfo'),
+      galleryRangeInfo: document.getElementById('galleryRangeInfo'),
+      focusImage: document.getElementById('focusImage'),
+      focusPrevBtn: document.getElementById('focusPrevBtn'),
+      focusNextBtn: document.getElementById('focusNextBtn'),
+      focusPageInfo: document.getElementById('focusPageInfo'),
+      pageJumpInput: document.getElementById('pageJumpInput'),
+      pageJumpBtn: document.getElementById('pageJumpBtn'),
+      zoomOutBtn: document.getElementById('zoomOutBtn'),
+      zoomInBtn: document.getElementById('zoomInBtn'),
+      zoomResetBtn: document.getElementById('zoomResetBtn'),
+      zoomPercent: document.getElementById('zoomPercent'),
+      fitWidthBtn: document.getElementById('fitWidthBtn'),
+      fitHeightBtn: document.getElementById('fitHeightBtn'),
+      fitNoneBtn: document.getElementById('fitNoneBtn')
+    };
+
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
 
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
       toast.textContent = message;
+      toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+      toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+      toast.setAttribute('aria-atomic', 'true');
       document.body.appendChild(toast);
-      
+      requestAnimationFrame(() => toast.classList.add('show'));
+
       setTimeout(() => {
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-          setTimeout(() => toast.remove(), 300);
-        }, 3000);
-      }, 100);
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 220);
+      }, 2600);
     }
-    window.onload = () => {
-      const savedType = localStorage.getItem('selectedType');
-      if (savedType === 'magazine') {
-        document.getElementById('magazineType').checked = true;
-        populatePublications();
-        localStorage.removeItem('selectedType');
+
+    function showLoading(button, text = 'Loading...') {
+      button.disabled = true;
+      button.dataset.originalText = button.innerHTML;
+      button.innerHTML = `<i class="ph ph-spinner"></i> ${text}`;
+    }
+
+    function hideLoading(button) {
+      button.disabled = false;
+      if (button.dataset.originalText) {
+        button.innerHTML = button.dataset.originalText;
       }
-    };
-        const typeSelect = document.getElementById("typeSelect");
-        const publicationSelect = document.getElementById("publicationSelect");
-        const dateInput = document.getElementById("dateInput");
-        const timeGroup = document.getElementById("timeGroup");
-        const timeInput = document.getElementById("timeInput");
-        const downloadBtn = document.getElementById("downloadBtn");
-        const statusDiv = document.getElementById("status");
+    }
 
-        // Set default date to today
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.value = today;
-
-        /* Configurations for publications... */
-    const config = {
-      newspaper: {
-        kompas: {
-          name: "Kompas",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1013"
-        },
-        pikiran_rakyat: {
-          name: "Pikiran Rakyat",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1020"
-        },
-        jawa_pos: {
-          name: "Jawa Pos",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1031"
-        },
-        bisnis_indonesia: {
-          name: "Bisnis Indonesia",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1002"
-        },
-        neraca: {
-          name: "Neraca",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1004"
-        },
-        media_indonesia: {
-          name: "Media Indonesia",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1017"
-        },
-        the_jakarta_post: {
-          name: "The Jakarta Post",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1029"
-        },
-        kontan: {
-          name: "Kontan",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1005"
-        },
-        financial_times: {
-          name: "Financial Times",
-          urlPattern: "https://eperpus.dotsolution.net/custom/ori/{YYYY}-{MM}-{DD}-{time}-0001.pdf",
-          defaultTime: "1035"
-        }
-      },
-      magazine: {
-        the_economist: {
-          name: "The Economist",
-          id: "4037",
-          startPage: 1,
-          maxPages: 150
-        },
-        tempo: {
-          name: "TEMPO",
-          id: "4036",
-          startPage: 1,
-          maxPages: 150
-        },
-        time: {
-          name: "TIME",
-          id: "4071",
-          startPage: 1,
-          maxPages: 150
-        },
-        guardian: {
-          name: "Guardian",
-          id: "4074",
-          startPage: 1,
-          maxPages: 150
-        },
-        bloomberg: {
-          name: "Bloomberg",
-          id: "4041",
-          startPage: 1,
-          maxPages: 150
-        }
-      }
-    };
-
-    // Helper functions
     function pad(num) {
-      return num.toString().padStart(2, "0");
+      return num.toString().padStart(2, '0');
+    }
+
+    function getSelectedType() {
+      return document.querySelector('input[name="type"]:checked').value;
     }
 
     function constructNewspaperURL(pubConfig, dateStr, time) {
@@ -948,554 +936,730 @@
       const MM = pad(dateObj.getMonth() + 1);
       const DD = pad(dateObj.getDate());
       return pubConfig.urlPattern
-        .replace("{YYYY}", YYYY)
-        .replace("{MM}", MM)
-        .replace("{DD}", DD)
-        .replace("{time}", time);
+        .replace('{YYYY}', YYYY)
+        .replace('{MM}', MM)
+        .replace('{DD}', DD)
+        .replace('{time}', time);
     }
 
-    // Download button event handler
-    downloadBtn.addEventListener("click", async function() {
-        showLoading(downloadBtn);
-      const selectedType = document.querySelector('input[name="type"]:checked').value;
-      
-      if (selectedType === "magazine") {
-        statusDiv.textContent = "Loading thumbnails...";
-        const pubKey = publicationSelect.value;
-        const dateStr = dateInput.value;
-        const pubConfig = config.magazine[pubKey];
-        
-        try {
-          const date = new Date(dateStr);
-          const formattedDate = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
-          
-          // Clear previous content and create gallery
-          const container = document.querySelector('.container');
-          container.innerHTML = `
-            <button class="download-btn" onclick="(() => {
-              window.location.href = window.location.href;
-              localStorage.setItem('selectedType', 'magazine');
-              window.onload = () => {
-                document.getElementById('magazineType').checked = true;
-                populatePublications();
-              }
-            })()">Back to Home</button>
-            <h2>${pubConfig.name} - ${dateStr}</h2>
-            <button id="downloadPdfBtn" class="pdf-download-btn">
-              <i class="ph ph-file-pdf"></i>
-              Download as PDF
-            </button>
-            <div class="gallery"></div>
-            <div class="pagination">
-              <button id="prevPage" class="page-btn">&lt; Previous</button>
-              <span id="pageInfo"></span>
-              <button id="nextPage" class="page-btn">Next &gt;</button>
-            </div>
-            <div class="modal">
-              <span class="close-modal">&times;</span>
-              <img src="" alt="Full size image">
-            </div>
-            <div class="status"></div>
-          `;
-          
-          setTimeout(() => {
-            if (thumbnails.length === 0) {
-            const gallery = container.querySelector('.gallery');
-            gallery.innerHTML = `
-                <div class="no-content">
-                <h3>Edition Not Available</h3>
-                <p>This edition is not available yet. Please check back later.</p>
-                </div>
-            `;
-            container.querySelector('.pagination').style.display = 'none';
-            }
-        }, 1000);
-          const gallery = container.querySelector('.gallery');
-          const modal = container.querySelector('.modal');
-          const modalImg = modal.querySelector('img');
-          const closeModal = modal.querySelector('.close-modal');
-          const statusDiv = container.querySelector('.status');
-          const prevBtn = container.querySelector('#prevPage');
-          const nextBtn = container.querySelector('#nextPage');
-          const pageInfo = container.querySelector('#pageInfo');
-          
-          // Pagination setup
-          const itemsPerPage = 4;
-          let currentPage = 1;
-          let thumbnails = [];
-          
-          // Add thumbnails
-          for (let i = pubConfig.startPage; i <= pubConfig.maxPages; i++) {
-            const thumbUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/small/${i}.jpg`;
-            const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${i}.jpg`;
-            
-            const thumb = document.createElement('div');
-            thumb.className = 'thumbnail';
-            thumb.innerHTML = `
-              <img src="${thumbUrl}" alt="Page ${i}" onerror="this.parentElement.remove()">
-              <div class="page-number">Page ${i}</div>
-            `;
-            
-            thumb.addEventListener('click', () => {
-              modalImg.src = largeUrl;
-              modal.style.display = 'flex';
-            });
-            
-            thumbnails.push(thumb);
-          }
+    function downloadFile(url, filename) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
 
-          function showPage(page) {
-            gallery.innerHTML = '';
-            const start = (page - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageItems = thumbnails.slice(start, end);
-            
-            pageItems.forEach(thumb => gallery.appendChild(thumb));
-            
-            currentPage = page;
-            const totalPages = Math.ceil(thumbnails.length / itemsPerPage);
-            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = currentPage === totalPages;
-          }
+    function sanitizeFileName(name) {
+      return name.replace(/[^a-z0-9._-]+/gi, '_');
+    }
 
-          prevBtn.addEventListener('click', () => {
-            if (currentPage > 1) showPage(currentPage - 1);
-          });
+    function setDarkMode(enabled) {
+      dom.body.classList.toggle('dark-mode', enabled);
+      const icon = dom.darkModeToggle.querySelector('i');
+      icon.className = enabled ? 'ph ph-sun' : 'ph ph-moon';
+      localStorage.setItem('darkMode', enabled ? 'enabled' : 'disabled');
+    }
 
-          nextBtn.addEventListener('click', () => {
-            const totalPages = Math.ceil(thumbnails.length / itemsPerPage);
-            if (currentPage < totalPages) showPage(currentPage + 1);
-          });
+    function isFavorite(type, pubKey) {
+      return favorites.some((fav) => fav.type === type && fav.pubKey === pubKey);
+    }
 
-          // Show first page
-          showPage(1);
-
-          // Modal controls
-          closeModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-          });
-
-          modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-              modal.style.display = 'none';
-            }
-          });
-
-          // PDF Download functionality
-          const downloadPdfBtn = container.querySelector('#downloadPdfBtn');
-
-          downloadPdfBtn.addEventListener('click', async () => {
-            try {
-              downloadPdfBtn.disabled = true;
-              downloadPdfBtn.innerHTML = '<i class="ph ph-spinner"></i> Generating PDF...';
-              statusDiv.textContent = 'Preparing to generate PDF...';
-
-              // Backend API URL - Update this after deploying to Render.com
-              const API_URL = 'https://your-service-url.onrender.com';  // TODO: Replace with your Render.com URL
-
-              statusDiv.textContent = 'Connecting to PDF generation service...';
-
-              // Call backend API to generate PDF
-              const response = await fetch(`${API_URL}/generate-pdf`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  magazineId: pubConfig.id,
-                  date: dateStr,
-                  magazineName: pubConfig.name
-                })
-              });
-
-              if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to generate PDF');
-              }
-
-              statusDiv.textContent = 'Downloading PDF...';
-
-              // Get PDF blob from response
-              const blob = await response.blob();
-
-              // Create download link
-              const url = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `${pubConfig.name}-${dateStr}.pdf`;
-              document.body.appendChild(a);
-              a.click();
-
-              // Cleanup
-              window.URL.revokeObjectURL(url);
-              document.body.removeChild(a);
-
-              statusDiv.textContent = `PDF downloaded successfully!`;
-              showToast('PDF downloaded successfully!', 'success');
-
-              downloadPdfBtn.disabled = false;
-              downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
-
-            } catch (error) {
-              console.error('Error generating PDF:', error);
-              statusDiv.textContent = `Error: ${error.message}`;
-              showToast('Failed to generate PDF: ' + error.message, 'error');
-              downloadPdfBtn.disabled = false;
-              downloadPdfBtn.innerHTML = '<i class="ph ph-file-pdf"></i> Download as PDF';
-            }
-          });
-
-        } catch (error) {
-          console.error('Error:', error);
-          statusDiv.textContent = `Error: ${error.message}`;
-        }
-      } else {
-        // For newspapers
-        const pubKey = publicationSelect.value;
-        const dateStr = dateInput.value;
-        const time = timeInput.value;
-        const pubConfig = config.newspaper[pubKey];
-        
-        const url = constructNewspaperURL(pubConfig, dateStr, time);
-        downloadFile(url, `${pubConfig.name}-${dateStr}.pdf`);
+    function updateFavoriteCurrentButton() {
+      const type = getSelectedType();
+      const pubKey = dom.publicationSelect.value;
+      if (!pubKey) {
+        dom.favoriteCurrentBtn.textContent = '☆';
+        return;
       }
-    });
-
-// Add this helper function before the event listeners
-function downloadFile(url, filename) {
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-// Replace typeSelect with radio buttons
-    const typeRadios = document.querySelectorAll('input[name="type"]');
-    
-    // Update type change event listener
-    typeRadios.forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        populatePublications();
-      });
-    });
-
-    function filterPublications(searchTerm) {
-      const type = document.querySelector('input[name="type"]:checked').value;
-      const pubs = config[type];
-      const filtered = Object.entries(pubs).filter(([key, pub]) => 
-        pub.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      
-      publicationSelect.innerHTML = "";
-      filtered.forEach(([key, pub]) => {
-        const option = document.createElement("option");
-        option.value = key;
-        option.textContent = pub.name;
-        publicationSelect.appendChild(option);
-      });
-    }
-    // Update populatePublications function
-    function populatePublications() {
-      const type = document.querySelector('input[name="type"]:checked').value;
-      const select = publicationSelect;
-      select.style.opacity = '0';
-
-      const schedules = {
-        kompas: "Published every day morning WIB",
-        jawa_pos: "Published every day morning WIB",
-        bisnis_indonesia: "Published every day morning WIB",
-        media_indonesia: "Published every day morning WIB",
-        pikiran_rakyat: "Published every day morning WIB (excl. Sunday)",
-        neraca: "Published every day morning WIB (excl. Sunday)",
-        kontan: "Published every day morning WIB (excl. Sunday)",
-        the_jakarta_post: "Published every day morning WIB (excl. Sunday)",
-        financial_times: "Published D+2 morning WIB (excl. Sunday)",
-        washington_post: "Published D+2 morning WIB (excl. Sunday)",
-        guardian: "Published D+1 morning WIB (excl. Sunday)",
-        time: "Published biweekly every Monday Morning WIB",
-        tempo: "Published weekly every Monday Morning WIB",
-        bloomberg: "Published monthly every first Monday",
-        the_economist: "Published weekly every Saturday, available Monday Morning WIB"
-      };
-
-      const scheduleInfo = document.getElementById('scheduleInfo');
-
-      select.addEventListener('change', () => {
-        const selectedPub = select.value;
-        scheduleInfo.textContent = schedules[selectedPub] || '';
-      });
-
-      select.addEventListener('mouseout', () => {
-        tooltip.style.opacity = '0';
-        tooltip.style.visibility = 'hidden';
-      });
-
-      setTimeout(() => {
-        
-        select.innerHTML = "";
-        let pubs = config[type];
-        for (const key in pubs) {
-          const option = document.createElement("option");
-          option.value = key;
-          option.textContent = pubs[key].name;
-          select.appendChild(option);
-        }
-        
-        // Show initial schedule info
-        scheduleInfo.textContent = schedules[select.value] || '';
-        
-        if (type === "newspaper") {
-          timeGroup.style.display = "block";
-          const firstPub = pubs[select.value];
-          timeInput.value = firstPub.defaultTime || "";
-          timeInput.disabled = true;
-        } else {
-          timeGroup.style.display = "none";
-        }
-        
-        select.style.opacity = '1';
-      }, 300);
+      dom.favoriteCurrentBtn.textContent = isFavorite(type, pubKey) ? '⭐' : '☆';
     }
 
-    // Update publication change event listener
-    publicationSelect.addEventListener("change", () => {
-      const type = document.querySelector('input[name="type"]:checked').value;
-      if (type === "newspaper") {
-        const pubConfig = config.newspaper[publicationSelect.value];
-        timeInput.value = pubConfig.defaultTime || "";
-      }
-    });
-
-    // Initialize the publications list
-    populatePublications();
-// Replace type select event listener with button logic
-    // Replace all type select related code with this
-        const typeButtons = document.querySelectorAll('.type-btn');
-        let currentType = 'newspaper'; // Default type
-    
-        // Initialize publications list
-        function updatePublications(type) {
-          publicationSelect.innerHTML = '';
-          const pubs = config[type];
-          for (const key in pubs) {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = pubs[key].name;
-            publicationSelect.appendChild(option);
-          }
-    
-          // Update time input visibility and value
-          if (type === 'newspaper') {
-            timeGroup.style.display = 'block';
-            const firstPub = pubs[Object.keys(pubs)[0]];
-            timeInput.value = firstPub.defaultTime || '';
-          } else {
-            timeGroup.style.display = 'none';
-          }
-        }
-    
-        // Initialize with newspaper publications
-        updatePublications('newspaper');
-    
-        // Type button click handlers
-        typeButtons.forEach(btn => {
-          btn.addEventListener('click', () => {
-            typeButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentType = btn.dataset.type;
-            updatePublications(currentType);
-          });
-        });
-    
-        // Update download button handler to use currentType instead of typeSelect.value
-        downloadBtn.addEventListener("click", async function() {
-      try {
-        if (currentType === "magazine") {
-        // ... existing magazine download code ...
-          showToast('Loading magazine pages...', 'success');
-        } else {
-          const pubKey = publicationSelect.value;
-          const dateStr = dateInput.value;
-          const time = timeInput.value;
-          const pubConfig = config.newspaper[pubKey];
-          
-          const url = constructNewspaperURL(pubConfig, dateStr, time);
-          downloadFile(url, `${pubConfig.name}-${dateStr}.pdf`);
-          showToast('Download started successfully!', 'success');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        showToast(error.message, 'error');
-      } finally {
-        hideLoading(downloadBtn);
-      }
-    });
-// Add after modal controls
-    // Add after DOM Elements
-        const shortcuts = {
-          'd': () => document.getElementById('downloadBtn').click(),
-          'm': () => document.getElementById('magazineType').click(),
-          'n': () => document.getElementById('newspaperType').click(),
-          '?': showShortcutsModal
-        };
-    
-        document.addEventListener('keydown', (e) => {
-          if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-          
-          const shortcut = shortcuts[e.key.toLowerCase()];
-          if (shortcut) {
-            e.preventDefault();
-            shortcut();
-          }
-        });
-    
-        function showShortcutsModal() {
-          const modal = document.createElement('div');
-          modal.className = 'shortcuts-modal';
-          modal.innerHTML = `
-            <div class="shortcuts-content">
-              <h2>Keyboard Shortcuts</h2>
-              <ul>
-                <li><kbd>D</kbd> Download</li>
-                <li><kbd>M</kbd> Switch to Magazine</li>
-                <li><kbd>N</kbd> Switch to Newspaper</li>
-                <li><kbd>?</kbd> Show this help</li>
-                <li><kbd>ESC</kbd> Close modals</li>
-              </ul>
-              <button class="close-shortcuts">Close</button>
-            </div>
-          `;
-          document.body.appendChild(modal);
-          
-          modal.querySelector('.close-shortcuts').onclick = () => modal.remove();
-          modal.onclick = (e) => {
-            if (e.target === modal) modal.remove();
-          };
-        }
-
-    document.addEventListener('keydown', (e) => {
-      if (modal.style.display === 'flex') {
-        if (e.key === 'Escape') {
-          modal.style.display = 'none';
-        } else if (e.key === 'ArrowLeft') {
-          if (currentPage > 1) showPage(currentPage - 1);
-        } else if (e.key === 'ArrowRight') {
-          const totalPages = Math.ceil(thumbnails.length / itemsPerPage);
-          if (currentPage < totalPages) showPage(currentPage + 1);
-        }
-      }
-    });
-// Add after helper functions
-    const MAX_HISTORY = 5;
-
-    function addToHistory(type, publication, date) {
-      let history = JSON.parse(localStorage.getItem('downloadHistory') || '[]');
-      history.unshift({ type, publication, date, timestamp: Date.now() });
-      history = history.slice(0, MAX_HISTORY);
-      localStorage.setItem('downloadHistory', JSON.stringify(history));
-      updateHistoryDisplay();
-    }
-
-    function updateHistoryDisplay() {
-      const history = JSON.parse(localStorage.getItem('downloadHistory') || '[]');
-      const historyDiv = document.querySelector('.download-history');
-      if (!historyDiv) return;
-      
-      historyDiv.innerHTML = `
-        <h3>Recent Downloads</h3>
-        ${history.map(item => `
-          <div class="history-item">
-            <span>${item.publication}</span>
-            <span>${new Date(item.date).toLocaleDateString()}</span>
-          </div>
-        `).join('')}
-      `;
-    }
-
-    // Add after your existing script content
-    // Dark mode functionality
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const body = document.body;
-    
-    // Load saved dark mode preference
-    if (localStorage.getItem('darkMode') === 'enabled') {
-      body.classList.add('dark-mode');
-      darkModeToggle.textContent = '☀️';
-    }
-    
-    darkModeToggle.addEventListener('click', () => {
-      body.classList.toggle('dark-mode');
-      const icon = darkModeToggle.querySelector('i');
-      if (body.classList.contains('dark-mode')) {
-        localStorage.setItem('darkMode', 'enabled');
-        icon.className = 'ph ph-sun';
-      } else {
-        localStorage.setItem('darkMode', null);
-        icon.className = 'ph ph-moon';
-      }
-    });
-    
-    // Favorites functionality
-    const favoritesToggle = document.getElementById('favoritesToggle');
-    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    
     function toggleFavorite(type, pubKey, pubName) {
-      const favorite = { type, pubKey, pubName };
-      const index = favorites.findIndex(f => f.type === type && f.pubKey === pubKey);
-      
-      if (index === -1) {
-        favorites.push(favorite);
-        showToast(`Added ${pubName} to favorites`, 'success');
-      } else {
-        favorites.splice(index, 1);
+      const existingIndex = favorites.findIndex((fav) => fav.type === type && fav.pubKey === pubKey);
+      if (existingIndex >= 0) {
+        favorites.splice(existingIndex, 1);
         showToast(`Removed ${pubName} from favorites`, 'success');
+      } else {
+        favorites.push({ type, pubKey, pubName });
+        showToast(`Added ${pubName} to favorites`, 'success');
       }
-      
       localStorage.setItem('favorites', JSON.stringify(favorites));
+      updateFavoriteCurrentButton();
     }
-    
-    favoritesToggle.addEventListener('click', () => {
+
+    function openFavoritesModal() {
+      const previousFocus = document.activeElement;
       const modal = document.createElement('div');
       modal.className = 'favorites-modal';
-      modal.style.display = 'block';
-      
-      modal.innerHTML = `
-        <h3>Favorites</h3>
-        ${favorites.length ? favorites.map(f => `
-          <div class="favorite-item">
-            <span>${f.pubName}</span>
-            <button onclick="toggleFavorite('${f.type}', '${f.pubKey}', '${f.pubName}')">❌</button>
-          </div>
-        `).join('') : '<p>No favorites yet</p>'}
-        <button onclick="this.parentElement.remove()">Close</button>
-      `;
-      
-      document.body.appendChild(modal);
-    });
-    
-    // Add favorite button to publication select
-    publicationSelect.addEventListener('change', () => {
-      const type = document.querySelector('input[name="type"]:checked').value;
-      const pubKey = publicationSelect.value;
-      const pubName = publicationSelect.options[publicationSelect.selectedIndex].text;
-      const isFavorite = favorites.some(f => f.type === type && f.pubKey === pubKey);
-      
-      const favoriteBtn = document.createElement('button');
-      favoriteBtn.className = 'utility-btn';
-      favoriteBtn.innerHTML = `<i class="ph ${isFavorite ? 'ph-star-fill' : 'ph-star'}"></i>`;
-      favoriteBtn.onclick = () => toggleFavorite(type, pubKey, pubName);
-      favoriteBtn.textContent = isFavorite ? '⭐' : '☆';
-      favoriteBtn.onclick = () => toggleFavorite(type, pubKey, pubName);
-      
-      const existingBtn = publicationSelect.nextElementSibling;
-      if (existingBtn && existingBtn.classList.contains('utility-btn')) {
-        existingBtn.remove();
+      modal.setAttribute('role', 'presentation');
+
+      const content = document.createElement('div');
+      content.className = 'favorites-content';
+      content.setAttribute('role', 'dialog');
+      content.setAttribute('aria-modal', 'true');
+      content.setAttribute('aria-labelledby', 'favoritesDialogTitle');
+      content.tabIndex = -1;
+
+      const title = document.createElement('h3');
+      title.id = 'favoritesDialogTitle';
+      title.textContent = 'Favorites';
+      content.appendChild(title);
+
+      const listContainer = document.createElement('div');
+      content.appendChild(listContainer);
+
+      function renderFavoritesList() {
+        listContainer.innerHTML = '';
+
+        if (!favorites.length) {
+          const empty = document.createElement('p');
+          empty.textContent = 'No favorites yet.';
+          empty.style.color = 'var(--muted)';
+          listContainer.appendChild(empty);
+          return;
+        }
+
+        favorites.forEach((fav) => {
+          const item = document.createElement('div');
+          item.className = 'favorite-item';
+
+          const left = document.createElement('div');
+          left.innerHTML = `<strong>${fav.pubName}</strong><br><small>${fav.type}</small>`;
+
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'favorite-remove';
+          removeBtn.textContent = 'Remove';
+          removeBtn.type = 'button';
+          removeBtn.addEventListener('click', () => {
+            toggleFavorite(fav.type, fav.pubKey, fav.pubName);
+            renderFavoritesList();
+          });
+
+          item.appendChild(left);
+          item.appendChild(removeBtn);
+          listContainer.appendChild(item);
+        });
       }
-      publicationSelect.parentNode.insertBefore(favoriteBtn, publicationSelect.nextSibling);
-    });
-</script>
+
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'mode-btn';
+      closeBtn.textContent = 'Close';
+      closeBtn.type = 'button';
+      closeBtn.style.width = '100%';
+      closeBtn.style.marginTop = '8px';
+      closeBtn.addEventListener('click', closeModal);
+      content.appendChild(closeBtn);
+
+      function getFocusableElements() {
+        return content.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+      }
+
+      function closeModal() {
+        document.removeEventListener('keydown', onDialogKeyDown, true);
+        modal.remove();
+        if (previousFocus && typeof previousFocus.focus === 'function') {
+          previousFocus.focus();
+        }
+      }
+
+      function onDialogKeyDown(event) {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeModal();
+          return;
+        }
+
+        if (event.key !== 'Tab') {
+          return;
+        }
+
+        const focusable = Array.from(getFocusableElements());
+        if (!focusable.length) {
+          event.preventDefault();
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+
+        if (event.shiftKey && active === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && active === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+
+      renderFavoritesList();
+      modal.appendChild(content);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+      document.body.appendChild(modal);
+      document.addEventListener('keydown', onDialogKeyDown, true);
+      content.focus();
+    }
+
+    function populatePublications() {
+      state.selectedType = getSelectedType();
+      localStorage.setItem('selectedType', state.selectedType);
+
+      const pubs = config[state.selectedType];
+      dom.publicationSelect.innerHTML = '';
+
+      Object.entries(pubs).forEach(([key, pub]) => {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = pub.name;
+        dom.publicationSelect.appendChild(option);
+      });
+
+      const firstKey = dom.publicationSelect.value;
+      dom.scheduleInfo.textContent = schedules[firstKey] || '';
+
+      if (state.selectedType === 'newspaper') {
+        dom.timeGroup.hidden = false;
+        dom.timeInput.disabled = true;
+        const pubConfig = config.newspaper[firstKey];
+        dom.timeInput.value = pubConfig ? pubConfig.defaultTime : '';
+      } else {
+        dom.timeGroup.hidden = true;
+      }
+
+      updateFavoriteCurrentButton();
+    }
+
+    function setStatus(text, target = dom.status) {
+      target.textContent = text;
+    }
+
+    async function imageExists(url, timeoutMs = 4500) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        let settled = false;
+
+        const finish = (value) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          img.onload = null;
+          img.onerror = null;
+          resolve(value);
+        };
+
+        const timer = setTimeout(() => finish(false), timeoutMs);
+        img.onload = () => finish(true);
+        img.onerror = () => finish(false);
+        img.src = `${url}?v=${Date.now()}`;
+      });
+    }
+
+    function formatMagazinePathDate(dateStr) {
+      const dateObj = new Date(dateStr);
+      return `${dateObj.getFullYear()}/${pad(dateObj.getMonth() + 1)}/${pad(dateObj.getDate())}`;
+    }
+
+    async function discoverMagazinePages(pubConfig, dateStr) {
+      const pages = [];
+      const formattedDate = formatMagazinePathDate(dateStr);
+      const start = pubConfig.startPage || 1;
+      const max = pubConfig.maxPages || 150;
+
+      for (let pageNumber = start; pageNumber <= max; pageNumber++) {
+        if ((pageNumber - start) % 10 === 0) {
+          setStatus(`Scanning page ${pageNumber}...`, dom.readerStatus);
+        }
+
+        const thumbUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/small/${pageNumber}.jpg`;
+        const largeUrl = `https://epaper.dotsolution.net/assets/file_media/${pubConfig.id}/${formattedDate}/large/${pageNumber}.jpg`;
+        const exists = await imageExists(thumbUrl);
+
+        if (exists) {
+          pages.push({ pageNumber, thumbUrl, largeUrl });
+        } else {
+          break;
+        }
+      }
+
+      return pages;
+    }
+
+    function getTotalGalleryPages() {
+      return Math.max(1, Math.ceil(state.magazinePages.length / DEFAULT_ITEMS_PER_GALLERY_PAGE));
+    }
+
+    function updateGalleryPaginationInfo() {
+      const totalPages = getTotalGalleryPages();
+      dom.galleryPageInfo.textContent = `Page ${state.galleryPage} of ${totalPages}`;
+      dom.galleryPrevBtn.disabled = state.galleryPage <= 1;
+      dom.galleryNextBtn.disabled = state.galleryPage >= totalPages;
+
+      if (!state.magazinePages.length) {
+        dom.galleryRangeInfo.textContent = 'No pages found';
+        return;
+      }
+
+      const start = (state.galleryPage - 1) * DEFAULT_ITEMS_PER_GALLERY_PAGE + 1;
+      const end = Math.min(start + DEFAULT_ITEMS_PER_GALLERY_PAGE - 1, state.magazinePages.length);
+      dom.galleryRangeInfo.textContent = `Showing pages ${start}-${end} of ${state.magazinePages.length}`;
+    }
+
+    function renderGallery() {
+      dom.galleryGrid.innerHTML = '';
+
+      if (!state.magazinePages.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.innerHTML = '<h3>Edition not available</h3><p>This edition has no published pages yet. Try another date.</p>';
+        dom.galleryGrid.appendChild(empty);
+        updateGalleryPaginationInfo();
+        return;
+      }
+
+      const start = (state.galleryPage - 1) * DEFAULT_ITEMS_PER_GALLERY_PAGE;
+      const end = start + DEFAULT_ITEMS_PER_GALLERY_PAGE;
+      const pageSlice = state.magazinePages.slice(start, end);
+
+      pageSlice.forEach((page) => {
+        const card = document.createElement('article');
+        card.className = 'thumb-card';
+
+        const thumbButton = document.createElement('button');
+        thumbButton.className = 'thumb-btn';
+        thumbButton.type = 'button';
+        thumbButton.title = `Open page ${page.pageNumber} in reader mode`;
+
+        const img = document.createElement('img');
+        img.src = page.thumbUrl;
+        img.alt = `Magazine page ${page.pageNumber}`;
+        img.loading = 'lazy';
+
+        thumbButton.appendChild(img);
+        thumbButton.addEventListener('click', () => {
+          state.readerPageIndex = state.magazinePages.findIndex((item) => item.pageNumber === page.pageNumber);
+          setViewMode('reader');
+        });
+
+        const meta = document.createElement('div');
+        meta.className = 'thumb-meta';
+        meta.innerHTML = `<span>Page ${page.pageNumber}</span><span>Tap to read</span>`;
+
+        card.appendChild(thumbButton);
+        card.appendChild(meta);
+        dom.galleryGrid.appendChild(card);
+      });
+
+      updateGalleryPaginationInfo();
+    }
+
+    function applyFitButtons() {
+      const fitButtons = [dom.fitWidthBtn, dom.fitHeightBtn, dom.fitNoneBtn];
+      fitButtons.forEach((button) => button.classList.remove('active'));
+      if (state.fitMode === 'width') dom.fitWidthBtn.classList.add('active');
+      if (state.fitMode === 'height') dom.fitHeightBtn.classList.add('active');
+      if (state.fitMode === 'none') dom.fitNoneBtn.classList.add('active');
+    }
+
+    function renderReaderPage() {
+      if (!state.magazinePages.length) {
+        dom.focusImage.removeAttribute('src');
+        dom.focusPageInfo.textContent = 'Page 0 / 0';
+        return;
+      }
+
+      const page = state.magazinePages[state.readerPageIndex];
+      dom.focusImage.src = page.largeUrl;
+      dom.focusImage.alt = `Magazine page ${page.pageNumber}`;
+      dom.focusPageInfo.textContent = `Page ${page.pageNumber} / ${state.magazinePages.length}`;
+      dom.pageJumpInput.max = String(state.magazinePages.length);
+      dom.pageJumpInput.value = String(page.pageNumber);
+
+      dom.focusPrevBtn.disabled = state.readerPageIndex <= 0;
+      dom.focusNextBtn.disabled = state.readerPageIndex >= state.magazinePages.length - 1;
+
+      dom.focusImage.classList.remove('fit-width', 'fit-height', 'fit-none');
+      dom.focusImage.classList.add(`fit-${state.fitMode}`);
+      dom.focusImage.style.transform = `scale(${state.zoom})`;
+      dom.zoomPercent.textContent = `${Math.round(state.zoom * 100)}%`;
+      applyFitButtons();
+    }
+
+    function setViewMode(mode) {
+      state.viewMode = mode;
+      const isGallery = mode === 'gallery';
+
+      dom.galleryModeBtn.classList.toggle('active', isGallery);
+      dom.focusModeBtn.classList.toggle('active', !isGallery);
+      dom.galleryControls.hidden = !isGallery;
+      dom.focusControls.hidden = isGallery;
+      dom.galleryView.hidden = !isGallery;
+      dom.focusView.hidden = isGallery;
+
+      if (isGallery) {
+        renderGallery();
+      } else {
+        renderReaderPage();
+      }
+    }
+
+    function setFitMode(mode) {
+      state.fitMode = mode;
+      renderReaderPage();
+    }
+
+    function updatePdfApiHint() {
+      const resolvedApi = resolvePdfApiUrl();
+      if (!resolvedApi) {
+        dom.pdfApiHint.className = 'api-hint warning';
+        dom.pdfApiHint.textContent = 'PDF service URL is not configured. Set localStorage.magazinePdfApiUrl or use ?pdfApi=https://your-service.onrender.com';
+        return;
+      }
+
+      dom.pdfApiHint.className = 'api-hint';
+      dom.pdfApiHint.textContent = `PDF service: ${resolvedApi}`;
+    }
+
+    function openReaderShell(pubConfig, dateStr) {
+      dom.homeContainer.hidden = true;
+      dom.magazineReader.hidden = false;
+      dom.readerTitle.textContent = pubConfig.name;
+      dom.readerSubtitle.textContent = `Edition date: ${dateStr} · ${state.magazinePages.length} pages`;
+      dom.readerStatus.textContent = '';
+      updatePdfApiHint();
+      setViewMode('gallery');
+    }
+
+    function closeReaderShell() {
+      dom.magazineReader.hidden = true;
+      dom.homeContainer.hidden = false;
+      state.magazinePages = [];
+      state.currentMagazine = null;
+      state.currentDate = null;
+      state.galleryPage = 1;
+      state.readerPageIndex = 0;
+      state.zoom = 1;
+      state.fitMode = 'width';
+      setStatus('');
+    }
+
+    async function openMagazineEdition() {
+      const pubKey = dom.publicationSelect.value;
+      const dateStr = dom.dateInput.value;
+      const pubConfig = config.magazine[pubKey];
+
+      if (!pubConfig || !dateStr) {
+        setStatus('Choose a magazine and date first.');
+        return;
+      }
+
+      setStatus('Loading magazine pages...');
+      state.currentMagazine = pubConfig;
+      state.currentDate = dateStr;
+      state.galleryPage = 1;
+      state.readerPageIndex = 0;
+      state.zoom = 1;
+      state.fitMode = 'width';
+
+      dom.readerStatus.textContent = 'Checking available pages...';
+      state.magazinePages = await discoverMagazinePages(pubConfig, dateStr);
+
+      if (!state.magazinePages.length) {
+        setStatus('Edition not available yet for this date.');
+        showToast('No pages found for this edition.', 'error');
+        dom.readerStatus.textContent = '';
+        return;
+      }
+
+      openReaderShell(pubConfig, dateStr);
+      renderGallery();
+      setStatus(`Loaded ${state.magazinePages.length} pages.`);
+      showToast('Magazine pages loaded.', 'success');
+    }
+
+    function goToReaderPageByNumber(pageNumber) {
+      const idx = Number(pageNumber) - 1;
+      if (Number.isNaN(idx) || idx < 0 || idx >= state.magazinePages.length) {
+        showToast('Invalid page number.', 'error');
+        return;
+      }
+      state.readerPageIndex = idx;
+      renderReaderPage();
+    }
+
+    function shiftReaderPage(offset) {
+      if (!state.magazinePages.length) {
+        return;
+      }
+
+      const next = state.readerPageIndex + offset;
+      if (next < 0 || next >= state.magazinePages.length) {
+        return;
+      }
+      state.readerPageIndex = next;
+      renderReaderPage();
+    }
+
+    function resolvePdfApiUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const queryValue = params.get('pdfApi');
+
+      if (queryValue && queryValue.trim()) {
+        localStorage.setItem(PDF_API_STORAGE_KEY, queryValue.trim());
+      }
+
+      const storedValue = localStorage.getItem(PDF_API_STORAGE_KEY);
+      const rawValue = (queryValue || storedValue || MAGAZINE_PDF_API_URL || '').trim();
+      if (!rawValue || rawValue.includes('your-service-url.onrender.com')) {
+        return null;
+      }
+
+      return rawValue.replace(/\/+$/, '');
+    }
+
+    async function parseErrorResponse(response) {
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        try {
+          const data = await response.json();
+          if (data && (data.error || data.message)) {
+            return data.error || data.message;
+          }
+        } catch (error) {
+          // Fall through to plain-text parsing when JSON is malformed.
+        }
+      }
+
+      const text = await response.text();
+      return text || `Request failed with status ${response.status}`;
+    }
+
+    async function downloadMagazinePdf() {
+      if (!state.currentMagazine || !state.currentDate) {
+        showToast('Open a magazine edition first.', 'error');
+        return;
+      }
+
+      const apiUrl = resolvePdfApiUrl();
+      if (!apiUrl) {
+        showToast('PDF API URL is not configured.', 'error');
+        updatePdfApiHint();
+        return;
+      }
+
+      showLoading(dom.downloadPdfBtn, 'Generating PDF...');
+      setStatus('Preparing PDF request...', dom.readerStatus);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), PDF_REQUEST_TIMEOUT_MS);
+
+      try {
+        const response = await fetch(`${apiUrl}/generate-pdf`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            magazineId: state.currentMagazine.id,
+            date: state.currentDate,
+            magazineName: state.currentMagazine.name
+          }),
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          const reason = await parseErrorResponse(response);
+          throw new Error(reason);
+        }
+
+        setStatus('Downloading generated PDF...', dom.readerStatus);
+        const blob = await response.blob();
+        const downloadUrl = URL.createObjectURL(blob);
+        const fileName = `${sanitizeFileName(state.currentMagazine.name)}-${state.currentDate}.pdf`;
+        const anchor = document.createElement('a');
+        anchor.href = downloadUrl;
+        anchor.download = fileName;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        URL.revokeObjectURL(downloadUrl);
+
+        setStatus('PDF downloaded successfully.', dom.readerStatus);
+        showToast('PDF downloaded successfully.', 'success');
+      } catch (error) {
+        const message = error.name === 'AbortError'
+          ? 'PDF generation timed out. Render may still be waking up, please retry.'
+          : error.message;
+        setStatus(message, dom.readerStatus);
+        showToast(message, 'error');
+      } finally {
+        clearTimeout(timeoutId);
+        hideLoading(dom.downloadPdfBtn);
+      }
+    }
+
+    async function onDownloadClick() {
+      showLoading(dom.downloadBtn, 'Loading...');
+      setStatus('');
+
+      try {
+        const selectedType = getSelectedType();
+        if (selectedType === 'magazine') {
+          await openMagazineEdition();
+          return;
+        }
+
+        const pubKey = dom.publicationSelect.value;
+        const dateStr = dom.dateInput.value;
+        const pubConfig = config.newspaper[pubKey];
+
+        if (!pubConfig || !dateStr) {
+          setStatus('Choose a newspaper and date first.');
+          return;
+        }
+
+        const time = dom.timeInput.value;
+        const url = constructNewspaperURL(pubConfig, dateStr, time);
+        downloadFile(url, `${sanitizeFileName(pubConfig.name)}-${dateStr}.pdf`);
+        setStatus('Download started.');
+        showToast('Newspaper download started.', 'success');
+      } catch (error) {
+        setStatus(error.message || 'Unexpected error.');
+        showToast(error.message || 'Unexpected error.', 'error');
+      } finally {
+        hideLoading(dom.downloadBtn);
+      }
+    }
+
+    function initListeners() {
+      dom.darkModeToggle.addEventListener('click', () => {
+        const enabled = !dom.body.classList.contains('dark-mode');
+        setDarkMode(enabled);
+      });
+
+      dom.favoritesToggle.addEventListener('click', openFavoritesModal);
+
+      dom.favoriteCurrentBtn.addEventListener('click', () => {
+        const type = getSelectedType();
+        const pubKey = dom.publicationSelect.value;
+        if (!pubKey) return;
+        const pubName = dom.publicationSelect.options[dom.publicationSelect.selectedIndex].text;
+        toggleFavorite(type, pubKey, pubName);
+      });
+
+      dom.typeRadios.forEach((radio) => {
+        radio.addEventListener('change', () => {
+          populatePublications();
+          setStatus('');
+        });
+      });
+
+      dom.publicationSelect.addEventListener('change', () => {
+        const selectedType = getSelectedType();
+        const pubKey = dom.publicationSelect.value;
+        dom.scheduleInfo.textContent = schedules[pubKey] || '';
+
+        if (selectedType === 'newspaper') {
+          const pubConfig = config.newspaper[pubKey];
+          dom.timeInput.value = pubConfig ? pubConfig.defaultTime : '';
+        }
+        updateFavoriteCurrentButton();
+      });
+
+      dom.downloadBtn.addEventListener('click', onDownloadClick);
+
+      dom.backToHomeBtn.addEventListener('click', closeReaderShell);
+      dom.downloadPdfBtn.addEventListener('click', downloadMagazinePdf);
+
+      dom.galleryModeBtn.addEventListener('click', () => setViewMode('gallery'));
+      dom.focusModeBtn.addEventListener('click', () => setViewMode('reader'));
+
+      dom.galleryPrevBtn.addEventListener('click', () => {
+        if (state.galleryPage > 1) {
+          state.galleryPage -= 1;
+          renderGallery();
+        }
+      });
+
+      dom.galleryNextBtn.addEventListener('click', () => {
+        const total = getTotalGalleryPages();
+        if (state.galleryPage < total) {
+          state.galleryPage += 1;
+          renderGallery();
+        }
+      });
+
+      dom.focusPrevBtn.addEventListener('click', () => shiftReaderPage(-1));
+      dom.focusNextBtn.addEventListener('click', () => shiftReaderPage(1));
+      dom.pageJumpBtn.addEventListener('click', () => goToReaderPageByNumber(dom.pageJumpInput.value));
+      dom.pageJumpInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          goToReaderPageByNumber(dom.pageJumpInput.value);
+        }
+      });
+
+      dom.zoomOutBtn.addEventListener('click', () => {
+        state.zoom = Math.max(0.5, Number((state.zoom - 0.1).toFixed(2)));
+        renderReaderPage();
+      });
+
+      dom.zoomInBtn.addEventListener('click', () => {
+        state.zoom = Math.min(3, Number((state.zoom + 0.1).toFixed(2)));
+        renderReaderPage();
+      });
+
+      dom.zoomResetBtn.addEventListener('click', () => {
+        state.zoom = 1;
+        renderReaderPage();
+      });
+
+      dom.fitWidthBtn.addEventListener('click', () => setFitMode('width'));
+      dom.fitHeightBtn.addEventListener('click', () => setFitMode('height'));
+      dom.fitNoneBtn.addEventListener('click', () => setFitMode('none'));
+
+      document.addEventListener('keydown', (event) => {
+        if (dom.magazineReader.hidden) return;
+        if (state.viewMode !== 'reader') return;
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          shiftReaderPage(-1);
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          shiftReaderPage(1);
+        } else if (event.key === 'Escape') {
+          event.preventDefault();
+          setViewMode('gallery');
+        }
+      });
+    }
+
+    function init() {
+      const today = new Date().toISOString().split('T')[0];
+      dom.dateInput.value = today;
+
+      const savedType = localStorage.getItem('selectedType');
+      if (savedType === 'magazine' || savedType === 'newspaper') {
+        document.getElementById(`${savedType}Type`).checked = true;
+      }
+
+      if (localStorage.getItem('darkMode') === 'enabled') {
+        setDarkMode(true);
+      }
+
+      populatePublications();
+      initListeners();
+      updatePdfApiHint();
+    }
+
+    init();
+  </script>
 </body>
 </html>
