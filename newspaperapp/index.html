@@ -6,6 +6,7 @@
   <title>Publication Downloader</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <style>
     :root {
       --bg: #d7ece7;
@@ -789,10 +790,9 @@
   </div>
 
   <script>
-    const MAGAZINE_PDF_API_URL = 'https://magazine-pdf-generator.onrender.com';
-    const PDF_API_STORAGE_KEY = 'magazinePdfApiUrl';
+    const IMAGE_PROXY_STORAGE_KEY = 'magazineImageProxyUrl';
+    const DEFAULT_IMAGE_PROXY_URL = '';
     const DEFAULT_ITEMS_PER_GALLERY_PAGE = 8;
-    const PDF_REQUEST_TIMEOUT_MS = 90000;
 
     const config = {
       newspaper: {
@@ -1317,15 +1317,15 @@
     }
 
     function updatePdfApiHint() {
-      const resolvedApi = resolvePdfApiUrl();
-      if (!resolvedApi) {
+      const imageProxyUrl = resolveImageProxyUrl();
+      if (!imageProxyUrl) {
         dom.pdfApiHint.className = 'api-hint warning';
-        dom.pdfApiHint.textContent = 'PDF service URL is not configured. Set localStorage.magazinePdfApiUrl or use ?pdfApi=https://your-service.onrender.com';
+        dom.pdfApiHint.textContent = 'PDF export needs the Cloudflare image proxy. Deploy newspaperapp/cloudflare-worker, then open this page with ?imageProxy=https://your-worker.workers.dev';
         return;
       }
 
       dom.pdfApiHint.className = 'api-hint';
-      dom.pdfApiHint.textContent = `PDF service: ${resolvedApi}`;
+      dom.pdfApiHint.textContent = `PDF export: browser generated via ${imageProxyUrl}`;
     }
 
     function openReaderShell(pubConfig, dateStr) {
@@ -1408,38 +1408,47 @@
       renderReaderPage();
     }
 
-    function resolvePdfApiUrl() {
+    function resolveImageProxyUrl() {
       const params = new URLSearchParams(window.location.search);
-      const queryValue = params.get('pdfApi');
+      const queryValue = params.get('imageProxy');
 
       if (queryValue && queryValue.trim()) {
-        localStorage.setItem(PDF_API_STORAGE_KEY, queryValue.trim());
+        localStorage.setItem(IMAGE_PROXY_STORAGE_KEY, queryValue.trim());
       }
 
-      const storedValue = localStorage.getItem(PDF_API_STORAGE_KEY);
-      const rawValue = (queryValue || storedValue || MAGAZINE_PDF_API_URL || '').trim();
-      if (!rawValue || rawValue.includes('your-service-url.onrender.com')) {
+      const storedValue = localStorage.getItem(IMAGE_PROXY_STORAGE_KEY);
+      const rawValue = (queryValue || storedValue || DEFAULT_IMAGE_PROXY_URL || '').trim();
+      if (!rawValue) {
         return null;
       }
 
       return rawValue.replace(/\/+$/, '');
     }
 
-    async function parseErrorResponse(response) {
-      const contentType = response.headers.get('content-type') || '';
-      if (contentType.includes('application/json')) {
-        try {
-          const data = await response.json();
-          if (data && (data.error || data.message)) {
-            return data.error || data.message;
-          }
-        } catch (error) {
-          // Fall through to plain-text parsing when JSON is malformed.
-        }
+    function getPdfImageUrl(imageUrl) {
+      const imageProxyUrl = resolveImageProxyUrl();
+      if (!imageProxyUrl) {
+        return imageUrl;
       }
 
-      const text = await response.text();
-      return text || `Request failed with status ${response.status}`;
+      return `${imageProxyUrl}/image?url=${encodeURIComponent(imageUrl)}`;
+    }
+
+    async function fetchMagazinePageBytes(page) {
+      const response = await fetch(getPdfImageUrl(page.largeUrl), { cache: 'force-cache' });
+      if (!response.ok) {
+        throw new Error(`Page ${page.pageNumber} image failed with status ${response.status}.`);
+      }
+
+      return new Uint8Array(await response.arrayBuffer());
+    }
+
+    async function embedPageImage(pdfDoc, imageBytes) {
+      try {
+        return await pdfDoc.embedJpg(imageBytes);
+      } catch (jpgError) {
+        return pdfDoc.embedPng(imageBytes);
+      }
     }
 
     async function downloadMagazinePdf() {
@@ -1448,38 +1457,35 @@
         return;
       }
 
-      const apiUrl = resolvePdfApiUrl();
-      if (!apiUrl) {
-        showToast('PDF API URL is not configured.', 'error');
+      if (!window.PDFLib) {
+        showToast('PDF library failed to load. Please refresh and try again.', 'error');
+        return;
+      }
+
+      if (!resolveImageProxyUrl()) {
+        showToast('Set the Cloudflare image proxy URL before exporting PDF.', 'error');
         updatePdfApiHint();
         return;
       }
 
-      showLoading(dom.downloadPdfBtn, 'Generating PDF...');
-      setStatus('Preparing PDF request...', dom.readerStatus);
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), PDF_REQUEST_TIMEOUT_MS);
+      showLoading(dom.downloadPdfBtn, 'Building PDF...');
+      setStatus('Preparing browser PDF export...', dom.readerStatus);
 
       try {
-        const response = await fetch(`${apiUrl}/generate-pdf`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            magazineId: state.currentMagazine.id,
-            date: state.currentDate,
-            magazineName: state.currentMagazine.name
-          }),
-          signal: controller.signal
-        });
+        const pdfDoc = await PDFLib.PDFDocument.create();
 
-        if (!response.ok) {
-          const reason = await parseErrorResponse(response);
-          throw new Error(reason);
+        for (const [index, page] of state.magazinePages.entries()) {
+          setStatus(`Adding page ${index + 1} of ${state.magazinePages.length}...`, dom.readerStatus);
+          const imageBytes = await fetchMagazinePageBytes(page);
+          const image = await embedPageImage(pdfDoc, imageBytes);
+          const { width, height } = image.scale(1);
+          const pdfPage = pdfDoc.addPage([width, height]);
+          pdfPage.drawImage(image, { x: 0, y: 0, width, height });
         }
 
-        setStatus('Downloading generated PDF...', dom.readerStatus);
-        const blob = await response.blob();
+        setStatus('Finalizing PDF...', dom.readerStatus);
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const downloadUrl = URL.createObjectURL(blob);
         const fileName = `${sanitizeFileName(state.currentMagazine.name)}-${state.currentDate}.pdf`;
         const anchor = document.createElement('a');
@@ -1493,13 +1499,10 @@
         setStatus('PDF downloaded successfully.', dom.readerStatus);
         showToast('PDF downloaded successfully.', 'success');
       } catch (error) {
-        const message = error.name === 'AbortError'
-          ? 'PDF generation timed out. Render may still be waking up, please retry.'
-          : error.message;
+        const message = error.message || 'PDF export failed.';
         setStatus(message, dom.readerStatus);
         showToast(message, 'error');
       } finally {
-        clearTimeout(timeoutId);
         hideLoading(dom.downloadPdfBtn);
       }
     }

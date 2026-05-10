@@ -1,1 +1,4 @@
 .vercel
+cloudflare-worker/.wrangler/
+cloudflare-worker/.dev.vars*
+cloudflare-worker/.env*
