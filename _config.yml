@@ -1,11 +1,11 @@
 # site settings
-title: BIMO TYASONO
+title: Bimo Tyasono | Voice Artist & Software Engineer
 subtitle: Personal Website
 email: tyasono@icloud.com
-description: Explore my voice-over portfolio, catch up on my latest movie and book reviews, or delve into my personal blog. Let's connect for collaborations or just to say hi!. For business inquiry, DM on <a href="https://instagram.com/squillliams">IG</a> or contact me through the <a href="#contact">email form</a>
+description: Professional voice over artist, content creator, and software engineer based in Jakarta
 baseurl: "" # the subpath of your site, e.g. /blog
 url: # the base hostname & protocol for your site
-author:
+author: Bimo Tyasono
 street_address: 
 city: Jakarta Selatan
 state: DKI Jakarta
@@ -38,10 +38,7 @@ sass:
   style: compressed
 
 # SEO Settings
-title: Bimo Tyasono | Voice Artist & Software Engineer
-description: Professional voice over artist, content creator, and software engineer based in Jakarta
 keywords: voice over, content creator, software engineer, tiktok, jakarta
-author: Bimo Tyasono
 twitter:
   username: squilliams
 social:
