@@ -12,10 +12,10 @@ npx wrangler deploy
 After deploy, open the app once with your Worker URL:
 
 ```text
-https://your-site.example/newspaperapp/?imageProxy=https://newspaperapp-image-proxy.your-account.workers.dev
+https://your-site.example/newspaperapp/?imageProxy=https://newspaperapp-image-proxy.npapp.workers.dev
 ```
 
-The app stores that proxy URL in `localStorage`, so future PDF exports can use it without the query string.
+The app now uses `https://newspaperapp-image-proxy.npapp.workers.dev` by default. Passing `imageProxy` is still useful if you deploy another Worker URL later.
 
 ## Endpoints
 
