@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TIWACC | A2A CBA Hub</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-lang="en">
+  <div class="shell">
+    <header class="site-header">
+      <a class="brand-link" href="index.html" aria-label="A2A Cost-Benefit Analysis home">
+        <img class="brand-logo" src="assets/a2a-logo-cyan.png" alt="A2A Life Company logo">
+        <span>Cost-Benefit Analysis Hub</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html"><span class="en">Home</span><span class="it">Home</span></a>
+        <a href="schede-intervento.html"><span class="en">Interventions</span><span class="it">Interventi</span></a>
+        <a class="active" href="tiwacc.html">TIWACC</a>
+        <a href="tic.html">TIC</a>
+        <a href="tit.html">TIT</a>
+        <div class="language-toggle" role="group" aria-label="Language">
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="it">IT</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="kicker">Allegato A - TIWACC</p>
+          <h1><span class="en">Cost of capital reference</span><span class="it">Riferimento costo del capitale</span></h1>
+          <p class="lead">
+            <span class="en">A bilingual, model-ready view of the ARERA criteria for determining and updating the pre-tax real WACC for regulated electricity and gas infrastructure services.</span>
+            <span class="it">Una vista bilingue e pronta per il modello dei criteri ARERA per determinare e aggiornare il WACC reale pre-tasse dei servizi infrastrutturali regolati elettrici e gas.</span>
+          </p>
+          <div class="hero-actions">
+            <a class="pill-button" href="#translation"><span class="en">Read English context</span><span class="it">Leggi testo fonte</span></a>
+            <a class="pill-button secondary" href="#formulas"><span class="en">Calculation method</span><span class="it">Metodo di calcolo</span></a>
+            <a class="pill-button secondary" href="#wacc-table"><span class="en">Jump to WACC values</span><span class="it">Vai ai valori WACC</span></a>
+          </div>
+        </div>
+        <div class="doc-visual">
+          <img src="assets/tiwacc-cover.png" alt="TIWACC document cover">
+        </div>
+      </section>
+
+      <section class="metrics-grid" aria-label="TIWACC summary">
+        <article class="metric"><strong>2022-2027</strong><span class="en">second WACC regulatory period</span><span class="it">secondo periodo regolatorio WACC</span></article>
+        <article class="metric"><strong>5.60%</strong><span class="en">electricity distribution and metering WACC, 2025-2027</span><span class="it">WACC distribuzione e misura elettrica, 2025-2027</span></article>
+        <article class="metric"><strong>0.500</strong><span class="en">gearing for electricity distribution and metering</span><span class="it">gearing per distribuzione e misura elettrica</span></article>
+        <article class="metric"><strong>0.400</strong><span class="en">asset beta for electricity distribution and metering</span><span class="it">beta asset per distribuzione e misura elettrica</span></article>
+      </section>
+
+      <section class="section panel" id="translation">
+        <div class="section-head">
+          <div>
+            <p class="kicker"><span class="en">English working translation</span><span class="it">Testo fonte</span></p>
+            <h2><span class="en">What the TIWACC document establishes</span><span class="it">Cosa stabilisce il documento TIWACC</span></h2>
+          </div>
+          <p>
+            <span class="en">This is a faithful working translation of the document's structure and regulatory meaning, written for use in the A2A cost-benefit model.</span>
+            <span class="it">Criteri per la determinazione e l'aggiornamento del tasso di remunerazione del capitale per i servizi infrastrutturali dei settori elettrico e gas per il periodo 2022-2027.</span>
+          </p>
+        </div>
+        <ul class="summary-list">
+          <li><b><span class="en">Document purpose</span><span class="it">Finalità del documento</span></b><span class="en">It defines how ARERA determines and updates the real pre-tax weighted average cost of capital for regulated electricity and gas infrastructure services.</span><span class="it">Definisce come ARERA determina e aggiorna il costo medio ponderato del capitale reale pre-tasse per i servizi infrastrutturali regolati elettrici e gas.</span></li>
+          <li><b><span class="en">Regulatory period</span><span class="it">Periodo regolatorio</span></b><span class="en">The second WACC regulatory period runs from 1 January 2022 to 31 December 2027 and is divided into two three-year sub-periods.</span><span class="it">Il secondo periodo regolatorio WACC va dal 1 gennaio 2022 al 31 dicembre 2027 ed è diviso in due sub-periodi triennali.</span></li>
+          <li><b><span class="en">CBA relevance</span><span class="it">Rilevanza per l'ACB</span></b><span class="en">For CP Caracciolo, the key use is the discount-rate assumption. The relevant service is electricity distribution and metering.</span><span class="it">Per CP Caracciolo, l'uso principale è l'ipotesi di tasso di attualizzazione. Il servizio rilevante è distribuzione e misura energia elettrica.</span></li>
+          <li><b><span class="en">2025-2027 value</span><span class="it">Valore 2025-2027</span></b><span class="en">The WACC for electricity distribution and metering is 5.60% for 2025, 2026, and 2027.</span><span class="it">Il WACC per distribuzione e misura energia elettrica è 5,60% per 2025, 2026 e 2027.</span></li>
+        </ul>
+        <div class="translation-grid" style="margin-top:16px">
+          <article class="translation-block">
+            <h3><span class="en">Definitions</span><span class="it">Definizioni</span></h3>
+            <p class="en">The document defines the Authority, asset beta, levered beta, gearing, WACC, and 2PWACC. Asset beta measures systematic risk before financial-structure effects; levered beta includes those effects. Gearing is debt divided by debt plus equity.</p>
+            <p class="it">Il documento definisce Autorità, beta asset, beta levered, gearing, WACC e 2PWACC. Il beta asset misura il rischio sistematico prima degli effetti della struttura finanziaria; il beta levered li include. Il gearing è debito diviso per debito più capitale proprio.</p>
+          </article>
+          <article class="translation-block">
+            <h3><span class="en">Scope</span><span class="it">Ambito</span></h3>
+            <p class="en">The Annex sets common WACC parameters for all electricity and gas infrastructure services and sets the principles for service-specific parameters such as beta and gearing.</p>
+            <p class="it">L'Allegato stabilisce i parametri WACC comuni a tutti i servizi infrastrutturali elettrici e gas e i principi per i parametri specifici di servizio, come beta e gearing.</p>
+          </article>
+          <article class="translation-block">
+            <h3><span class="en">Calculation criteria</span><span class="it">Criteri di calcolo</span></h3>
+            <p class="en">The real pre-tax WACC combines a real return on equity, a recognized real cost of debt, the service gearing, corporate tax treatment, the tax shield on financial expenses, and a correction factor for taxes on nominal profits.</p>
+            <p class="it">Il WACC reale pre-tasse combina rendimento reale del capitale proprio, costo reale del debito riconosciuto, gearing del servizio, trattamento fiscale, scudo fiscale sugli oneri finanziari e fattore correttivo per le imposte sui profitti nominali.</p>
+          </article>
+          <article class="translation-block">
+            <h3><span class="en">Common parameters</span><span class="it">Parametri comuni</span></h3>
+            <p class="en">Common parameters include total market return, convenience premium, uncertainty premium, tax rates, nominal and real risk-free rates, country-risk premium, iBoxx debt-cost indices, expected inflation, and the graduality coefficient for debt cost.</p>
+            <p class="it">I parametri comuni includono total market return, convenience premium, uncertainty premium, aliquote fiscali, tassi privi di rischio nominali e reali, premio rischio Paese, indici iBoxx per il costo del debito, inflazione attesa e coefficiente di gradualità del costo del debito.</p>
+          </article>
+          <article class="translation-block">
+            <h3><span class="en">Updates</span><span class="it">Aggiornamenti</span></h3>
+            <p class="en">For 2025-2027, selected parameters are updated using more recent tax evidence, sovereign-yield observation windows, inflation-linked swap data, ECB inflation forecasts, country-risk spreads, and iBoxx debt indices.</p>
+            <p class="it">Per il 2025-2027, alcuni parametri sono aggiornati usando evidenze fiscali più recenti, finestre di osservazione dei rendimenti sovrani, dati sugli inflation-linked swap, previsioni BCE, spread di rischio Paese e indici iBoxx.</p>
+          </article>
+          <article class="translation-block">
+            <h3><span class="en">Trigger mechanism</span><span class="it">Meccanismo di trigger</span></h3>
+            <p class="en">If recalculation shows a WACC variation of at least 50 basis points for at least one service, ARERA updates the WACC for all services, also considering expected inflation and forward-premium parameters. The mechanism also applies to 2026 and 2027 under Resolution 513/2024/R/COM.</p>
+            <p class="it">Se il ricalcolo mostra una variazione WACC di almeno 50 punti base per almeno un servizio, ARERA aggiorna il WACC per tutti i servizi, considerando anche inflazione attesa e forward premium. Il meccanismo si applica anche al 2026 e 2027 secondo la deliberazione 513/2024/R/COM.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel" id="formulas">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Cost-of-capital calculation</p>
+            <h2><span class="en">How the regulated WACC is calculated</span><span class="it">Come si calcola il WACC regolato</span></h2>
+          </div>
+          <p>
+            <span class="en">The equations below show the regulatory logic used to move from market parameters, tax assumptions, debt costs, and service risk into the final WACC.</span>
+            <span class="it">Le equazioni sotto mostrano la logica regolatoria che trasforma parametri di mercato, ipotesi fiscali, costo del debito e rischio del servizio nel WACC finale.</span>
+          </p>
+        </div>
+
+        <h3><span class="en">Real pre-tax WACC</span><span class="it">WACC reale pre-tasse</span></h3>
+        <div class="equation" aria-label="Real pre-tax WACC formula">
+          <div class="math">
+            <span>W<span class="sup">real</span><span class="sub">pre-tax,s</span></span>
+            <span>=</span>
+            <span class="frac"><span class="top">Ke<span class="sup">real</span><span class="sub">s</span> (1 - g<span class="sub">s</span>)</span><span class="bottom">1 - T</span></span>
+            <span>+</span>
+            <span class="frac"><span class="top">Kd<span class="sup">real</span> g<span class="sub">s</span> (1 - tc)</span><span class="bottom">1 - T</span></span>
+            <span>+</span>
+            <span>F<span class="sub">s</span></span>
+          </div>
+        </div>
+        <p class="formula-note">
+          <span class="en">Combines return on equity, recognized cost of debt, tax treatment, gearing, and a correction factor for taxes on nominal profits.</span>
+          <span class="it">Combina rendimento del capitale proprio, costo del debito riconosciuto, trattamento fiscale, gearing e fattore correttivo per le imposte sui profitti nominali.</span>
+        </p>
+
+        <h3><span class="en">Real return on equity</span><span class="it">Rendimento reale del capitale proprio</span></h3>
+        <div class="equation" aria-label="Real return on equity formula">
+          <div class="math">
+            <span>Ke<span class="sup">real</span><span class="sub">s</span></span>
+            <span>=</span>
+            <span>RF</span>
+            <span>+</span>
+            <span>β<span class="sup">asset</span><span class="sub">s</span></span>
+            <span>[</span>
+            <span>1 +</span>
+            <span class="frac"><span class="top">(1 - tc) g<span class="sub">s</span></span><span class="bottom">1 - g<span class="sub">s</span></span></span>
+            <span>]</span>
+            <span>(TMR - RF)</span>
+            <span>+</span>
+            <span>CRP</span>
+          </div>
+        </div>
+        <p class="formula-note">
+          <span class="en">The asset beta is adjusted by the financial structure, then applied to the market risk premium.</span>
+          <span class="it">Il beta asset è corretto per la struttura finanziaria e poi applicato al premio per il rischio di mercato.</span>
+        </p>
+
+        <h3><span class="en">Real risk-free rate and country risk premium</span><span class="it">Tasso privo di rischio reale e premio rischio Paese</span></h3>
+        <div class="equation" aria-label="Risk-free rate formula">
+          <div class="math">
+            <span>RF</span>
+            <span>=</span>
+            <span class="frac"><span class="top">RF<span class="sub">nominal</span> + CP + FP + UP - isr</span><span class="bottom">1 + isr</span></span>
+            <span class="en">and</span><span class="it">e</span>
+            <span>CRP</span>
+            <span>=</span>
+            <span class="frac"><span class="top">SPREAD + FPCRP</span><span class="bottom">1 + isr</span></span>
+          </div>
+        </div>
+
+        <h3><span class="en">Cost of debt and correction factor</span><span class="it">Costo del debito e fattore correttivo</span></h3>
+        <div class="equation" aria-label="Cost of debt formula">
+          <div class="math">
+            <span>Kd<span class="sup">real</span></span>
+            <span>=</span>
+            <span>γ</span>
+            <span class="frac"><span class="top">[(iBoxx<span class="sub">spot</span> + FP + UP) φ<span class="sub">new</span> + iBoxx<span class="sub">10y</span> φ<span class="sub">old</span> + ADD] - ia</span><span class="bottom">1 + ia</span></span>
+            <span>+</span>
+            <span>(1 - γ) 2.4%</span>
+          </div>
+        </div>
+        <div class="equation" aria-label="Correction factor formula">
+          <div class="math">
+            <span>F<span class="sub">s</span></span>
+            <span>=</span>
+            <span class="frac"><span class="top">ia</span><span class="bottom">1 + ia</span></span>
+            <span>·</span>
+            <span class="frac"><span class="top">T - tc · g<span class="sub">s</span></span><span class="bottom">1 - T</span></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Model inputs</p>
+            <h2><span class="en">Key parameters for the A2A CBA</span><span class="it">Parametri chiave per l'ACB A2A</span></h2>
+          </div>
+          <p>
+            <span class="en">For a distribution-network case, the most relevant service row is electricity distribution and metering.</span>
+            <span class="it">Per un caso sulla rete di distribuzione, la riga più rilevante è distribuzione e misura energia elettrica.</span>
+          </p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th><span class="en">Parameter</span><span class="it">Parametro</span></th><th>2022-2023</th><th>2024</th><th>2025-2027</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Total Market Return (TMR)</td><td>6.0%</td><td>6.0%</td><td>6.0%</td></tr>
+              <tr><td>Convenience premium (CP)</td><td>1.00%</td><td>1.00%</td><td>1.00%</td></tr>
+              <tr><td>Uncertainty premium (UP)</td><td>0.50%</td><td>0.50%</td><td>0.50%</td></tr>
+              <tr><td><span class="en">Theoretical tax incidence (T)</span><span class="it">Incidenza fiscale teorica (T)</span></td><td>29.5%</td><td>29.5%</td><td>29.8%</td></tr>
+              <tr><td><span class="en">Nominal risk-free rate</span><span class="it">Tasso privo di rischio nominale</span></td><td>-0.22%</td><td>2.73%</td><td>2.78%</td></tr>
+              <tr><td><span class="en">Real risk-free rate (RF)</span><span class="it">Tasso privo di rischio reale (RF)</span></td><td>0.13%</td><td>1.58%</td><td>2.13%</td></tr>
+              <tr><td><span class="en">Real country risk premium (CRP)</span><span class="it">Premio rischio Paese reale (CRP)</span></td><td>1.13%</td><td>1.62%</td><td>1.32%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section panel" id="wacc-table">
+        <div class="section-head">
+          <div>
+            <p class="kicker"><span class="en">Final table</span><span class="it">Valori WACC</span></p>
+            <h2><span class="en">WACC values by service</span><span class="it">Valori WACC per servizio</span></h2>
+          </div>
+          <p>
+            <span class="en">The highlighted row is the one normally used for electricity distribution CBA work.</span>
+            <span class="it">La riga evidenziata è quella normalmente usata per l'ACB della distribuzione elettrica.</span>
+          </p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th><span class="en">Service</span><span class="it">Servizio</span></th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th><th>2027</th></tr>
+            </thead>
+            <tbody>
+              <tr class="group-row"><td colspan="7"><span class="en">Rate of return on invested capital (WACC)</span><span class="it">Tasso di remunerazione del capitale investito (WACC)</span></td></tr>
+              <tr><td><span class="en">Electricity transmission</span><span class="it">Trasmissione energia elettrica</span></td><td>5.0%</td><td>5.0%</td><td>5.8%</td><td>5.50%</td><td>5.50%</td><td>5.50%</td></tr>
+              <tr><td><span class="en">Electricity distribution and metering</span><span class="it">Distribuzione e misura energia elettrica</span></td><td>5.2%</td><td>5.2%</td><td>6.0%</td><td class="highlight">5.60%</td><td class="highlight">5.60%</td><td class="highlight">5.60%</td></tr>
+              <tr><td><span class="en">Storage</span><span class="it">Stoccaggio</span></td><td>6.0%</td><td>6.0%</td><td>6.6%</td><td>6.10%</td><td>6.10%</td><td>6.10%</td></tr>
+              <tr><td><span class="en">Regasification</span><span class="it">Rigassificazione</span></td><td>6.1%</td><td>6.1%</td><td>6.7%</td><td>6.20%</td><td>6.20%</td><td>6.20%</td></tr>
+              <tr><td><span class="en">Gas transmission</span><span class="it">Trasporto gas</span></td><td>5.1%</td><td>5.1%</td><td>5.9%</td><td>5.50%</td><td>5.50%</td><td>5.50%</td></tr>
+              <tr><td><span class="en">Gas distribution and metering</span><span class="it">Distribuzione e misura gas</span></td><td>5.6%</td><td>5.6%</td><td>6.5%</td><td>5.90%</td><td>5.90%</td><td>5.90%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>
+          <span class="en">Source: Allegato A - TIWACC 2022-2027, approved by ARERA Resolution 614/2021/R/COM and later amendments.</span>
+          <span class="it">Fonte: Allegato A - TIWACC 2022-2027, approvato con deliberazione ARERA 614/2021/R/COM e successive modifiche.</span>
+        </p>
+      </footer>
+    </main>
+  </div>
+  <script src="assets/site.js"></script>
+</body>
+</html>
